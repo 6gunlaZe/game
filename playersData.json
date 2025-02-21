@@ -2,8 +2,8 @@
   "players": [
     {
       "id": 12345,
-      "dame": 150,
-      "exp": 2000,
+      "dame": 200,
+      "exp": 3000,
       "inventory": [
         "sword",
         "shield"
