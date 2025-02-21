@@ -1,0 +1,31 @@
+{
+  "players": [
+    {
+      "id": 12345,
+      "dame": 100,
+      "exp": 1500,
+      "inventory": ["sword", "shield"],
+      "level": 5,
+      "health": 300,
+      "mana": 100
+    },
+    {
+      "id": 67890,
+      "dame": 200,
+      "exp": 3000,
+      "inventory": ["bow", "helmet"],
+      "level": 10,
+      "health": 500,
+      "mana": 200
+    },
+    {
+      "id": 11223,
+      "dame": 50,
+      "exp": 800,
+      "inventory": ["staff", "robe"],
+      "level": 3,
+      "health": 200,
+      "mana": 50
+    }
+  ]
+}
