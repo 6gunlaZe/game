@@ -1,14 +1,26 @@
 
 
-// Lấy thông số người chơi
-getPlayerStat(12345, token);
+const playerId = 12345;
 
-// Cập nhật thông số người chơi
-const updatedStat = {
-  dame: 150,
-  exp: 2000,
-};
-updatePlayerStat(12345, updatedStat, token);
+// Gọi hàm để lấy thông số người chơi
+getPlayerStat(playerId, token)
+  .then(player => {
+  
+    const playerDame = player.dame;  // Lấy giá trị dame
+   game_log(`Dame của người chơi: ${playerDame}`);
+
+    // Cập nhật thông số người chơi
+    const updatedStat = {
+      dame: 200,  // Cập nhật damage
+      exp: 3000,  // Cập nhật điểm kinh nghiệm
+    };
+    updatePlayerStat(playerId, updatedStat, token);
+  })
+  .catch(error => {
+    console.error(error);
+  });
+
+
 
 
 
@@ -22,29 +34,32 @@ function getPlayerStat(playerId, token) {
   const repoName = 'game';  // Tên repository
   const filePath = 'playersData.json';  // Đường dẫn tới file JSON trong repo
 
-  // Sử dụng GitHub API để lấy nội dung file playersData.json
-  fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `token ${token}`,
-      'Accept': 'application/vnd.github.v3+json',
-    },
-  })
-  .then(response => response.json())
-  .then(data => {
-    // Dữ liệu sẽ được trả về dưới dạng Base64, cần giải mã
-    const fileContent = atob(data.content); // Giải mã nội dung Base64
-    const jsonData = JSON.parse(fileContent); // Chuyển đổi nội dung thành JSON
+  // Trả về một Promise, sẽ resolve với đối tượng player
+  return new Promise((resolve, reject) => {
+    // Sử dụng GitHub API để lấy nội dung file playersData.json
+    fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `token ${token}`,
+        'Accept': 'application/vnd.github.v3+json',
+      },
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Dữ liệu sẽ được trả về dưới dạng Base64, cần giải mã
+      const fileContent = atob(data.content); // Giải mã nội dung Base64
+      const jsonData = JSON.parse(fileContent); // Chuyển đổi nội dung thành JSON
 
-    // Tìm người chơi trong dữ liệu
-    const player = jsonData.players.find(p => p.id === playerId);
-    if (player) {
-      console.log('Thông số người chơi:', player);  // In thông số người chơi
-    } else {
-      console.log('Không tìm thấy người chơi với ID:', playerId);
-    }
-  })
-  .catch(error => console.error('Lỗi khi lấy thông số người chơi:', error));
+      // Tìm người chơi trong dữ liệu
+      const player = jsonData.players.find(p => p.id === playerId);
+      if (player) {
+        resolve(player);  // Trả về đối tượng người chơi
+      } else {
+        reject('Không tìm thấy người chơi với ID: ' + playerId);
+      }
+    })
+    .catch(error => reject('Lỗi khi lấy thông số người chơi: ' + error));
+  });
 }
 
 // Hàm cập nhật thông số người chơi trên GitHub thông qua GitHub API
@@ -118,3 +133,5 @@ function getFileSHA(repoOwner, repoName, filePath, token) {
   .then(data => data.sha)
   .catch(error => console.error('Lỗi khi lấy SHA của file:', error));
 }
+
+// Cách sử dụng
