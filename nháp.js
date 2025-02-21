@@ -26,6 +26,60 @@ getPlayerStat(playerId, token)
 
 
 
+// Hàm cộng thêm giá trị vào các thông số người chơi
+function addToPlayerStats({ playerId, ...statsToAdd }) {
+  // Lấy thông số người chơi từ API
+  getPlayerStat(playerId, token)
+    .then(player => {
+      let updatedStat = player.stats || {};  // Lấy thông số người chơi ban đầu (nếu có)
+
+      // Cộng thêm giá trị vào các thông số người chơi
+      Object.keys(statsToAdd).forEach(key => {
+        updatedStat[key] = updatedStat[key] ? updatedStat[key] + statsToAdd[key] : statsToAdd[key];
+      });
+
+      // Cập nhật lại thông số người chơi qua API
+      updatePlayerStat(playerId, updatedStat, token)
+        .then(() => {
+          console.log('Thông số người chơi đã được cập nhật lên server');
+          game_log(`Thông số người chơi đã được cập nhật: ${JSON.stringify(updatedStat)}`);
+        })
+        .catch(error => console.error('Lỗi khi cập nhật thông số người chơi:', error));
+    })
+    .catch(error => console.error('Lỗi khi lấy thông số người chơi:', error));
+}
+
+// Ví dụ sử dụng hàm addToPlayerStats để cộng thêm giá trị
+const statsToAdd = {
+  playerId: 12345,   // playerId cần được truyền vào
+  attack: 50,        // Cộng thêm 50 vào attack
+  dame: 100,         // Cộng thêm 100 vào dame
+  exp: 500           // Cộng thêm 500 vào exp
+};
+
+addToPlayerStats(statsToAdd);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Hàm lấy thông số người chơi từ GitHub thông qua GitHub API
