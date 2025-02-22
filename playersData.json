@@ -11,15 +11,15 @@
       "level": 5,
       "health": 300,
       "mana": 100,
-      "def-dame": 50,   // Giảm sát thương nhận vào
-      "def-skill": 20,  // Giảm hiệu quả kỹ năng đối phương
-      "crit-%": 15,     // Tỷ lệ chí mạng
-      "crit-x": 2,      // Lượng sát thương chí mạng
-      "attach-speed": 1.5, // Tốc độ tấn công
-      "attach-range": 5,   // Phạm vi tấn công
-      "NeTranh": 30,      // Số lần tham gia trận đấu
-      "HutMau": 10,       // Tỷ lệ hút máu
-      "PhanDame": 5       // Phản sát thương
+      "def-dame": 50,   
+      "def-skill": 20,  
+      "crit-%": 15,     
+      "crit-x": 2,      
+      "attach-speed": 1.5, 
+      "attach-range": 5,   
+      "NeTranh": 30,      
+      "HutMau": 10,     
+      "PhanDame": 5       
     },
     {
       "id": 67890,
