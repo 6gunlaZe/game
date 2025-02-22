@@ -19,7 +19,44 @@
       "attach-range": 5,
       "NeTranh": 30,
       "HutMau": 10,
-      "PhanDame": 5
+      "PhanDame": 5,
+      "trang-bi": {
+        "ao": {
+          "otp0": 5,
+          "otp1": 10,
+          "otp2": 5,
+          "otp3": 8,
+          "otp4": 12
+        },
+        "giap": {
+          "otp0": 10,
+          "otp1": 20,
+          "otp2": 10,
+          "otp3": 15,
+          "otp4": 25
+        },
+        "tay": {
+          "otp0": 2,
+          "otp1": 5,
+          "otp2": 3,
+          "otp3": 4,
+          "otp4": 6
+        },
+        "chan": {
+          "otp0": 3,
+          "otp1": 6,
+          "otp2": 4,
+          "otp3": 5,
+          "otp4": 7
+        },
+        "vu-khi": {
+          "otp0": 20,
+          "otp1": 30,
+          "otp2": 15,
+          "otp3": 20,
+          "otp4": 40
+        }
+      }
     },
     {
       "id": 67890,
@@ -40,7 +77,44 @@
       "attach-range": 7,
       "NeTranh": 50,
       "HutMau": 15,
-      "PhanDame": 6
+      "PhanDame": 6,
+      "trang-bi": {
+        "ao": {
+          "otp0": 7,
+          "otp1": 15,
+          "otp2": 7,
+          "otp3": 10,
+          "otp4": 18
+        },
+        "giap": {
+          "otp0": 12,
+          "otp1": 25,
+          "otp2": 12,
+          "otp3": 18,
+          "otp4": 30
+        },
+        "tay": {
+          "otp0": 4,
+          "otp1": 8,
+          "otp2": 5,
+          "otp3": 6,
+          "otp4": 9
+        },
+        "chan": {
+          "otp0": 6,
+          "otp1": 9,
+          "otp2": 6,
+          "otp3": 7,
+          "otp4": 10
+        },
+        "vu-khi": {
+          "otp0": 15,
+          "otp1": 35,
+          "otp2": 17,
+          "otp3": 22,
+          "otp4": 45
+        }
+      }
     },
     {
       "id": 11223,
@@ -61,7 +135,44 @@
       "attach-range": 4,
       "NeTranh": 20,
       "HutMau": 5,
-      "PhanDame": 2
+      "PhanDame": 2,
+      "trang-bi": {
+        "ao": {
+          "otp0": 3,
+          "otp1": 5,
+          "otp2": 2,
+          "otp3": 4,
+          "otp4": 6
+        },
+        "giap": {
+          "otp0": 5,
+          "otp1": 10,
+          "otp2": 5,
+          "otp3": 8,
+          "otp4": 12
+        },
+        "tay": {
+          "otp0": 1,
+          "otp1": 2,
+          "otp2": 1,
+          "otp3": 2,
+          "otp4": 3
+        },
+        "chan": {
+          "otp0": 2,
+          "otp1": 3,
+          "otp2": 2,
+          "otp3": 3,
+          "otp4": 4
+        },
+        "vu-khi": {
+          "otp0": 5,
+          "otp1": 10,
+          "otp2": 5,
+          "otp3": 7,
+          "otp4": 12
+        }
+      }
     }
   ]
 }
