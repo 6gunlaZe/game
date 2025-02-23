@@ -71,11 +71,11 @@
         },
         "vu-khi": {
           "otp0": "T1_spear",
-          "otp1": 30,
-          "otp2": 15,
-          "otp3": 20,
-          "otp4": 40,
-          "otp5": 5
+          "otp1": 10,
+          "otp2": 5,
+          "otp3": 8,
+          "otp4": 12,
+          "otp5": 1
         }
       }
     },
@@ -149,14 +149,93 @@
           "otp5": 12
         },
         "vu-khi": {
-          "otp0": "T1_spear",
-          "otp1": 35,
-          "otp2": 17,
-          "otp3": 22,
-          "otp4": 45,
-          "otp5": 55
+          "otp0": "bow",
+          "otp1": 15,
+          "otp2": 7,
+          "otp3": 10,
+          "otp4": 18,
+          "otp5": 20
         }
       }
     },
     {
       "id": 11223,
+      "dame": 250,
+      "exp": 4000,
+      "inventory": [
+        {
+          "otp0": "T3_sword",
+          "otp1": 25,
+          "otp2": 15,
+          "otp3": 20,
+          "otp4": 30,
+          "otp5": 10,
+          "otp6": 1
+        },
+        {
+          "otp0": "shield",
+          "otp1": 30,
+          "otp2": 20,
+          "otp3": 25,
+          "otp4": 35,
+          "otp5": 40,
+          "otp6": 1
+        }
+      ],
+      "level": 15,
+      "health": 700,
+      "mana": 250,
+      "def-dame": 70,
+      "def-skill": 30,
+      "crit-%": 25,
+      "crit-x": 3,
+      "attach-speed": 1.1,
+      "attach-range": 6,
+      "NeTranh": 60,
+      "HutMau": 20,
+      "PhanDame": 7,
+      "trang-bi": {
+        "ao": {
+          "otp0": "T10_mystic_armor",
+          "otp1": 20,
+          "otp2": 15,
+          "otp3": 18,
+          "otp4": 25,
+          "otp5": 30
+        },
+        "giap": {
+          "otp0": "T5_steel_shield",
+          "otp1": 30,
+          "otp2": 20,
+          "otp3": 25,
+          "otp4": 35,
+          "otp5": 40
+        },
+        "tay": {
+          "otp0": "T12_power_gloves",
+          "otp1": 10,
+          "otp2": 8,
+          "otp3": 12,
+          "otp4": 16,
+          "otp5": 18
+        },
+        "chan": {
+          "otp0": "T18_heavy_boots",
+          "otp1": 12,
+          "otp2": 10,
+          "otp3": 14,
+          "otp4": 18,
+          "otp5": 20
+        },
+        "vu-khi": {
+          "otp0": "T3_sword",
+          "otp1": 25,
+          "otp2": 15,
+          "otp3": 20,
+          "otp4": 30,
+          "otp5": 10
+        }
+      }
+    }
+  ]
+}
