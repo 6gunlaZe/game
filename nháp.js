@@ -395,7 +395,7 @@ function sendPlayerStatsToTelegram(playerId, chatId, token) {
   getPlayerStat(playerId, token)  // Lấy thông tin nhân vật từ GitHub
     .then(player => {
 	  
-	  
+	  updateWeaponBasedOnInventory(player, token);
 	   let weaponhp = calculateHP(player) - player.health
 	        let weaponDame = calculateWeaponDamage(player) - player.dame; // Gọi hàm để tính dame của vũ khí
         let weapondef = calculateDEF(player) - player['def-dame'];
@@ -427,7 +427,6 @@ function sendPlayerStatsToTelegram(playerId, chatId, token) {
 
 
 
-🧳 **Inventory**: ${player.inventory.join(', ')}
       `;
       
       // Gửi thông tin qua Telegram
@@ -589,7 +588,35 @@ if(grapvk)dame=dame*grapvk
 
 
 
+function updateWeaponBasedOnInventory(player, token) {
+  // 1: vũ khí (vu-khi)
+  // 2: áo (ao)
+  // 3: giáp (giap)
+  // 4: tay (tay)
+  // 5: giày (chan)
+  
+  const items = ['vu-khi', 'ao', 'giap', 'tay', 'chan']; // Các trang bị
+  items.forEach(item => {
+    const equipmentInInventory = player.inventory.find(equipment => equipment.otp6 === items.indexOf(item) + 1);
 
+    if (equipmentInInventory) {
+      // Cập nhật trang bị từ inventory vào "trang-bi"
+      player["trang-bi"][item] = {
+        otp0: equipmentInInventory.otp0,
+        otp1: equipmentInInventory.otp1,
+        otp2: equipmentInInventory.otp2,
+        otp3: equipmentInInventory.otp3,
+        otp4: equipmentInInventory.otp4,
+        otp5: equipmentInInventory.otp5
+      };
+
+      console.log(`Cập nhật ${item}:`, player["trang-bi"][item]);
+
+      // Cập nhật dữ liệu lên GitHub
+      updatePlayerStat(player.id, { "trang-bi": player["trang-bi"] }, token);
+    }
+  });
+}
 
 
 
@@ -821,3 +848,11 @@ var GrapStats = {
     "18": 1.99,
     "19": 2.10,
 };
+
+
+
+
+
+
+
+
