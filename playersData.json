@@ -15,13 +15,13 @@
           "otp6": 1
         },
         {
-          "otp0": "shield",
+          "otp0": "T5_frost_armor",
           "otp1": 20,
           "otp2": 10,
           "otp3": 15,
           "otp4": 25,
           "otp5": 3,
-          "otp6": 0
+          "otp6": 2
         }
       ],
       "level": 5,
