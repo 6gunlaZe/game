@@ -1,5 +1,7 @@
 
 
+
+
 const playerId = 12345;
 
 // Gọi hàm để lấy thông số người chơi
@@ -394,6 +396,8 @@ function sendPlayerStatsToTelegram(playerId, chatId, token) {
   getPlayerStat(playerId, token)  // Lấy thông tin nhân vật từ GitHub
     .then(player => {
 	  
+	  
+	   let weaponhp = calculateHP(player) - player.health
 	        let weaponDame = calculateWeaponDamage(player) - player.dame; // Gọi hàm để tính dame của vũ khí
 
       // Chuẩn bị thông tin nhân vật
@@ -403,7 +407,7 @@ function sendPlayerStatsToTelegram(playerId, chatId, token) {
 - ⚔️ **Dame**:  ${player.dame} + ${weaponDame}
 - 🌟 **exp**: ${player.exp}
 - 🏆 **Level**: ${player.level}
-- ❤️ **Health**: ${player.health}
+- ❤️ **Health**: ${player.health} + ${weaponhp}
 - 🔋 **Mana**: ${player.mana}
 - 🛡️ : ${player['def-dame']} (Giảm sát thương nhận vào)
 - 🎽 : ${player['def-skill']} (Giảm hiệu quả kỹ năng đối phương)
@@ -781,10 +785,3 @@ var GrapStats = {
     "18": 1.99,
     "19": 2.10,
 };
-
-
-
-
-
-
-
