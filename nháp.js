@@ -399,7 +399,8 @@ function sendPlayerStatsToTelegram(playerId, chatId, token) {
 	  
 	   let weaponhp = calculateHP(player) - player.health
 	        let weaponDame = calculateWeaponDamage(player) - player.dame; // Gọi hàm để tính dame của vũ khí
-
+        let weapondef = calculateDEF(player) - player.['def-dame'];
+	let weapondef1 = calculateDEFskill(player) - player.['def-skill'];
       // Chuẩn bị thông tin nhân vật
       const playerStats = `
 🧑‍💻 **Thông tin nhân vật**:
@@ -409,8 +410,8 @@ function sendPlayerStatsToTelegram(playerId, chatId, token) {
 - 🏆 **Level**: ${player.level}
 - ❤️ **Health**: ${player.health} + ${weaponhp}
 - 🔋 **Mana**: ${player.mana}
-- 🛡️ : ${player['def-dame']} (Giảm sát thương nhận vào)
-- 🎽 : ${player['def-skill']} (Giảm hiệu quả kỹ năng đối phương)
+- 🛡️ : ${player['def-dame']} + ${weapondef} (Giảm sát thương nhận vào)
+- 🎽 : ${player['def-skill']} + ${weapondef1} (Giảm hiệu quả kỹ năng đối phương)
 - 🎯 : ${player['NeTranh']} (Tỉ lệ né tránh)
 - ⚡ : ${player['crit-%']} (Tỷ lệ chí mạng)
 - 💣 : ${player['crit-x']} (Lượng sát thương chí mạng)
@@ -486,7 +487,7 @@ if(grapvk)dame=dame*grapvk
     return dame;  // Trả về giá trị dame tính được
   } else {
     console.log("otp0 không tồn tại trong weaponStats!"); // Nếu otp0 không có trong weaponStats
-    return 0;  // Trả về 0 nếu không có vũ khí hợp lệ
+    return dame0;  // Trả về 0 nếu không có vũ khí hợp lệ
   }
 }
 
@@ -517,38 +518,74 @@ if(grapvk)dame=dame*grapvk
     return dame;  // Trả về giá trị dame tính được
   } else {
     console.log("otp0 không tồn tại trong weaponStats!"); // Nếu otp0 không có trong weaponStats
-    return 0;  // Trả về 0 nếu không có vũ khí hợp lệ
+    return dame0;  // Trả về 0 nếu không có vũ khí hợp lệ
   }
 }
 
 function calculateDEF(player) {
   // Lấy giá trị otp0 của vũ khí
-  let dame0 = player.health;	
-  let otp0 = player['trang-bi']['ao'].otp0;
-   let otp5 = player['trang-bi']['ao'].otp5;
+  let dame0 = player.['def-dame'];	
+  let otp0 = player['trang-bi']['tay'].otp0;
+   let otp5 = player['trang-bi']['tay'].otp5;
+  let otp01 = player['trang-bi']['chan'].otp0;
+   let otp51 = player['trang-bi']['chan'].otp5;
+	
   // Lấy giá trị dame cơ bản từ weaponStats dựa trên otp0
-  var damevk = armorStats[otp0];
+  var damevk = glovesStats[otp0];
+	var grapvk = GrapStats[otp5];
+  var damevk1 = bootsStats[otp01];
+	var grapvk1 = GrapStats[otp51];
+  // Kiểm tra xem damevk có tồn tại (tức là otp0 có trong weaponStats)
+  if (damevk) {
+    // Nếu tồn tại, tính tổng dame từ dame cơ bản và các giá trị otp1, otp2, otp3, otp4
+    let dame = damevk + player['trang-bi']['tay'].otp1 +
+               player['trang-bi']['tay'].otp2 +
+               player['trang-bi']['tay'].otp3 +
+               player['trang-bi']['tay'].otp4;
+if(grapvk)dame=dame*grapvk
+	  dame0  += Math.round(dame)
+  }
+  if (damevk1) {
+    // Nếu tồn tại, tính tổng dame từ dame cơ bản và các giá trị otp1, otp2, otp3, otp4
+    let dame = damevk1 + player['trang-bi']['chan'].otp1 +
+               player['trang-bi']['chan'].otp2 +
+               player['trang-bi']['chan'].otp3 +
+               player['trang-bi']['chan'].otp4;
+if(grapvk1)dame=dame*grapvk
+	  dame0  += Math.round(dame)
+  }
+
+
+    return dame0;  // Trả về 0 nếu không có vũ khí hợp lệ
+
+}
+
+
+function calculateDEFskill(player) {
+  // Lấy giá trị otp0 của vũ khí
+  let dame0 = player.['def-skill'];	
+  let otp0 = player['trang-bi']['giap'].otp0;
+   let otp5 = player['trang-bi']['giap'].otp5;
+
+	
+  // Lấy giá trị dame cơ bản từ shieldStats dựa trên otp0
+  var damevk = shieldStats[otp0];
 	var grapvk = GrapStats[otp5];
 
   // Kiểm tra xem damevk có tồn tại (tức là otp0 có trong weaponStats)
   if (damevk) {
     // Nếu tồn tại, tính tổng dame từ dame cơ bản và các giá trị otp1, otp2, otp3, otp4
-    let dame = damevk + player['trang-bi']['ao'].otp1 +
-               player['trang-bi']['ao'].otp2 +
-               player['trang-bi']['ao'].otp3 +
-               player['trang-bi']['ao'].otp4;
+    let dame = damevk + player['trang-bi']['giap'].otp1 +
+               player['trang-bi']['giap'].otp2 +
+               player['trang-bi']['giap'].otp3 +
+               player['trang-bi']['giap'].otp4;
 if(grapvk)dame=dame*grapvk
-	  dame = dame0 + Math.round(dame)
-    return dame;  // Trả về giá trị dame tính được
-  } else {
-    console.log("otp0 không tồn tại trong weaponStats!"); // Nếu otp0 không có trong weaponStats
-    return 0;  // Trả về 0 nếu không có vũ khí hợp lệ
+	  dame0  += Math.round(dame)
   }
+
+    return dame0;  // Trả về 0 nếu không có vũ khí hợp lệ
+
 }
-
-
-
-
 
 
 
