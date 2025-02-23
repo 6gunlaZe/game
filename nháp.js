@@ -853,6 +853,158 @@ var GrapStats = {
 
 
 
+let players = [];
+
+
+
+function calculatePlayerDamage(player) {
+  const baseDamage = player.dame; // Sát thương cơ bản
+  const critChance = player['crit-%']; // Tỉ lệ chí mạng
+  const critMultiplier = player['crit-x']; // Nhân đôi sát thương khi chí mạng
+
+  // Kiểm tra xem người chơi có chí mạng không
+  const isCrit = Math.random() < critChance / 100; // Xác suất chí mạng (từ 0 đến 1)
+  const finalDamage = isCrit ? baseDamage * critMultiplier : baseDamage;
+
+  return {
+    damage: finalDamage,  // Sát thương tính ra
+    isCrit: isCrit       // Kiểm tra nếu là chí mạng
+  };
+}
+
+
+
+
+// Ghi nhận sát thương của người chơi
+function recordPlayerAttack(player) {
+  const playerReport = playerDamageReport.find(r => r.id === player.id);
+  
+  // Tính sát thương và xác định chí mạng
+  const { damage, isCrit } = calculatePlayerDamage(player);
+  
+  // Lưu lại thông tin đòn đánh
+  playerReport.attacks.push({ damage, isCrit }); // Ghi nhận đòn đánh với thông tin chí mạng
+  playerReport.totalDamage += damage; // Cập nhật tổng sát thương
+}
+
+
+
+
+
+
+// Cập nhật báo cáo sát thương
+function displayDamageReport() {
+  let report = '===== Damage Report =====\n';
+  report += '| Name        | Total        | Now         |\n';
+  report += '|-------------|--------------|-------------|\n';
+
+  playerDamageReport.forEach(playerReport => {
+    // Lấy tên người chơi từ players bằng playerReport.id
+    const playerName = players.find(p => p.id === playerReport.id).name;  // Lấy tên người chơi
+
+    // Căn chỉnh tên và sát thương cho đều đặn và thêm icon cho tên và tổng sát thương
+    const name = `🎮 ${playerName.padEnd(12, ' ')}`;  // Thêm biểu tượng game cho tên
+    const total = `💥 ${playerReport.totalDamage.toString().padStart(12, ' ')}`;  // Thêm biểu tượng cho tổng sát thương
+
+    // Hiển thị từng đòn đánh trong giây hiện tại (bao gồm cả chí mạng và không chí mạng)
+    const now = playerReport.attacks.map(attack => {
+      const damage = attack.damage.toFixed(0);  // Làm tròn sát thương
+      // Thêm emoji ⚡ khi chí mạng
+      return attack.isCrit ? `${damage} ⚡` : damage;
+    }).join(', ').padStart(12, ' ');  // Hiển thị tất cả các đòn tấn công
+
+    // Thêm dòng vào báo cáo
+    report += `| ${name} | ${total} | ${now} |\n`;
+    playerReport.attacks = [];  // Reset attacks cho lần tiếp theo
+  });
+
+  report += '===========================\n';
+  sendMessage(-4676989627, report, { parse_mode: 'HTML' });  // Gửi báo cáo qua Telegram bot với định dạng HTML
+  console.log(report);  // Hiển thị báo cáo
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Hàm bắt đầu trận đấu với boss
+function startBossFight() {
+  setInterval(displayDamageReport, 5000);  // Cập nhật báo cáo mỗi giây
+
+  players.forEach(player => {
+    const attackSpeed = player['attach-speed']; // Tốc độ đánh của người chơi
+    const damage = calculatePlayerDamage(player); // Sát thương mỗi đòn đánh
+
+    // Tấn công theo tốc độ đánh của người chơi
+    setInterval(() => {
+      recordPlayerAttack(player, damage); // Ghi nhận sát thương khi tấn công
+    }, attackSpeed * 1000);  // Tốc độ đánh tính theo giây
+  });
+}
+
+
+// Hàm khởi tạo dữ liệu người chơi và bắt đầu trận đấu
+async function initGame() {
+  // Lấy dữ liệu người chơi từ GitHub
+  try {
+    const player1 = await getPlayerStat(12345, token);
+    const player2 = await getPlayerStat(67890, token);
+    const player3 = await getPlayerStat(11223, token);
+
+    players = [player1, player2, player3];  // Lưu mảng người chơi
+
+    // Khởi tạo báo cáo sát thương
+    playerDamageReport = players.map(player => ({
+      id: player.id,
+      attacks: [],
+      totalDamage: 0
+    }));
+
+    startBossFight();  // Bắt đầu trận đấu
+  } catch (error) {
+    console.error(error);  // Nếu có lỗi khi lấy dữ liệu người chơi
+  }
+}
+
+// Khởi động game
+initGame();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
