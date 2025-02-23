@@ -61,6 +61,22 @@ function updateSkillsBasedOnInventory(player, token) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Hàm để cập nhật chỉ số của người chơi khi sử dụng kỹ năng
 function updatePlayerStatsBasedOnSkills(player) {
   // Kiểm tra nếu player có kỹ năng
@@ -187,7 +203,6 @@ setInterval(() => {
   updatePlayerStatsBasedOnSkills(player);
   checkSkillExpirationAndRemove(player);
 }, 1000); // Gọi mỗi giây hoặc sau mỗi lượt đánh, tùy thuộc vào logic game của bạn
-
 
 
 
