@@ -1,7 +1,6 @@
 
 
 
-
 const playerId = 12345;
 
 // Gọi hàm để lấy thông số người chơi
@@ -399,8 +398,8 @@ function sendPlayerStatsToTelegram(playerId, chatId, token) {
 	  
 	   let weaponhp = calculateHP(player) - player.health
 	        let weaponDame = calculateWeaponDamage(player) - player.dame; // Gọi hàm để tính dame của vũ khí
-        let weapondef = calculateDEF(player) - player.['def-dame'];
-	let weapondef1 = calculateDEFskill(player) - player.['def-skill'];
+        let weapondef = calculateDEF(player) - player['def-dame'];
+	let weapondef1 = calculateDEFskill(player) - player['def-skill'];
       // Chuẩn bị thông tin nhân vật
       const playerStats = `
 🧑‍💻 **Thông tin nhân vật**:
@@ -412,7 +411,7 @@ function sendPlayerStatsToTelegram(playerId, chatId, token) {
 - 🔋 **Mana**: ${player.mana}
 - 🛡️ : ${player['def-dame']} + ${weapondef} (Giảm sát thương nhận vào)
 - 🎽 : ${player['def-skill']} + ${weapondef1} (Giảm hiệu quả kỹ năng đối phương)
-- 🎯 : ${player['NeTranh']} (Tỉ lệ né tránh)
+- 🍃 : ${player['NeTranh']} (Tỉ lệ né tránh)
 - ⚡ : ${player['crit-%']} (Tỷ lệ chí mạng)
 - 💣 : ${player['crit-x']} (Lượng sát thương chí mạng)
 - ⏱️ : ${player['attach-speed']} (Tốc độ tấn công)
@@ -524,7 +523,7 @@ if(grapvk)dame=dame*grapvk
 
 function calculateDEF(player) {
   // Lấy giá trị otp0 của vũ khí
-  let dame0 = player.['def-dame'];	
+  let dame0 = player['def-dame'];	
   let otp0 = player['trang-bi']['tay'].otp0;
    let otp5 = player['trang-bi']['tay'].otp5;
   let otp01 = player['trang-bi']['chan'].otp0;
@@ -563,7 +562,7 @@ if(grapvk1)dame=dame*grapvk
 
 function calculateDEFskill(player) {
   // Lấy giá trị otp0 của vũ khí
-  let dame0 = player.['def-skill'];	
+  let dame0 = player['def-skill'];	
   let otp0 = player['trang-bi']['giap'].otp0;
    let otp5 = player['trang-bi']['giap'].otp5;
 
