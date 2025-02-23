@@ -5,8 +5,24 @@
       "dame": 200,
       "exp": 3000,
       "inventory": [
-        "sword",
-        "shield"
+        {
+          "otp0": "sword",
+          "otp1": 10,
+          "otp2": 5,
+          "otp3": 8,
+          "otp4": 12,
+          "otp5": 1,
+          "otp6": 0
+        },
+        {
+          "otp0": "shield",
+          "otp1": 20,
+          "otp2": 10,
+          "otp3": 15,
+          "otp4": 25,
+          "otp5": 3,
+          "otp6": 0
+        }
       ],
       "level": 5,
       "health": 300,
@@ -68,8 +84,24 @@
       "dame": 200,
       "exp": 3000,
       "inventory": [
-        "bow",
-        "helmet"
+        {
+          "otp0": "bow",
+          "otp1": 15,
+          "otp2": 7,
+          "otp3": 10,
+          "otp4": 18,
+          "otp5": 20,
+          "otp6": 0
+        },
+        {
+          "otp0": "helmet",
+          "otp1": 25,
+          "otp2": 12,
+          "otp3": 18,
+          "otp4": 30,
+          "otp5": 35,
+          "otp6": 0
+        }
       ],
       "level": 10,
       "health": 500,
@@ -128,66 +160,3 @@
     },
     {
       "id": 11223,
-      "dame": 50,
-      "exp": 800,
-      "inventory": [
-        "staff",
-        "robe"
-      ],
-      "level": 3,
-      "health": 200,
-      "mana": 50,
-      "def-dame": 10,
-      "def-skill": 10,
-      "crit-%": 5,
-      "crit-x": 1.5,
-      "attach-speed": 1.8,
-      "attach-range": 4,
-      "NeTranh": 20,
-      "HutMau": 5,
-      "PhanDame": 2,
-      "trang-bi": {
-        "ao": {
-          "otp0": "Áo của pháp sư",
-          "otp1": 5,
-          "otp2": 2,
-          "otp3": 4,
-          "otp4": 6,
-          "otp5": 7
-        },
-        "giap": {
-          "otp0": "Giáp nhẹ",
-          "otp1": 10,
-          "otp2": 5,
-          "otp3": 8,
-          "otp4": 12,
-          "otp5": 15
-        },
-        "tay": {
-          "otp0": "Găng tay phép thuật",
-          "otp1": 2,
-          "otp2": 1,
-          "otp3": 2,
-          "otp4": 3,
-          "otp5": 4
-        },
-        "chan": {
-          "otp0": "Giày ma pháp",
-          "otp1": 3,
-          "otp2": 2,
-          "otp3": 3,
-          "otp4": 4,
-          "otp5": 5
-        },
-        "vu-khi": {
-          "otp0": "T1_spear",
-          "otp1": 10,
-          "otp2": 5,
-          "otp3": 7,
-          "otp4": 12,
-          "otp5": 15
-        }
-      }
-    }
-  ]
-}
