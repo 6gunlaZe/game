@@ -54,7 +54,7 @@
           "otp5": 8
         },
         "vu-khi": {
-          "otp0": "Kiếm sắc bén",
+          "otp0": "T1_spear",
           "otp1": 30,
           "otp2": 15,
           "otp3": 20,
@@ -117,7 +117,7 @@
           "otp5": 12
         },
         "vu-khi": {
-          "otp0": "Cung cung thủ",
+          "otp0": "T1_spear",
           "otp1": 35,
           "otp2": 17,
           "otp3": 22,
@@ -180,7 +180,7 @@
           "otp5": 5
         },
         "vu-khi": {
-          "otp0": "Gậy phép",
+          "otp0": "T1_spear",
           "otp1": 10,
           "otp2": 5,
           "otp3": 7,
