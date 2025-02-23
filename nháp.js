@@ -1,6 +1,5 @@
 
 
-
 const playerId = 12345;
 
 // Gọi hàm để lấy thông số người chơi
@@ -979,6 +978,8 @@ function startBossFight() {
       clearInterval(reportInterval);  // Dừng báo cáo khi boss chết
     } else {
       displayDamageReport();  // Nếu boss còn sống, tiếp tục báo cáo
+		sendFourButtons(-4676989627)
+		
     }
   }, 5000);  // Mỗi 5 giây gọi báo cáo
 
@@ -1020,3 +1021,86 @@ async function initGame() {
 
 // Khởi động game
 initGame();
+
+
+
+
+
+function sendFourButtons(chatId) {
+  const reply_markup = {
+    inline_keyboard: [
+      [
+        { text: 'tien', callback_data: 'button_1' },
+        { text: 'hai', callback_data: 'button_2' },
+        { text: 'hoang', callback_data: 'button_3' },
+        { text: 'BOSS', callback_data: 'button_4' }  // Thêm nút thứ 4
+      ]
+    ]
+  };
+
+  const text = 'Hãy chọn một mục tiêu:';
+
+  sendMessage(chatId, text, reply_markup);  // Gửi tin nhắn với bốn nút
+}
+
+
+
+
+
+// Mảng chứa thông tin người dùng (userId và tên)
+const userNames = {
+  6708647498: 'Tien',
+  987654321: 'Hai',
+  111222333: 'Hoang',
+  444555666: 'Duc'
+  // Bạn có thể thêm nhiều người dùng và ID tương ứng ở đây
+};
+
+
+
+
+function handleCallbackQuery(callbackQuery) {
+  const chatId = callbackQuery.message.chat.id;
+  const messageId = callbackQuery.message.message_id;
+  const data = callbackQuery.data;  // Lấy dữ liệu từ callback query
+  const userId = callbackQuery.from.id;  // Lấy ID của người nhấn nút
+
+  // Tra cứu tên người dùng từ mảng userNames
+  const userName = userNames[userId] || 'Người dùng không xác định';  // Nếu không tìm thấy userId thì hiển thị tên mặc định
+
+
+  // Xử lý phản hồi khi người dùng nhấn nút
+  if (data === 'button_1') {
+    sendMessage(chatId, `${userName} đã chọn Tiến!`);
+  } else if (data === 'button_2') {
+    sendMessage(chatId, `${userName} đã chọn Hải!`);
+  } else if (data === 'button_3') {
+    sendMessage(chatId, `${userName} đã chọn Hoàng!`);
+  } else if (data === 'button_4') {  // Thêm điều kiện xử lý cho nút 4
+    sendMessage(chatId, `${userName} đã chọn BOSS!`);
+  }
+
+  // Xóa các nút sau khi nhấn chỉ đối với người nhấn
+  const updatedReplyMarkup = { inline_keyboard: [] };
+
+  // Chỉnh sửa tin nhắn để xóa các nút
+  const url = `https://api.telegram.org/bot${botToken}/editMessageReplyMarkup`;
+  const payload = {
+    chat_id: chatId,
+    message_id: messageId, // Tin nhắn của người nhấn
+    reply_markup: updatedReplyMarkup  // Xóa các nút
+  };
+
+  // Gửi yêu cầu xóa nút
+  fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log('Nút đã bị xóa:', data);
+    })
+    .catch(error => console.error('Lỗi xóa nút:', error));
+}
+
