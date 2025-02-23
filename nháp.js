@@ -850,6 +850,14 @@ var GrapStats = {
 };
 
 
+let boss = {
+  id: "boss001",
+  name: "Big Boss",
+  hp: 20000,         // Máu của boss
+  damage: 150,       // Sát thương của boss
+  defense: 50,       // Phòng thủ của boss
+  isAlive: true,     // Trạng thái sống của boss
+};
 
 
 
@@ -858,16 +866,24 @@ let players = [];
 
 
 function calculatePlayerDamage(player) {
-  const baseDamage = player.dame; // Sát thương cơ bản
+  const baseDamage = player.dame; // Sát thương cơ bản của người chơi
   const critChance = player['crit-%']; // Tỉ lệ chí mạng
   const critMultiplier = player['crit-x']; // Nhân đôi sát thương khi chí mạng
 
   // Kiểm tra xem người chơi có chí mạng không
   const isCrit = Math.random() < critChance / 100; // Xác suất chí mạng (từ 0 đến 1)
-  const finalDamage = isCrit ? baseDamage * critMultiplier : baseDamage;
+  let finalDamage = isCrit ? baseDamage * critMultiplier : baseDamage; // Sát thương cuối cùng khi có chí mạng
+
+  // Nếu boss tồn tại và còn sống, trừ phòng thủ của boss
+  if (boss && boss.isAlive) {
+    finalDamage -= boss.defense;  // Phòng thủ của boss giảm sát thương người chơi gây ra
+  }
+
+  // Đảm bảo rằng sát thương không âm
+  finalDamage = Math.max(0, finalDamage);
 
   return {
-    damage: finalDamage,  // Sát thương tính ra
+    damage: finalDamage,  // Sát thương tính ra sau khi giảm phòng thủ
     isCrit: isCrit       // Kiểm tra nếu là chí mạng
   };
 }
@@ -875,16 +891,23 @@ function calculatePlayerDamage(player) {
 
 
 
-// Ghi nhận sát thương của người chơi
+
+// Cập nhật lại hàm `recordPlayerAttack`
 function recordPlayerAttack(player) {
   const playerReport = playerDamageReport.find(r => r.id === player.id);
-  
-  // Tính sát thương và xác định chí mạng
+
+  // Tính sát thương của người chơi (đã bao gồm phòng thủ của boss)
   const { damage, isCrit } = calculatePlayerDamage(player);
-  
-  // Lưu lại thông tin đòn đánh
-  playerReport.attacks.push({ damage, isCrit }); // Ghi nhận đòn đánh với thông tin chí mạng
-  playerReport.totalDamage += damage; // Cập nhật tổng sát thương
+
+  // Ghi nhận đòn đánh và tổng sát thương của người chơi
+  playerReport.attacks.push({ damage, isCrit });
+  playerReport.totalDamage += damage;
+
+  // Trừ HP của boss với sát thương cuối cùng nếu boss còn sống
+  if (boss && boss.isAlive) {
+    boss.hp -= damage;
+    console.log(`Boss bị tấn công! HP còn lại: ${boss.hp}`);
+  }
 }
 
 
@@ -938,16 +961,28 @@ function displayDamageReport() {
 
 
 // Hàm bắt đầu trận đấu với boss
-function startBossFight() {
-  setInterval(displayDamageReport, 5000);  // Cập nhật báo cáo mỗi giây
+let reportInterval;  // Biến để lưu interval báo cáo
 
+function startBossFight() {
+  // Bắt đầu việc cập nhật báo cáo mỗi 5 giây (5000ms)
+  reportInterval = setInterval(() => {
+    if (boss && boss.hp <= 0) {  // Kiểm tra nếu boss đã chết
+		      displayDamageReport();  // Gửi báo cáo ngay lập tức khi boss chết
+				sendMessage(-4676989627, "Boss đã chết!", { parse_mode: 'HTML' });
+      clearInterval(reportInterval);  // Dừng báo cáo khi boss chết
+    } else {
+      displayDamageReport();  // Nếu boss còn sống, tiếp tục báo cáo
+    }
+  }, 5000);  // Mỗi 5 giây gọi báo cáo
+
+  // Cập nhật các đòn tấn công của người chơi (theo tốc độ đánh)
   players.forEach(player => {
     const attackSpeed = player['attach-speed']; // Tốc độ đánh của người chơi
-    const damage = calculatePlayerDamage(player); // Sát thương mỗi đòn đánh
+    const damage = calculatePlayerDamage(player); // Tính sát thương mỗi đòn đánh
 
     // Tấn công theo tốc độ đánh của người chơi
     setInterval(() => {
-      recordPlayerAttack(player, damage); // Ghi nhận sát thương khi tấn công
+      recordPlayerAttack(player); // Ghi nhận sát thương khi tấn công
     }, attackSpeed * 1000);  // Tốc độ đánh tính theo giây
   });
 }
@@ -978,33 +1013,3 @@ async function initGame() {
 
 // Khởi động game
 initGame();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
