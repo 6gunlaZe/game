@@ -26,6 +26,7 @@
         }
       ],
       "level": 5,
+      "health_max": 300,
       "health": 300,
       "mana": 100,
       "def-dame": 50,
@@ -106,6 +107,7 @@
         }
       ],
       "level": 10,
+      "health_max": 500,
       "health": 500,
       "mana": 200,
       "def-dame": 60,
@@ -186,6 +188,7 @@
         }
       ],
       "level": 15,
+      "health_max": 700,      
       "health": 700,
       "mana": 250,
       "def-dame": 70,
