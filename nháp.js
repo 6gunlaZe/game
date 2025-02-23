@@ -393,11 +393,14 @@ setTimeout(() => {
 function sendPlayerStatsToTelegram(playerId, chatId, token) {
   getPlayerStat(playerId, token)  // Lấy thông tin nhân vật từ GitHub
     .then(player => {
+	  
+	        let weaponDame = calculateWeaponDamage(player); // Gọi hàm để tính dame của vũ khí
+
       // Chuẩn bị thông tin nhân vật
       const playerStats = `
 🧑‍💻 **Thông tin nhân vật**:
 - 🆔 **ID**: ${player.id}
-- ⚔️ **Dame**: ${player.dame}
+- ⚔️ **Dame**:  ${player.dame} + ${weaponDame}
 - 🌟 **exp**: ${player.exp}
 - 🏆 **Level**: ${player.level}
 - ❤️ **Health**: ${player.health}
@@ -448,6 +451,289 @@ sendPlayerStatsToTelegram(12345, 6708647498, token);
 
 
 
+
+
+
+
+
+
+
+
+
+
+function calculateWeaponDamage(player) {
+  // Lấy giá trị otp0 của vũ khí
+  let otp0 = player['trang-bi']['vu-khi'].otp0;
+   let otp5 = player['trang-bi']['vu-khi'].otp5;
+  // Lấy giá trị dame cơ bản từ weaponStats dựa trên otp0
+  var damevk = weaponStats[otp0];
+	var grapvk = GrapStats[otp5];
+
+  // Kiểm tra xem damevk có tồn tại (tức là otp0 có trong weaponStats)
+  if (damevk) {
+    // Nếu tồn tại, tính tổng dame từ dame cơ bản và các giá trị otp1, otp2, otp3, otp4
+    let dame = damevk + player['trang-bi']['vu-khi'].otp1 +
+               player['trang-bi']['vu-khi'].otp2 +
+               player['trang-bi']['vu-khi'].otp3 +
+               player['trang-bi']['vu-khi'].otp4;
+if(grapvk)dame=dame*grapvk
+	  dame = Math.round(dame)
+    return dame;  // Trả về giá trị dame tính được
+  } else {
+    console.log("otp0 không tồn tại trong weaponStats!"); // Nếu otp0 không có trong weaponStats
+    return 0;  // Trả về 0 nếu không có vũ khí hợp lệ
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var armorStats = {
+    "T1_armor": 200,
+    "T2_iron_armor": 400,
+    "T3_steel_armor": 600,
+    "T4_silver_armor": 900,
+    "T5_frost_armor": 1200,
+    "T6_fire_armor": 1400,
+    "T7_thunder_armor": 2000,
+    "T8_mythical_armor": 2600,
+    "T9_obsidian_armor": 3300,
+    "T10_ragnarok_armor": 4000,
+    "T11_flame_armor": 4800,
+    "T12_wind_armor": 5800,
+    "T13_battle_armor": 7000,
+    "T14_runes_armor": 8400,
+    "T15_legendary_armor": 10200
+};
+
+var shieldStats = {
+    "T1_shield": 15,
+    "T2_iron_shield": 30,
+    "T3_steel_shield": 50,
+    "T4_silver_shield": 80,
+    "T5_frost_shield": 120,
+    "T6_fire_shield": 150,
+    "T7_thunder_shield": 200,
+    "T8_mythical_shield": 260,
+    "T9_obsidian_shield": 330,
+    "T10_ragnarok_shield": 400,
+    "T11_flame_shield": 480,
+    "T12_wind_shield": 600,
+    "T13_battle_shield": 740,
+    "T14_runes_shield": 870,
+    "T15_legendary_shield": 1040
+};
+
+var glovesStats = {
+    "T1_gloves": 10,
+    "T2_iron_gloves": 20,
+    "T3_steel_gloves": 30,
+    "T4_silver_gloves": 40,
+    "T5_frost_gloves": 50,
+    "T6_fire_gloves": 60,
+    "T7_thunder_gloves": 80,
+    "T8_mythical_gloves": 100,
+    "T9_obsidian_gloves": 120,
+    "T10_ragnarok_gloves": 140,
+    "T11_flame_gloves": 160,
+    "T12_wind_gloves": 190,
+    "T13_battle_gloves": 230,
+    "T14_runes_gloves": 280,
+    "T15_legendary_gloves": 320
+};
+
+var bootsStats = {
+    "T1_boots": 18,
+    "T2_iron_boots": 36,
+    "T3_steel_boots": 54,
+    "T4_silver_boots": 72,
+    "T5_frost_boots": 90,
+    "T6_fire_boots": 108,
+    "T7_thunder_boots": 135,
+    "T8_mythical_boots": 162,
+    "T9_obsidian_boots": 198,
+    "T10_ragnarok_boots": 225,
+    "T11_flame_boots": 255,
+    "T12_wind_boots": 300,
+    "T13_battle_boots": 360,
+    "T14_runes_boots": 430,
+    "T15_legendary_boots": 500
+};
+
+
+
+
+
+
+
+var weaponStats = {
+    // Đao (Axe)
+    "T1_axe": 20,
+    "T2_iron_axe": 35,
+    "T3_steel_axe": 55,
+    "T4_war_axe": 80,
+    "T5_frost_axe": 125,
+    "T6_fire_axe": 185,
+    "T7_thunder_axe": 230,
+    "T8_iron_waraxe": 290,
+    "T9_obsidian_axe": 360,
+    "T10_ragnarok_axe": 450,
+    "T11_flame_axe": 530,
+    "T12_wind_axe": 680,
+    "T13_battle_axe": 880,
+    "T14_runes_axe": 1190,
+    "T15_legendary_axe": 1320,
+
+    // Kiếm (Sword)
+    "T1_sword": 25,
+    "T2_ironblade": 38,
+    "T3_steelblade": 65,
+    "T4_silverblade": 90,
+    "T5_fireblade": 145,
+    "T6_woodblade": 215,
+    "T7_shadowblade": 270,
+    "T8_bloodsword": 340,
+    "T9_soulblade": 420,
+    "T10_dragonblade": 520,
+    "T11_moonblade": 620,
+    "T12_stormblade": 780,
+    "T13_nightblade": 990,
+    "T14_runesword": 1320,
+    "T15_legendaryblade": 1490,
+
+    // Gậy (Staff)
+    "T1_woodenstaff": 20,
+    "T2_ironstaff": 35,
+    "T3_steelstaff": 55,
+    "T4_froststaff": 80,
+    "T5_firestaff": 125,
+    "T6_lightningstaff": 185,
+    "T7_crystalstaff": 230,
+    "T8_shadowstaff": 290,
+    "T9_mysticstaff": 360,
+    "T10_thunderstaff": 450,
+    "T11_windstaff": 530,
+    "T12_stormstaff": 680,
+    "T13_runesstaff": 880,
+    "T14_legendarystaff": 1190,
+    "T15_ultimaterstaff": 1320,
+
+    // Cung (Bow) - Đã chỉnh sửa
+    "T1_shortbow": 28,
+    "T2_woodenbow": 42,
+    "T3_steelbow": 69,
+    "T4_longbow": 98,
+    "T5_frostbow": 155,
+    "T6_flamebow": 225,
+    "T7_windbow": 290,
+    "T8_shadowbow": 360,
+    "T9_thunderbow": 450,
+    "T10_stormbow": 560,
+    "T11_quickbow": 670,
+    "T12_rune_bow": 840,
+    "T13_venombow": 1060,
+    "T14_hawkbow": 1400,
+    "T15_legendarybow": 1590,
+
+    // Thương (Spear) - Đã chỉnh sửa để bằng với Cung (Bow)
+    "T1_spear": 32,
+    "T2_woodenspear": 48,
+    "T3_steelspear": 79,
+    "T4_iron_spear": 108,
+    "T5_trident": 169,
+    "T6_war_spear": 245,
+    "T7_darkspear": 320,
+    "T8_dragonspear": 395,
+    "T9_storm_spear": 498,
+    "T10_thunder_spear": 610,
+    "T11_skyspear": 720,
+    "T12_frost_spear": 900,
+    "T13_venom_spear": 1130,
+    "T14_runespear": 1470,
+    "T15_legendary_spear": 1680,
+};
+
+
+
+
+
+
+
+var GrapStats = {
+    "1": 1.07, 
+    "2": 1.11, 
+    "3": 1.16,  
+    "4": 1.19,  
+    "5": 1.23,  
+    "6": 1.26,
+    "7": 1.30,
+    "8": 1.36,
+    "9": 1.41,
+    "10": 1.46,
+    "11": 1.51,
+    "12": 1.56,
+    "13": 1.62,
+    "14": 1.68,
+    "15": 1.75,
+    "16": 1.82,
+    "17": 1.90,
+    "18": 1.99,
+    "19": 2.10,
+};
 
 
 
