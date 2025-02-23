@@ -394,7 +394,7 @@ function sendPlayerStatsToTelegram(playerId, chatId, token) {
   getPlayerStat(playerId, token)  // Lấy thông tin nhân vật từ GitHub
     .then(player => {
 	  
-	        let weaponDame = calculateWeaponDamage(player); // Gọi hàm để tính dame của vũ khí
+	        let weaponDame = calculateWeaponDamage(player) - player.dame; // Gọi hàm để tính dame của vũ khí
 
       // Chuẩn bị thông tin nhân vật
       const playerStats = `
