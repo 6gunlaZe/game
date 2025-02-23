@@ -2,6 +2,7 @@
   "players": [
     {
       "id": 12345,
+      "name": "tien",
       "dame": 200,
       "exp": 3000,
       "inventory": [
@@ -81,6 +82,7 @@
     },
     {
       "id": 67890,
+      "name": "hai",
       "dame": 200,
       "exp": 3000,
       "inventory": [
@@ -160,6 +162,7 @@
     },
     {
       "id": 11223,
+      "name": "hoang",
       "dame": 250,
       "exp": 4000,
       "inventory": [
