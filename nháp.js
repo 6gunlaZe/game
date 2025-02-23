@@ -407,7 +407,7 @@ function sendPlayerStatsToTelegram(playerId, chatId, token) {
 - ⚔️ **Dame**:  ${player.dame} + ${weaponDame}
 - 🌟 **exp**: ${player.exp}
 - 🏆 **Level**: ${player.level}
-- ❤️ **Health**: ${player.health} + ${weaponhp}
+- ❤️ **Health**: ${player.health_max} + ${weaponhp}
 - 🔋 **Mana**: ${player.mana}
 - 🛡️ : ${player['def-dame']} + ${weapondef} (Giảm sát thương nhận vào)
 - 🎽 : ${player['def-skill']} + ${weapondef1} (Giảm hiệu quả kỹ năng đối phương)
@@ -915,19 +915,26 @@ function recordPlayerAttack(player) {
 
 
 
-// Cập nhật báo cáo sát thương
 function displayDamageReport() {
+  // Tính toán phần trăm máu của boss
+  const bossHPPercentage = (boss.hp / 20000) * 100;  // 20000 là HP ban đầu của boss
+
   let report = '===== Damage Report =====\n';
-  report += '| Name        | Total        | Now         |\n';
-  report += '|-------------|--------------|-------------|\n';
+  report += `Boss HP: ${bossHPPercentage.toFixed(2)}%\n`;  // Hiển thị % máu của boss
+  report += '| Name                     | Total         |\n';
+  report += '|--------------------------|--------------|-------------|\n';
 
   playerDamageReport.forEach(playerReport => {
-    // Lấy tên người chơi từ players bằng playerReport.id
-    const playerName = players.find(p => p.id === playerReport.id).name;  // Lấy tên người chơi
+    // Lấy tên người chơi và HP từ players
+    const player = players.find(p => p.id === playerReport.id);
+    const playerName = player.name;  // Tên người chơi
+    const playerHP = player.health;  // Máu hiện tại của người chơi
+    const playerMaxHP = player.health_max;  // Máu tối đa của người chơi
+    const playerHPPercentage = (playerHP / playerMaxHP) * 100;  // Phần trăm máu của người chơi
 
-    // Căn chỉnh tên và sát thương cho đều đặn và thêm icon cho tên và tổng sát thương
-    const name = `🎮 ${playerName.padEnd(12, ' ')}`;  // Thêm biểu tượng game cho tên
-    const total = `💥 ${playerReport.totalDamage.toString().padStart(12, ' ')}`;  // Thêm biểu tượng cho tổng sát thương
+    // Căn chỉnh tên và sát thương cho đều đặn và thêm biểu tượng cho tên và tổng sát thương
+    const name = `🎮 ${playerName} (${playerHPPercentage.toFixed(0)}%)`.padEnd(12, ' ');  // Thêm phần trăm máu người chơi vào tên
+    const total = `💥 ${playerReport.totalDamage.toString().padStart(20, ' ')}`;  // Thêm biểu tượng cho tổng sát thương
 
     // Hiển thị từng đòn đánh trong giây hiện tại (bao gồm cả chí mạng và không chí mạng)
     const now = playerReport.attacks.map(attack => {
