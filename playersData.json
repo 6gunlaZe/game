@@ -6,6 +6,7 @@
       "name": "tien",
       "dame": 200,
       "exp": 3000,
+      "boss":0,
       "inventory": [
         {
           "otp0": "T1_spear",
@@ -90,6 +91,7 @@
       "name": "khi",
       "dame": 200,
       "exp": 3000,
+      "boss":0,
       "inventory": [
         {
           "otp0": "bow",
@@ -174,6 +176,7 @@
       "name": "ga",
       "dame": 250,
       "exp": 4000,
+      "boss":0,
       "inventory": [
         {
           "otp0": "T3_sword",
