@@ -1,7 +1,6 @@
 
 
 
-
 const playerId = 12345;
 
 // Gọi hàm để lấy thông số người chơi
@@ -888,33 +887,34 @@ function calculatePlayerDamage(player, target) {
   // Đảm bảo rằng sát thương không âm
   finalDamage = Math.max(0, finalDamage);
 
+  // Lấy thông tin của người chơi đang tấn công
+  const playertarget = players.indexOf(target) + 1; // Xác định người chơi tấn công (1, 2, hoặc 3)
+
   return {
     damage: finalDamage,  // Sát thương tính ra sau khi giảm phòng thủ
-    isCrit: isCrit       // Kiểm tra nếu là chí mạng
+    isCrit: isCrit,       // Kiểm tra nếu là chí mạng
+    playertarget: playertarget // Thông tin về người chơi tấn công
   };
 }
 
 
 
 
-// Cập nhật hàm `recordPlayerAttack` để sử dụng mục tiêu tùy chọn
 function recordPlayerAttack(player, target) {
   const playerReport = playerDamageReport.find(r => r.id === player.id);
 
   // Tính sát thương của người chơi (đã bao gồm phòng thủ của mục tiêu)
-  const { damage, isCrit } = calculatePlayerDamage(player, target);
+  const { damage, isCrit, playertarget } = calculatePlayerDamage(player, target);  // Lấy playertarget từ hàm
 
   // Ghi nhận đòn đánh và tổng sát thương của người chơi
-  playerReport.attacks.push({ damage, isCrit });
+  playerReport.attacks.push({ damage, isCrit, playertarget });  // Lưu playertarget cùng với thông tin đòn đánh
   playerReport.totalDamage += damage;
 
-  
-	    if (target.hp > 0) {
-    target.hp -= damage;}
-	  
-
-  
+  if (target.hp > 0) {
+    target.hp -= damage;
+  }
 }
+
 
 
 
@@ -943,11 +943,25 @@ function displayDamageReport() {
     const total = `💥 ${playerReport.totalDamage.toString().padStart(20, ' ')}`;  // Thêm biểu tượng cho tổng sát thương
 
     // Hiển thị từng đòn đánh trong giây hiện tại (bao gồm cả chí mạng và không chí mạng)
-    const now = playerReport.attacks.map(attack => {
-      const damage = attack.damage.toFixed(0);  // Làm tròn sát thương
-      // Thêm emoji ⚡ khi chí mạng
-      return attack.isCrit ? `${damage} ⚡` : damage;
-    }).join(', ').padStart(12, ' ');  // Hiển thị tất cả các đòn tấn công
+const now = playerReport.attacks.map(attack => {
+  const damage = attack.damage.toFixed(0);  // Làm tròn sát thương
+  // Thêm emoji ⚡ khi chí mạng
+  const critSymbol = attack.isCrit ? `${damage} ⚡` : damage;
+
+  // Hiển thị các emoji tùy theo giá trị playertarget
+  let targetEmojis = '';
+  if (attack.playertarget === 1) {
+    targetEmojis = '👦🏻';  // Emoji cho playertarget = 1
+  } else if (attack.playertarget === 2) {
+    targetEmojis = '🐐';  // Emoji cho playertarget = 2
+  } else if (attack.playertarget === 3) {
+    targetEmojis = '🐣';  // Emoji cho playertarget = 3
+  }
+
+  // Kết hợp cả chí mạng và emoji playertarget
+  return `${critSymbol} ${targetEmojis}`;
+}).join(', ').padStart(12, ' ');  // Hiển thị tất cả các đòn tấn công
+
 
     // Thêm dòng vào báo cáo
     report += `| ${name} | ${total} | ${now} |\n`;
