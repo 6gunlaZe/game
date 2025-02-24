@@ -977,9 +977,7 @@ const now = playerReport.attacks.map(attack => {
 
 
 
-
 let attackIntervals = [];  // Mảng lưu trữ các vòng lặp tấn công và thông tin người tấn công
-// startBossFight(players[1],players[0]);  // người chơi 0 tấn công người chơi 1
 
 function startBossFight(targetPlayer = null, a = null) {
   // Kiểm tra nếu có mục tiêu, nếu không thì chọn boss làm mục tiêu mặc định
@@ -991,112 +989,109 @@ function startBossFight(targetPlayer = null, a = null) {
     target.isPlayer = !target.isBoss;  // Nếu không phải boss, là người chơi
   }
 
+  // Bắt đầu việc cập nhật báo cáo mỗi 5 giây (5000ms)
+  const reportInterval = setInterval(() => {
+    if (target.hp <= 0) {  // Kiểm tra nếu mục tiêu (boss hoặc player) đã chết
+      displayDamageReport();  // Gửi báo cáo ngay lập tức khi mục tiêu chết
+      sendMessage(-4676989627, `${target.name} đã chết!`, { parse_mode: 'HTML' });
+      clearInterval(reportInterval);  // Dừng báo cáo khi mục tiêu chết
 
-// Bắt đầu việc cập nhật báo cáo mỗi 5 giây (5000ms)
-reportInterval = setInterval(() => {
-  if (target.hp <= 0) {  // Kiểm tra nếu mục tiêu (boss hoặc player) đã chết
-    displayDamageReport();  // Gửi báo cáo ngay lập tức khi mục tiêu chết
-    sendMessage(-4676989627, `${target.name} đã chết!`, { parse_mode: 'HTML' });
-    clearInterval(reportInterval);  // Dừng báo cáo khi mục tiêu chết
-if (reportInterval) {
-    clearInterval(reportInterval);  // Nếu có interval đang chạy thì dừng lại trước
-  }
-    // Nếu 'a' đang tấn công và mục tiêu không phải boss (target.boss == 0), dừng vòng lặp tấn công của 'a'
-    if (a && target.boss == 0) {
-      const existingInterval = attackIntervals.find(intervalObj => intervalObj.a === a);
-      if (existingInterval) {
-        clearInterval(existingInterval.intervalId);  // Dừng vòng lặp cũ của 'a'
-        attackIntervals = attackIntervals.filter(intervalObj => intervalObj.a !== a);  // Xóa 'a' khỏi danh sách lưu trữ
-        console.log(`${a.name} đã bị dừng tấn công vì mục tiêu không phải boss`);
+      // Dừng tất cả các vòng lặp tấn công nếu boss chết
+      if (target.name === "big boss" && target.hp <= 0) {
+        stopAllAttacks();  // Dừng tất cả các vòng lặp tấn công khi boss chết
       }
-    }
 
-    // Nếu boss chết, dừng tất cả các vòng lặp tấn công
-    if (boss.hp <= 0) {
-      attackIntervals.forEach(intervalObj => clearInterval(intervalObj.intervalId));
-      attackIntervals = [];  // Xóa mảng chứa các vòng lặp tấn công
-      console.log("Boss đã chết, dừng tất cả các vòng lặp tấn công.");
-		   clearInterval(reportInterval); 
+      // Dừng vòng tấn công của player nếu mục tiêu không phải boss
+      if (a && target.boss === 0) {
+        stopAttackOfPlayer(a);
+      }
+      
       return;  // Dừng hàm, không tiếp tục thực hiện
+    } else {
+      // Nếu mục tiêu còn sống, tiếp tục báo cáo
+      displayDamageReport();  
+      sendFourButtons(-4676989627);
     }
-  } else {
-    // Nếu mục tiêu còn sống, tiếp tục báo cáo
-    displayDamageReport();  
-    sendFourButtons(-4676989627);
-  }
-}, 5000);  // Mỗi 5 giây gọi báo cáo
-	
-	
+  }, 8000);  // Mỗi 5 giây gọi báo cáo
 
-if (a && target.boss ==1 ) {
-  // Nếu có 'a' và boss còn sống, bỏ qua vòng lặp tấn công của 'a' và xóa 'a' trong attackIntervals
-  const existingInterval = attackIntervals.find(intervalObj => intervalObj.a === a);
-  
+  // Xử lý các tấn công của người chơi hoặc tất cả người chơi
+  if (a && target.boss === 0) {
+    // Người chơi 'a' tấn công
+    handlePlayerAttack(a, target);
+  } else if (a === null && target.hp > 0) {
+    // Nếu không có player nào tấn công, tất cả người chơi tấn công
+    handleAllPlayersAttack(target);
+  }
+}
+
+// Hàm dừng tất cả các vòng lặp tấn công
+function stopAllAttacks() {
+  attackIntervals.forEach(intervalObj => clearInterval(intervalObj.intervalId));
+  attackIntervals = [];  // Xóa mảng chứa các vòng lặp tấn công
+  console.log("Boss đã chết, dừng tất cả các vòng lặp tấn công.");
+}
+
+// Hàm dừng tấn công của một người chơi cụ thể
+function stopAttackOfPlayer(player) {
+  const existingInterval = attackIntervals.find(intervalObj => intervalObj.a === player);
   if (existingInterval) {
-    clearInterval(existingInterval.intervalId);  // Dừng vòng lặp cũ của 'a'
-    attackIntervals = attackIntervals.filter(intervalObj => intervalObj.a !== a);  // Xóa 'a' khỏi danh sách lưu trữ
-    console.log(`${a.name} đã bị dừng tấn công vì boss còn sống`);
+    clearInterval(existingInterval.intervalId);  // Dừng vòng lặp cũ
+    attackIntervals = attackIntervals.filter(intervalObj => intervalObj.a !== player);  // Xóa 'a' khỏi danh sách lưu trữ
+    console.log(`${player.name} đã bị dừng tấn công vì mục tiêu không phải boss`);
   }
 }
 
-	
-  // Nếu có 'a', chỉ người chơi 'a' tấn công
-  if (a && target.boss ==0) {
-    // Kiểm tra xem đã có vòng lặp nào cho player 'a' chưa
-    const existingInterval = attackIntervals.find(intervalObj => intervalObj.a === a);
-    
-    if (existingInterval) {
-      // Nếu có vòng lặp đã tồn tại cho 'a', chỉ cần loại bỏ a khỏi vòng lặp cũ (không cần tạo mới)
-      clearInterval(existingInterval.intervalId);  // Dừng vòng lặp cũ
-      attackIntervals = attackIntervals.filter(intervalObj => intervalObj.a !== a);  // Xóa thông tin của 'a'
+// Hàm xử lý tấn công của một người chơi
+function handlePlayerAttack(player, target) {
+  // Kiểm tra xem đã có vòng lặp tấn công cho player chưa
+  const existingInterval = attackIntervals.find(intervalObj => intervalObj.a === player);
+  if (existingInterval) {
+    clearInterval(existingInterval.intervalId);  // Dừng vòng lặp cũ
+    attackIntervals = attackIntervals.filter(intervalObj => intervalObj.a !== player);  // Xóa 'a' khỏi danh sách lưu trữ
+  }
+
+  // Tính toán tốc độ tấn công và sát thương
+  const attackSpeed = player['attach-speed'];  // Tốc độ đánh của player
+  const damage = calculatePlayerDamage(player, target);  // Tính sát thương mỗi đòn đánh của player
+
+  // Tấn công theo tốc độ đánh của player
+  const attackInterval = setInterval(() => {
+    recordPlayerAttack(player, target); // Ghi nhận sát thương khi tấn công
+  }, attackSpeed * 1000);  // Tốc độ đánh tính theo giây
+
+  // Lưu thông tin vòng lặp tấn công của 'a'
+  attackIntervals.push({ intervalId: attackInterval, a: player });
+  console.log(`${player.name} đang tấn công ${target.name}`);
+}
+
+
+
+function handleAllPlayersAttack(target) {
+  for (let i = 0; i < players.length; i++) {
+    const player = players[i];
+
+    // Nếu player đã có vòng lặp tấn công trong attackIntervals thì bỏ qua
+    if (attackIntervals.some(intervalObj => intervalObj.a === player)) {
+      continue;  // Bỏ qua vòng lặp này nếu player đang tấn công
     }
 
-    // Chỉ người chơi 'a' tấn công
-    for (let i = 0; i < players.length; i++) {
-      const player = players[i];
+    const attackSpeed = player['attach-speed'];  // Tốc độ đánh của player
+    const damage = calculatePlayerDamage(player, target); // Tính sát thương mỗi đòn đánh của player
 
-      if (player === a) {
-        const attackSpeed = player['attach-speed']; // Tốc độ đánh của player a
-        const damage = calculatePlayerDamage(player, target); // Tính sát thương mỗi đòn đánh của a
+    // Tấn công theo tốc độ đánh của player
+    const attackInterval = setInterval(() => {
+      recordPlayerAttack(player, target); // Ghi nhận sát thương khi tấn công
+    }, attackSpeed * 1000);  // Tốc độ đánh tính theo giây
 
-        // Tấn công theo tốc độ đánh của player a
-        let attackInterval = setInterval(() => {
-          recordPlayerAttack(player, target); // Ghi nhận sát thương khi tấn công
-        }, attackSpeed * 1000);  // Tốc độ đánh tính theo giây
-
-        // Lưu thông tin vòng lặp tấn công của 'a'
-        attackIntervals.push({ intervalId: attackInterval, a: player });
-
-        console.log(`${player.name} đang tấn công ${target.name}`);
-      } else {
-        console.log(`${player.name} không tấn công`);
-      }
-    }
-  } else if (a == null &&  target.hp > 0){
-    // Nếu không có 'a', tất cả player tấn công
-    for (let i = 0; i < players.length; i++) {
-      const player = players[i];
-
-      // Nếu player đã có vòng lặp tấn công trong attackIntervals thì bỏ qua
-      if (attackIntervals.some(intervalObj => intervalObj.a === player)) {
-        continue;  // Bỏ qua vòng lặp này nếu player đang tấn công
-      }
-
-      const attackSpeed = player['attach-speed']; // Tốc độ đánh của player
-      const damage = calculatePlayerDamage(player, target); // Tính sát thương mỗi đòn đánh của player
-
-      // Tấn công theo tốc độ đánh của player
-      let attackInterval = setInterval(() => {
-        recordPlayerAttack(player, target); // Ghi nhận sát thương khi tấn công
-      }, attackSpeed * 1000);  // Tốc độ đánh tính theo giây
-
-      // Lưu thông tin vòng lặp tấn công cho tất cả player
-      attackIntervals.push({ intervalId: attackInterval, a: player });
-
-      console.log(`${player.name} đang tấn công ${target.name}`);
-    }
+    // Lưu thông tin vòng lặp tấn công cho tất cả player
+    attackIntervals.push({ intervalId: attackInterval, a: player });
+    console.log(`${player.name} đang tấn công ${target.name}`);
   }
 }
+
+
+
+
 
 
 
