@@ -882,7 +882,7 @@ function calculatePlayerDamage(player, target) {
   }
   // Nếu mục tiêu là người chơi
   else if (target && target.isPlayer) {
-    finalDamage -= target.defense;  // Phòng thủ của người chơi giảm sát thương người chơi gây ra
+    finalDamage -= target['def-dame'];  // Phòng thủ của người chơi giảm sát thương người chơi gây ra
   }
 
   // Đảm bảo rằng sát thương không âm
@@ -908,11 +908,12 @@ function recordPlayerAttack(player, target) {
   playerReport.attacks.push({ damage, isCrit });
   playerReport.totalDamage += damage;
 
-  // Trừ HP của mục tiêu với sát thương cuối cùng nếu mục tiêu còn sống
-  if (target.hp > 0) {
-    target.hp -= damage;
-    console.log(`${target.name} bị tấn công! HP còn lại: ${target.hp}`);
-  }
+  
+	    if (target.hp > 0) {
+    target.hp -= damage;}
+	  
+
+  
 }
 
 
@@ -933,7 +934,7 @@ function displayDamageReport() {
     // Lấy tên người chơi và HP từ players
     const player = players.find(p => p.id === playerReport.id);
     const playerName = player.name;  // Tên người chơi
-    const playerHP = player.health;  // Máu hiện tại của người chơi
+    const playerHP = player.hp;  // Máu hiện tại của người chơi
     const playerMaxHP = player.health_max;  // Máu tối đa của người chơi
     const playerHPPercentage = (playerHP / playerMaxHP) * 100;  // Phần trăm máu của người chơi
 
@@ -983,6 +984,14 @@ function startBossFight(targetPlayer = null, a = null) {
       displayDamageReport();  // Gửi báo cáo ngay lập tức khi mục tiêu chết
       sendMessage(-4676989627, `${target.name} đã chết!`, { parse_mode: 'HTML' });
       clearInterval(reportInterval);  // Dừng báo cáo khi mục tiêu chết
+		
+	      // Dừng tất cả các vòng lặp tấn công khi boss chết
+      attackIntervals.forEach(intervalObj => clearInterval(intervalObj.intervalId));
+      attackIntervals = [];  // Xóa mảng chứa các vòng lặp tấn công
+
+      return;  // Dừng hàm, không tiếp tục thực hiện	
+		
+		
     } else {
       displayDamageReport();  // Nếu mục tiêu còn sống, tiếp tục báo cáo
       sendFourButtons(-4676989627);
@@ -1056,7 +1065,8 @@ function startBossFight(targetPlayer = null, a = null) {
 
 
 
-
+// Khai báo biến toàn cục
+let playerDamageReport = [];
 // Hàm khởi tạo dữ liệu người chơi và bắt đầu trận đấu
 async function initGame() {
   try {
