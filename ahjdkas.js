@@ -354,6 +354,69 @@ setInterval(() => {
 
 
 
+// Tính sát thương giữa người tấn công và người phòng thủ
+async function calculateDamageByBot(players, attackerBotId, targetIndex) {
+  // Tìm người tấn công dựa trên ID bot
+  const attacker = players.find(player => player.id_bot === attackerBotId);
+  if (!attacker) {
+    console.log("Không tìm thấy người tấn công!");
+    return;
+  }
+
+  // Lấy người bị tấn công (mục tiêu)
+  const target = players[targetIndex];
+  if (!target) {
+    console.log("Không tìm thấy mục tiêu!");
+    return;
+  }
+
+  // Lấy chỉ số cần thiết của người tấn công và phòng thủ
+  const attackDamage = attacker.dame;
+  const defenderDefDame = target['def-dame'];
+  const critChance = attacker['crit-%'];  // Tỉ lệ chí mạng
+  const critDamage = attacker['crit-x'];  // Hệ số chí mạng
+  const damageReduction = target['PhanDame']; // Tỉ lệ giảm sát thương
+
+  // Tính sát thương gốc trước khi áp dụng các yếu tố khác
+  let baseDamage = attackDamage - defenderDefDame;  // Sát thương sau khi trừ phòng thủ
+  baseDamage = baseDamage > 0 ? baseDamage : 0;  // Đảm bảo không có sát thương âm
+
+  // Kiểm tra chí mạng (tính xác suất chí mạng)
+  const isCrit = Math.random() < critChance / 100;
+  if (isCrit) {
+    baseDamage *= critDamage;  // Nếu là chí mạng, nhân với hệ số chí mạng
+  }
+
+  // Áp dụng giảm sát thương từ phản dame
+  baseDamage *= (1 - damageReduction / 100);  // Giảm sát thương do phản dame
+
+  // Cập nhật máu của người phòng thủ
+  target.health -= baseDamage;
+
+  // Đảm bảo máu không giảm dưới 0
+  if (target.health < 0) target.health = 0;
+
+  // Trả về kết quả
+  return {
+    attacker: attacker.name,
+    defender: target.name,
+    damage: baseDamage,
+    defenderHealth: target.health,
+    isCrit: isCrit,
+  };
+}
+
+
+
+// Gọi hàm tính sát thương mà không gán vào biến
+calculateDamageByBot(players, 6708647498, 1).then(result => {
+  console.log(`Sát thương gây ra từ ${result.attacker} đến ${result.defender}: ${result.damage}`);
+  console.log(`Máu còn lại của ${result.defender}: ${result.defenderHealth}`);
+  if (result.isCrit) {
+    console.log("Đây là một đòn chí mạng!");
+  }
+});
+
 
 
 
