@@ -1,5 +1,4 @@
 
-
 const playerId = 12345;
 
 // Gọi hàm để lấy thông số người chơi
@@ -992,28 +991,44 @@ function startBossFight(targetPlayer = null, a = null) {
     target.isPlayer = !target.isBoss;  // Nếu không phải boss, là người chơi
   }
 
-  // Bắt đầu việc cập nhật báo cáo mỗi 5 giây (5000ms)
-  reportInterval = setInterval(() => {
-    if (target.hp <= 0) {  // Kiểm tra nếu mục tiêu (boss hoặc player) đã chết
-      displayDamageReport();  // Gửi báo cáo ngay lập tức khi mục tiêu chết
-      sendMessage(-4676989627, `${target.name} đã chết!`, { parse_mode: 'HTML' });
-      clearInterval(reportInterval);  // Dừng báo cáo khi mục tiêu chết
-		
-	      // Dừng tất cả các vòng lặp tấn công khi boss chết
+
+// Bắt đầu việc cập nhật báo cáo mỗi 5 giây (5000ms)
+reportInterval = setInterval(() => {
+  if (target.hp <= 0) {  // Kiểm tra nếu mục tiêu (boss hoặc player) đã chết
+    displayDamageReport();  // Gửi báo cáo ngay lập tức khi mục tiêu chết
+    sendMessage(-4676989627, `${target.name} đã chết!`, { parse_mode: 'HTML' });
+    clearInterval(reportInterval);  // Dừng báo cáo khi mục tiêu chết
+if (reportInterval) {
+    clearInterval(reportInterval);  // Nếu có interval đang chạy thì dừng lại trước
+  }
+    // Nếu 'a' đang tấn công và mục tiêu không phải boss (target.boss == 0), dừng vòng lặp tấn công của 'a'
+    if (a && target.boss == 0) {
+      const existingInterval = attackIntervals.find(intervalObj => intervalObj.a === a);
+      if (existingInterval) {
+        clearInterval(existingInterval.intervalId);  // Dừng vòng lặp cũ của 'a'
+        attackIntervals = attackIntervals.filter(intervalObj => intervalObj.a !== a);  // Xóa 'a' khỏi danh sách lưu trữ
+        console.log(`${a.name} đã bị dừng tấn công vì mục tiêu không phải boss`);
+      }
+    }
+
+    // Nếu boss chết, dừng tất cả các vòng lặp tấn công
+    if (boss.hp <= 0) {
       attackIntervals.forEach(intervalObj => clearInterval(intervalObj.intervalId));
       attackIntervals = [];  // Xóa mảng chứa các vòng lặp tấn công
-
-      return;  // Dừng hàm, không tiếp tục thực hiện	
-		
-		
-    } else {
-      displayDamageReport();  // Nếu mục tiêu còn sống, tiếp tục báo cáo
-      sendFourButtons(-4676989627);
+      console.log("Boss đã chết, dừng tất cả các vòng lặp tấn công.");
+		   clearInterval(reportInterval); 
+      return;  // Dừng hàm, không tiếp tục thực hiện
     }
-  }, 5000);  // Mỗi 5 giây gọi báo cáo
+  } else {
+    // Nếu mục tiêu còn sống, tiếp tục báo cáo
+    displayDamageReport();  
+    sendFourButtons(-4676989627);
+  }
+}, 5000);  // Mỗi 5 giây gọi báo cáo
+	
+	
 
-
-if (a && target.boss ==1) {
+if (a && target.boss ==1 ) {
   // Nếu có 'a' và boss còn sống, bỏ qua vòng lặp tấn công của 'a' và xóa 'a' trong attackIntervals
   const existingInterval = attackIntervals.find(intervalObj => intervalObj.a === a);
   
@@ -1057,7 +1072,7 @@ if (a && target.boss ==1) {
         console.log(`${player.name} không tấn công`);
       }
     }
-  } else if (a == null){
+  } else if (a == null &&  target.hp > 0){
     // Nếu không có 'a', tất cả player tấn công
     for (let i = 0; i < players.length; i++) {
       const player = players[i];
