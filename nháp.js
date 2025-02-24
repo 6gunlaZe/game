@@ -857,6 +857,7 @@ let boss = {
   damage: 150,       // Sát thương của boss
   defense: 50,       // Phòng thủ của boss
   isAlive: true,     // Trạng thái sống của boss
+  boss:1,
 };
 
 
@@ -1012,8 +1013,21 @@ function startBossFight(targetPlayer = null, a = null) {
     }
   }, 5000);  // Mỗi 5 giây gọi báo cáo
 
+
+if (a && target.boss ==1) {
+  // Nếu có 'a' và boss còn sống, bỏ qua vòng lặp tấn công của 'a' và xóa 'a' trong attackIntervals
+  const existingInterval = attackIntervals.find(intervalObj => intervalObj.a === a);
+  
+  if (existingInterval) {
+    clearInterval(existingInterval.intervalId);  // Dừng vòng lặp cũ của 'a'
+    attackIntervals = attackIntervals.filter(intervalObj => intervalObj.a !== a);  // Xóa 'a' khỏi danh sách lưu trữ
+    console.log(`${a.name} đã bị dừng tấn công vì boss còn sống`);
+  }
+}
+
+	
   // Nếu có 'a', chỉ người chơi 'a' tấn công
-  if (a) {
+  if (a && target.boss ==0) {
     // Kiểm tra xem đã có vòng lặp nào cho player 'a' chưa
     const existingInterval = attackIntervals.find(intervalObj => intervalObj.a === a);
     
@@ -1044,7 +1058,7 @@ function startBossFight(targetPlayer = null, a = null) {
         console.log(`${player.name} không tấn công`);
       }
     }
-  } else {
+  } else if (a == null)
     // Nếu không có 'a', tất cả player tấn công
     for (let i = 0; i < players.length; i++) {
       const player = players[i];
@@ -1178,15 +1192,16 @@ const playerattack = players.find(p => p.id_bot === userId);
 
   // Xử lý phản hồi khi người dùng nhấn nút
   if (data === 'button_1') {
-	  
+	  startBossFight(players[0],playerattack);
     sendMessage(chatId, `${userName} đã chọn Tiến!`);
   } else if (data === 'button_2') {
-	  
 	  startBossFight(players[1],playerattack);
     sendMessage(chatId, `${userName} đã chọn Hải!`);
   } else if (data === 'button_3') {
+	  startBossFight(players[2],playerattack);
     sendMessage(chatId, `${userName} đã chọn Hoàng!`);
   } else if (data === 'button_4') {  // Thêm điều kiện xử lý cho nút 4
+	  startBossFight(boss,playerattack);
     sendMessage(chatId, `${userName} đã chọn BOSS!`);
   }
 
