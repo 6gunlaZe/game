@@ -1,5 +1,7 @@
 
 
+
+
 const playerId = 12345;
 
 // Gọi hàm để lấy thông số người chơi
@@ -864,7 +866,8 @@ let players = [];
 
 
 
-function calculatePlayerDamage(player) {
+// Cập nhật hàm tính sát thương với mục tiêu có thể là người chơi hoặc boss
+function calculatePlayerDamage(player, target) {
   const baseDamage = player.dame; // Sát thương cơ bản của người chơi
   const critChance = player['crit-%']; // Tỉ lệ chí mạng
   const critMultiplier = player['crit-x']; // Nhân đôi sát thương khi chí mạng
@@ -873,9 +876,13 @@ function calculatePlayerDamage(player) {
   const isCrit = Math.random() < critChance / 100; // Xác suất chí mạng (từ 0 đến 1)
   let finalDamage = isCrit ? baseDamage * critMultiplier : baseDamage; // Sát thương cuối cùng khi có chí mạng
 
-  // Nếu boss tồn tại và còn sống, trừ phòng thủ của boss
-  if (boss && boss.isAlive) {
-    finalDamage -= boss.defense;  // Phòng thủ của boss giảm sát thương người chơi gây ra
+  // Nếu mục tiêu là boss
+  if (target && target.isBoss) {
+    finalDamage -= target.defense;  // Phòng thủ của boss giảm sát thương người chơi gây ra
+  }
+  // Nếu mục tiêu là người chơi
+  else if (target && target.isPlayer) {
+    finalDamage -= target.defense;  // Phòng thủ của người chơi giảm sát thương người chơi gây ra
   }
 
   // Đảm bảo rằng sát thương không âm
@@ -890,22 +897,21 @@ function calculatePlayerDamage(player) {
 
 
 
-
-// Cập nhật lại hàm `recordPlayerAttack`
-function recordPlayerAttack(player) {
+// Cập nhật hàm `recordPlayerAttack` để sử dụng mục tiêu tùy chọn
+function recordPlayerAttack(player, target) {
   const playerReport = playerDamageReport.find(r => r.id === player.id);
 
-  // Tính sát thương của người chơi (đã bao gồm phòng thủ của boss)
-  const { damage, isCrit } = calculatePlayerDamage(player);
+  // Tính sát thương của người chơi (đã bao gồm phòng thủ của mục tiêu)
+  const { damage, isCrit } = calculatePlayerDamage(player, target);
 
   // Ghi nhận đòn đánh và tổng sát thương của người chơi
   playerReport.attacks.push({ damage, isCrit });
   playerReport.totalDamage += damage;
 
-  // Trừ HP của boss với sát thương cuối cùng nếu boss còn sống
-  if (boss && boss.isAlive) {
-    boss.hp -= damage;
-    console.log(`Boss bị tấn công! HP còn lại: ${boss.hp}`);
+  // Trừ HP của mục tiêu với sát thương cuối cùng nếu mục tiêu còn sống
+  if (target.hp > 0) {
+    target.hp -= damage;
+    console.log(`${target.name} bị tấn công! HP còn lại: ${target.hp}`);
   }
 }
 
@@ -958,48 +964,103 @@ function displayDamageReport() {
 
 
 
+let attackIntervals = [];  // Mảng lưu trữ các vòng lặp tấn công và thông tin người tấn công
+// startBossFight(players[1],players[0]);  // người chơi 0 tấn công người chơi 1
 
+function startBossFight(targetPlayer = null, a = null) {
+  // Kiểm tra nếu có mục tiêu, nếu không thì chọn boss làm mục tiêu mặc định
+  let target = targetPlayer || boss;  // Mặc định chọn boss làm mục tiêu nếu không có player mục tiêu
+  
+  // Kiểm tra nếu target là người chơi, gán `isPlayer` là true, nếu là boss thì gán `isBoss` là true
+  if (target && target.hp > 0) {
+    target.isBoss = target.name && target.name.toLowerCase() === "big boss";  // Kiểm tra boss theo tên
+    target.isPlayer = !target.isBoss;  // Nếu không phải boss, là người chơi
+  }
 
-
-
-
-
-
-
-// Hàm bắt đầu trận đấu với boss
-let reportInterval;  // Biến để lưu interval báo cáo
-
-function startBossFight() {
   // Bắt đầu việc cập nhật báo cáo mỗi 5 giây (5000ms)
   reportInterval = setInterval(() => {
-    if (boss && boss.hp <= 0) {  // Kiểm tra nếu boss đã chết
-		      displayDamageReport();  // Gửi báo cáo ngay lập tức khi boss chết
-				sendMessage(-4676989627, "Boss đã chết!", { parse_mode: 'HTML' });
-      clearInterval(reportInterval);  // Dừng báo cáo khi boss chết
+    if (target.hp <= 0) {  // Kiểm tra nếu mục tiêu (boss hoặc player) đã chết
+      displayDamageReport();  // Gửi báo cáo ngay lập tức khi mục tiêu chết
+      sendMessage(-4676989627, `${target.name} đã chết!`, { parse_mode: 'HTML' });
+      clearInterval(reportInterval);  // Dừng báo cáo khi mục tiêu chết
     } else {
-      displayDamageReport();  // Nếu boss còn sống, tiếp tục báo cáo
-		sendFourButtons(-4676989627)
-		
+      displayDamageReport();  // Nếu mục tiêu còn sống, tiếp tục báo cáo
+      sendFourButtons(-4676989627);
     }
   }, 5000);  // Mỗi 5 giây gọi báo cáo
 
-  // Cập nhật các đòn tấn công của người chơi (theo tốc độ đánh)
-  players.forEach(player => {
-    const attackSpeed = player['attach-speed']; // Tốc độ đánh của người chơi
-    const damage = calculatePlayerDamage(player); // Tính sát thương mỗi đòn đánh
+  // Nếu có 'a', chỉ người chơi 'a' tấn công
+  if (a) {
+    // Kiểm tra xem đã có vòng lặp nào cho player 'a' chưa
+    const existingInterval = attackIntervals.find(intervalObj => intervalObj.a === a);
+    
+    if (existingInterval) {
+      // Nếu có vòng lặp đã tồn tại cho 'a', chỉ cần loại bỏ a khỏi vòng lặp cũ (không cần tạo mới)
+      clearInterval(existingInterval.intervalId);  // Dừng vòng lặp cũ
+      attackIntervals = attackIntervals.filter(intervalObj => intervalObj.a !== a);  // Xóa thông tin của 'a'
+    }
 
-    // Tấn công theo tốc độ đánh của người chơi
-    setInterval(() => {
-      recordPlayerAttack(player); // Ghi nhận sát thương khi tấn công
-    }, attackSpeed * 1000);  // Tốc độ đánh tính theo giây
-  });
+    // Chỉ người chơi 'a' tấn công
+    for (let i = 0; i < players.length; i++) {
+      const player = players[i];
+
+      if (player === a) {
+        const attackSpeed = player['attach-speed']; // Tốc độ đánh của player a
+        const damage = calculatePlayerDamage(player, target); // Tính sát thương mỗi đòn đánh của a
+
+        // Tấn công theo tốc độ đánh của player a
+        let attackInterval = setInterval(() => {
+          recordPlayerAttack(player, target); // Ghi nhận sát thương khi tấn công
+        }, attackSpeed * 1000);  // Tốc độ đánh tính theo giây
+
+        // Lưu thông tin vòng lặp tấn công của 'a'
+        attackIntervals.push({ intervalId: attackInterval, a: player });
+
+        console.log(`${player.name} đang tấn công ${target.name}`);
+      } else {
+        console.log(`${player.name} không tấn công`);
+      }
+    }
+  } else {
+    // Nếu không có 'a', tất cả player tấn công
+    for (let i = 0; i < players.length; i++) {
+      const player = players[i];
+
+      // Nếu player đã có vòng lặp tấn công trong attackIntervals thì bỏ qua
+      if (attackIntervals.some(intervalObj => intervalObj.a === player)) {
+        continue;  // Bỏ qua vòng lặp này nếu player đang tấn công
+      }
+
+      const attackSpeed = player['attach-speed']; // Tốc độ đánh của player
+      const damage = calculatePlayerDamage(player, target); // Tính sát thương mỗi đòn đánh của player
+
+      // Tấn công theo tốc độ đánh của player
+      let attackInterval = setInterval(() => {
+        recordPlayerAttack(player, target); // Ghi nhận sát thương khi tấn công
+      }, attackSpeed * 1000);  // Tốc độ đánh tính theo giây
+
+      // Lưu thông tin vòng lặp tấn công cho tất cả player
+      attackIntervals.push({ intervalId: attackInterval, a: player });
+
+      console.log(`${player.name} đang tấn công ${target.name}`);
+    }
+  }
 }
+
+
+
+
+
+
+
+
+
 
 
 // Hàm khởi tạo dữ liệu người chơi và bắt đầu trận đấu
 async function initGame() {
-  // Lấy dữ liệu người chơi từ GitHub
   try {
+    // Lấy dữ liệu người chơi từ GitHub
     const player1 = await getPlayerStat(12345, token);
     const player2 = await getPlayerStat(67890, token);
     const player3 = await getPlayerStat(11223, token);
@@ -1013,7 +1074,7 @@ async function initGame() {
       totalDamage: 0
     }));
 
-    startBossFight();  // Bắt đầu trận đấu
+    startBossFight();  // Bắt đầu trận đấu với boss là mục tiêu mặc định
   } catch (error) {
     console.error(error);  // Nếu có lỗi khi lấy dữ liệu người chơi
   }
@@ -1021,6 +1082,28 @@ async function initGame() {
 
 // Khởi động game
 initGame();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1064,15 +1147,18 @@ function handleCallbackQuery(callbackQuery) {
   const messageId = callbackQuery.message.message_id;
   const data = callbackQuery.data;  // Lấy dữ liệu từ callback query
   const userId = callbackQuery.from.id;  // Lấy ID của người nhấn nút
-
+const playerattack = players.find(p => p.id_bot === userId);
   // Tra cứu tên người dùng từ mảng userNames
   const userName = userNames[userId] || 'Người dùng không xác định';  // Nếu không tìm thấy userId thì hiển thị tên mặc định
 
 
   // Xử lý phản hồi khi người dùng nhấn nút
   if (data === 'button_1') {
+	  
     sendMessage(chatId, `${userName} đã chọn Tiến!`);
   } else if (data === 'button_2') {
+	  
+	  startBossFight(players[1],playerattack);
     sendMessage(chatId, `${userName} đã chọn Hải!`);
   } else if (data === 'button_3') {
     sendMessage(chatId, `${userName} đã chọn Hoàng!`);
@@ -1103,4 +1189,28 @@ function handleCallbackQuery(callbackQuery) {
     })
     .catch(error => console.error('Lỗi xóa nút:', error));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
