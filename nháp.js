@@ -1,6 +1,5 @@
 
 
-
 const playerId = 12345;
 
 // Gọi hàm để lấy thông số người chơi
@@ -1058,7 +1057,7 @@ if (a && target.boss ==1) {
         console.log(`${player.name} không tấn công`);
       }
     }
-  } else if (a == null)
+  } else if (a == null){
     // Nếu không có 'a', tất cả player tấn công
     for (let i = 0; i < players.length; i++) {
       const player = players[i];
@@ -1228,28 +1227,3 @@ const playerattack = players.find(p => p.id_bot === userId);
     })
     .catch(error => console.error('Lỗi xóa nút:', error));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
