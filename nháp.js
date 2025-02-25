@@ -1,3 +1,4 @@
+// https://replit.com/@untilyouleesin/hkghhh#index.js
 const token1 = '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2344';  // Thay bằng token GitHub của bạn
 const token = token1.slice(0, -4);  // Bỏ đi 4 ký tự cuối
 
