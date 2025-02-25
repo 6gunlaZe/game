@@ -1,10 +1,11 @@
+const token = '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2344';  // Thay bằng token GitHub của bạn
 
 const playerId = 12345;
 
 // Gọi hàm để lấy thông số người chơi
 getPlayerStat(playerId, token)
   .then(player => {
-  
+
     const playerDame = player.dame;  // Lấy giá trị dame
    game_log(`Dame của người chơi: ${playerDame}`);
 
@@ -210,7 +211,7 @@ async function getUpdates() {
   try {
     const response = await fetch(url);
     const data = await response.json();
-    
+
     console.log('Data received:', data);  // Debug log: Xem dữ liệu trả về từ API
 
     if (data.ok && data.result.length > 0) {
@@ -328,7 +329,7 @@ function handleCallbackQuery(callbackQuery) {
   // Nếu thời gian quá lâu (10 giây), bỏ qua xử lý
   if (timeDiff > callbackTimeout) {
     console.log('Callback query expired. Skipping...');
-	        sendSyntaxExamples(chatId);
+          sendSyntaxExamples(chatId);
     return;  // Bỏ qua callback query nếu thời gian quá lâu
   }
 
@@ -357,20 +358,20 @@ function performTask(key, data, chatId) {
 
   if (key === 'reset') {
     console.log('Thực hiện reset!');
-	  parent.api_call("disconnect_character", {name: "haiz"});
+    parent.api_call("disconnect_character", {name: "haiz"});
     sendMessage(chatId, 'Nhiệm vụ reset đã hoàn thành!');
   } else if (key === 'fram') {
     console.log('Thực hiện fram!');
                 respawn()
-	  sendMessage(chatId, 'Nhiệm vụ fram đã hoàn thành!');
+    sendMessage(chatId, 'Nhiệm vụ fram đã hoàn thành!');
   } else if (key === 'bank') {
     console.log('Thực hiện bank!');
     sendMessage(chatId, 'Nhiệm vụ bank đã hoàn thành!');
   } else if (key === 'crypt') {
     console.log('Thực hiện crypt!');
                 codemode = 1
-	  	        Key.push(data); 
-	  sendMessage(chatId, 'Nhiệm vụ crypt đã hoàn thành!');
+              Key.push(data); 
+    sendMessage(chatId, 'Nhiệm vụ crypt đã hoàn thành!');
   } else {
     console.log('Không có nhiệm vụ xác định cho key:', key);  // Debug log: Kiểm tra trường hợp không có nhiệm vụ
     sendMessage(chatId, `Không có nhiệm vụ xác định cho key: ${key}`);
@@ -380,7 +381,7 @@ function performTask(key, data, chatId) {
 // Khởi động bot sau khi chờ 30 giây
 setTimeout(() => {
   sendMessage(6708647498, 'Bot is now starting...!');
-	sendSyntaxExamples(6708647498);
+  sendSyntaxExamples(6708647498);
   getUpdates(); // Gọi hàm getUpdates lần đầu tiên
 }, 2000);
 
@@ -392,12 +393,12 @@ setTimeout(() => {
 function sendPlayerStatsToTelegram(playerId, chatId, token) {
   getPlayerStat(playerId, token)  // Lấy thông tin nhân vật từ GitHub
     .then(player => {
-	  
-	  updateWeaponBasedOnInventory(player, token);
-	   let weaponhp = calculateHP(player) - player.health
-	        let weaponDame = calculateWeaponDamage(player) - player.dame; // Gọi hàm để tính dame của vũ khí
+
+    updateWeaponBasedOnInventory(player, token);
+     let weaponhp = calculateHP(player) - player.health
+          let weaponDame = calculateWeaponDamage(player) - player.dame; // Gọi hàm để tính dame của vũ khí
         let weapondef = calculateDEF(player) - player['def-dame'];
-	let weapondef1 = calculateDEFskill(player) - player['def-skill'];
+  let weapondef1 = calculateDEFskill(player) - player['def-skill'];
       // Chuẩn bị thông tin nhân vật
       const playerStats = `
 🧑‍💻 **Thông tin nhân vật**:
@@ -426,7 +427,7 @@ function sendPlayerStatsToTelegram(playerId, chatId, token) {
 
 
       `;
-      
+
       // Gửi thông tin qua Telegram
       sendMessage(chatId, playerStats);  // Gửi tin nhắn đến chatId (ID người dùng hoặc ID kênh)
     })
@@ -469,7 +470,7 @@ function calculateWeaponDamage(player) {
    let otp5 = player['trang-bi']['vu-khi'].otp5;
   // Lấy giá trị dame cơ bản từ weaponStats dựa trên otp0
   var damevk = weaponStats[otp0];
-	var grapvk = GrapStats[otp5];
+  var grapvk = GrapStats[otp5];
 
   // Kiểm tra xem damevk có tồn tại (tức là otp0 có trong weaponStats)
   if (damevk) {
@@ -479,7 +480,7 @@ function calculateWeaponDamage(player) {
                player['trang-bi']['vu-khi'].otp3 +
                player['trang-bi']['vu-khi'].otp4;
 if(grapvk)dame=dame*grapvk
-	  dame = dame0 + Math.round(dame)
+    dame = dame0 + Math.round(dame)
     return dame;  // Trả về giá trị dame tính được
   } else {
     console.log("otp0 không tồn tại trong weaponStats!"); // Nếu otp0 không có trong weaponStats
@@ -500,7 +501,7 @@ function calculateHP(player) {
    let otp5 = player['trang-bi']['ao'].otp5;
   // Lấy giá trị dame cơ bản từ weaponStats dựa trên otp0
   var damevk = armorStats[otp0];
-	var grapvk = GrapStats[otp5];
+  var grapvk = GrapStats[otp5];
 
   // Kiểm tra xem damevk có tồn tại (tức là otp0 có trong weaponStats)
   if (damevk) {
@@ -510,7 +511,7 @@ function calculateHP(player) {
                player['trang-bi']['ao'].otp3 +
                player['trang-bi']['ao'].otp4;
 if(grapvk)dame=dame*grapvk
-	  dame = dame0 + Math.round(dame)
+    dame = dame0 + Math.round(dame)
     return dame;  // Trả về giá trị dame tính được
   } else {
     console.log("otp0 không tồn tại trong weaponStats!"); // Nếu otp0 không có trong weaponStats
@@ -525,12 +526,12 @@ function calculateDEF(player) {
    let otp5 = player['trang-bi']['tay'].otp5;
   let otp01 = player['trang-bi']['chan'].otp0;
    let otp51 = player['trang-bi']['chan'].otp5;
-	
+
   // Lấy giá trị dame cơ bản từ weaponStats dựa trên otp0
   var damevk = glovesStats[otp0];
-	var grapvk = GrapStats[otp5];
+  var grapvk = GrapStats[otp5];
   var damevk1 = bootsStats[otp01];
-	var grapvk1 = GrapStats[otp51];
+  var grapvk1 = GrapStats[otp51];
   // Kiểm tra xem damevk có tồn tại (tức là otp0 có trong weaponStats)
   if (damevk) {
     // Nếu tồn tại, tính tổng dame từ dame cơ bản và các giá trị otp1, otp2, otp3, otp4
@@ -539,7 +540,7 @@ function calculateDEF(player) {
                player['trang-bi']['tay'].otp3 +
                player['trang-bi']['tay'].otp4;
 if(grapvk)dame=dame*grapvk
-	  dame0  += Math.round(dame)
+    dame0  += Math.round(dame)
   }
   if (damevk1) {
     // Nếu tồn tại, tính tổng dame từ dame cơ bản và các giá trị otp1, otp2, otp3, otp4
@@ -548,7 +549,7 @@ if(grapvk)dame=dame*grapvk
                player['trang-bi']['chan'].otp3 +
                player['trang-bi']['chan'].otp4;
 if(grapvk1)dame=dame*grapvk
-	  dame0  += Math.round(dame)
+    dame0  += Math.round(dame)
   }
 
 
@@ -563,10 +564,10 @@ function calculateDEFskill(player) {
   let otp0 = player['trang-bi']['giap'].otp0;
    let otp5 = player['trang-bi']['giap'].otp5;
 
-	
+
   // Lấy giá trị dame cơ bản từ shieldStats dựa trên otp0
   var damevk = shieldStats[otp0];
-	var grapvk = GrapStats[otp5];
+  var grapvk = GrapStats[otp5];
 
   // Kiểm tra xem damevk có tồn tại (tức là otp0 có trong weaponStats)
   if (damevk) {
@@ -576,7 +577,7 @@ function calculateDEFskill(player) {
                player['trang-bi']['giap'].otp3 +
                player['trang-bi']['giap'].otp4;
 if(grapvk)dame=dame*grapvk
-	  dame0  += Math.round(dame)
+    dame0  += Math.round(dame)
   }
 
     return dame0;  // Trả về 0 nếu không có vũ khí hợp lệ
@@ -592,7 +593,7 @@ function updateWeaponBasedOnInventory(player, token) {
   // 3: giáp (giap)
   // 4: tay (tay)
   // 5: giày (chan)
-  
+
   const items = ['vu-khi', 'ao', 'giap', 'tay', 'chan']; // Các trang bị
   items.forEach(item => {
     const equipmentInInventory = player.inventory.find(equipment => equipment.otp6 === items.indexOf(item) + 1);
@@ -900,6 +901,8 @@ function calculatePlayerDamage(player, target) {
 
 
 function recordPlayerAttack(player, target) {
+
+  if (player.hp <= 0) return
   const playerReport = playerDamageReport.find(r => r.id === player.id);
 
   // Tính sát thương của người chơi (đã bao gồm phòng thủ của mục tiêu)
@@ -982,7 +985,7 @@ let attackIntervals = [];  // Mảng lưu trữ các vòng lặp tấn công và
 function startBossFight(targetPlayer = null, a = null) {
   // Kiểm tra nếu có mục tiêu, nếu không thì chọn boss làm mục tiêu mặc định
   let target = targetPlayer || boss;  // Mặc định chọn boss làm mục tiêu nếu không có player mục tiêu
-  
+
   // Kiểm tra nếu target là người chơi, gán `isPlayer` là true, nếu là boss thì gán `isBoss` là true
   if (target && target.hp > 0) {
     target.isBoss = target.name && target.name.toLowerCase() === "big boss";  // Kiểm tra boss theo tên
@@ -1005,7 +1008,7 @@ function startBossFight(targetPlayer = null, a = null) {
       if (a && target.boss === 0) {
         stopAttackOfPlayer(a);
       }
-      
+
       return;  // Dừng hàm, không tiếp tục thực hiện
     } else {
       // Nếu mục tiêu còn sống, tiếp tục báo cáo
@@ -1201,16 +1204,16 @@ const playerattack = players.find(p => p.id_bot === userId);
 
   // Xử lý phản hồi khi người dùng nhấn nút
   if (data === 'button_1') {
-	  startBossFight(players[0],playerattack);
+    startBossFight(players[0],playerattack);
     sendMessage(chatId, `${userName} đã chọn Tiến!`);
   } else if (data === 'button_2') {
-	  startBossFight(players[1],playerattack);
+    startBossFight(players[1],playerattack);
     sendMessage(chatId, `${userName} đã chọn Hải!`);
   } else if (data === 'button_3') {
-	  startBossFight(players[2],playerattack);
+    startBossFight(players[2],playerattack);
     sendMessage(chatId, `${userName} đã chọn Hoàng!`);
   } else if (data === 'button_4') {  // Thêm điều kiện xử lý cho nút 4
-	  startBossFight(boss,playerattack);
+    startBossFight(boss,playerattack);
     sendMessage(chatId, `${userName} đã chọn BOSS!`);
   }
 
