@@ -2,146 +2,14 @@
 
 
 
-// Cập nhật hàm tính sát thương với mục tiêu có thể là người chơi hoặc boss
-function calculatePlayerDamage(player, target) {
-  const baseDamage = player.dame; // Sát thương cơ bản của người chơi
-  const critChance = player['crit-%']; // Tỉ lệ chí mạng
-  const critMultiplier = player['crit-x']; // Nhân đôi sát thương khi chí mạng
-
-  // Kiểm tra xem người chơi có chí mạng không
-  const isCrit = Math.random() < critChance / 100; // Xác suất chí mạng (từ 0 đến 1)
-  let finalDamage = isCrit ? baseDamage * critMultiplier : baseDamage; // Sát thương cuối cùng khi có chí mạng
-
-  // Nếu mục tiêu là boss
-  if (target && target.isBoss) {
-    finalDamage -= target.defense;  // Phòng thủ của boss giảm sát thương người chơi gây ra
-  }
-  // Nếu mục tiêu là người chơi
-  else if (target && target.isPlayer) {
-    finalDamage -= target.defense;  // Phòng thủ của người chơi giảm sát thương người chơi gây ra
-  }
-
-  // Đảm bảo rằng sát thương không âm
-  finalDamage = Math.max(0, finalDamage);
-
-  return {
-    damage: finalDamage,  // Sát thương tính ra sau khi giảm phòng thủ
-    isCrit: isCrit       // Kiểm tra nếu là chí mạng
-  };
-}
-
-// Cập nhật hàm `startBossFight` để chọn mục tiêu là người chơi hoặc boss
-function startBossFight(targetPlayer = null) {
-  // Kiểm tra nếu có mục tiêu, nếu không thì chọn boss làm mục tiêu mặc định
-  let target = targetPlayer || boss;  // Mặc định chọn boss làm mục tiêu nếu không có player mục tiêu
-  
-  // Kiểm tra nếu target là người chơi, gán `isPlayer` là true, nếu là boss thì gán `isBoss` là true
-  if (target && target.hp > 0) {
-    target.isBoss = target.name && target.name.toLowerCase() === "big boss";  // Kiểm tra boss theo tên
-    target.isPlayer = !target.isBoss;  // Nếu không phải boss, là người chơi
-  }
-
-  // Bắt đầu việc cập nhật báo cáo mỗi 5 giây (5000ms)
-  reportInterval = setInterval(() => {
-    if (target.hp <= 0) {  // Kiểm tra nếu mục tiêu (boss hoặc player) đã chết
-      displayDamageReport();  // Gửi báo cáo ngay lập tức khi mục tiêu chết
-      sendMessage(-4676989627, `${target.name} đã chết!`, { parse_mode: 'HTML' });
-      clearInterval(reportInterval);  // Dừng báo cáo khi mục tiêu chết
-    } else {
-      displayDamageReport();  // Nếu mục tiêu còn sống, tiếp tục báo cáo
-      sendFourButtons(-4676989627);
-    }
-  }, 5000);  // Mỗi 5 giây gọi báo cáo
-
-  // Cập nhật các đòn tấn công của người chơi (theo tốc độ đánh)
-  players.forEach(player => {
-    const attackSpeed = player['attach-speed']; // Tốc độ đánh của người chơi
-    const damage = calculatePlayerDamage(player, target); // Tính sát thương mỗi đòn đánh
-
-    // Tấn công theo tốc độ đánh của người chơi
-    setInterval(() => {
-      recordPlayerAttack(player, target); // Ghi nhận sát thương khi tấn công
-    }, attackSpeed * 1000);  // Tốc độ đánh tính theo giây
-  });
-}
-
-// Cập nhật hàm `recordPlayerAttack` để sử dụng mục tiêu tùy chọn
-function recordPlayerAttack(player, target) {
-  const playerReport = playerDamageReport.find(r => r.id === player.id);
-
-  // Tính sát thương của người chơi (đã bao gồm phòng thủ của mục tiêu)
-  const { damage, isCrit } = calculatePlayerDamage(player, target);
-
-  // Ghi nhận đòn đánh và tổng sát thương của người chơi
-  playerReport.attacks.push({ damage, isCrit });
-  playerReport.totalDamage += damage;
-
-  // Trừ HP của mục tiêu với sát thương cuối cùng nếu mục tiêu còn sống
-  if (target.hp > 0) {
-    target.hp -= damage;
-    console.log(`${target.name} bị tấn công! HP còn lại: ${target.hp}`);
-  }
-}
-
-// Hàm khởi tạo dữ liệu người chơi và bắt đầu trận đấu
-async function initGame() {
-  try {
-    // Lấy dữ liệu người chơi từ GitHub
-    const player1 = await getPlayerStat(12345, token);
-    const player2 = await getPlayerStat(67890, token);
-    const player3 = await getPlayerStat(11223, token);
-
-    players = [player1, player2, player3];  // Lưu mảng người chơi
-
-    // Khởi tạo báo cáo sát thương
-    playerDamageReport = players.map(player => ({
-      id: player.id,
-      attacks: [],
-      totalDamage: 0
-    }));
-
-    startBossFight();  // Bắt đầu trận đấu với boss là mục tiêu mặc định
-  } catch (error) {
-    console.error(error);  // Nếu có lỗi khi lấy dữ liệu người chơi
-  }
-}
-
-// Khởi động game
-initGame();
-
-
-
-Chọn mục tiêu:
-
-Nếu bạn muốn chọn mục tiêu là một người chơi, bạn chỉ cần gọi hàm startBossFight và truyền vào một mục tiêu là người chơi đó.
-Nếu không truyền gì, mục tiêu mặc định sẽ là boss.
-Ví dụ gọi hàm với mục tiêu là người chơi:
-javascript
-Sao chép
-startBossFight(players[1]);  // Chọn player thứ hai làm mục tiêu
-Với cách này, bạn có thể linh hoạt chọn mục tiêu cho trận đấu và hiển thị các báo cáo sát thương chi tiết cho cả người chơi và boss.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
 
 function updateSkillsBasedOnInventory(player, token) {
   // 1: Kiểm tra kỹ năng trong inventory (otp6 === 9)
+    // Sắp xếp kỹ năng theo mức độ ưu tiên (otp8) //số lượt hồi chiêu (cooldownTurns) otp7
+
   const skillItems = player.inventory.filter(item => item.otp6 === 9); // Lọc các kỹ năng từ inventory
 
   if (skillItems.length > 0) {
@@ -173,8 +41,8 @@ function updateSkillsBasedOnInventory(player, token) {
 
       console.log(`Cập nhật kỹ năng ${skillData.skillName}:`, skillData);
 
-      // Cập nhật dữ liệu lên GitHub
-      updatePlayerStat(player.id, { "skills": player.skills }, token);
+      // Cập nhật dữ liệu lên GitHub //không cần cập nhật chỉ lưu cục bộ
+    //  updatePlayerStat(player.id, { "skills": player.skills }, token);
     });
   } else {
     console.log("Không có kỹ năng trong inventory.");
@@ -216,14 +84,14 @@ function updatePlayerStatsBasedOnSkills(player) {
     return;
   }
 
-  // Sắp xếp kỹ năng theo mức độ ưu tiên (otp8)
+  // Sắp xếp kỹ năng theo mức độ ưu tiên (otp8) //số lượt hồi chiêu (cooldownTurns) otp7
   player.skills.sort((a, b) => b.otp8 - a.otp8); // Sắp xếp giảm dần theo mức độ ưu tiên
 
   // Lặp qua tất cả các kỹ năng của người chơi
   player.skills.forEach(skill => {
     // Kiểm tra hồi chiêu (otp7) trước khi áp dụng kỹ năng
     if (skill.remainingTurns > 0 && skill.cooldownTurns <= 0) {
-      // Tính toán các thay đổi dựa trên kỹ năng
+      // Tính toán các thay đổi dựa trên kỹ năng otp2
       switch(skill.skillEffect) {
         case 1: // Tăng dame
           player.dame += skill.skillPower * skill.skillLevel;
