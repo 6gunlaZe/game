@@ -465,7 +465,6 @@ sendPlayerStatsToTelegram(12345, 6708647498, token);
 
 
 
-
 function calculateWeaponDamage(player) {
   // Lấy giá trị otp0 của vũ khí
   let dame0 = player.dame;	
@@ -625,6 +624,47 @@ function updateWeaponBasedOnInventory(player, token) {
 
 
 
+// Hàm cập nhật các chỉ số của tất cả người chơi
+async function updateAllPlayersStats(token) {
+  // Lấy thông tin người chơi từ server
+  const player1 = await getPlayerStat(12345, token);
+  const player2 = await getPlayerStat(67890, token);
+  const player3 = await getPlayerStat(11223, token);
+
+  // cập nhật lại biến toàn cục players
+  players = [player1, player2, player3];  
+
+  // Duyệt qua tất cả người chơi để cập nhật các chỉ số
+  players.forEach(player => {
+    // Cập nhật trang bị của người chơi từ kho đồ
+    updateWeaponBasedOnInventory(player, token);
+
+    // Tính toán các chỉ số của người chơi sau khi cập nhật trang bị
+    let updatedDame = calculateWeaponDamage(player); // Tính toán sát thương vũ khí
+    let updatedHP = calculateHP(player); // Tính toán HP từ áo giáp
+    let updatedDEF = calculateDEF(player); // Tính toán phòng thủ
+    let updatedDEFSkill = calculateDEFskill(player); // Tính toán phòng thủ kỹ năng
+
+    // Cập nhật lại các chỉ số của người chơi trong đối tượng player
+    player.dame = updatedDame; // Cập nhật sát thương
+    player.health = updatedHP; // Cập nhật HP
+    player['def-dame'] = updatedDEF; // Cập nhật phòng thủ
+    player['def-skill'] = updatedDEFSkill; // Cập nhật phòng thủ kỹ năng
+  });
+
+  console.log("Cập nhật chỉ số người chơi đã hoàn tất.");
+}
+
+// Thiết lập vòng lặp mỗi 10 giây
+setInterval(() => {
+  updateAllPlayersStats(token)
+    .then(() => {
+      console.log("Cập nhật thành công sau mỗi 10 giây");
+    })
+    .catch((error) => {
+      console.error("Có lỗi khi cập nhật:", error);
+    });
+}, 10000);  //  = 10s
 
 
 
@@ -1136,6 +1176,7 @@ async function initGame() {
 // Khởi động game
 initGame();
 
+updateAllPlayersStats(players, token)
 
 
 
