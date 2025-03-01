@@ -231,7 +231,7 @@ function getPlayerStat(playerId) {
         if (existingPlayer) {
           // Nếu người chơi đã tồn tại, cập nhật các thuộc tính, nhưng không thay đổi hp và mp
           Object.keys(player).forEach(key => {
-            if (key !== 'hp' && key !== 'mp' && key !=='skills') {
+            if (key !== 'hp' && key !== 'mp' && key !=='skills' && key !== 'hp' && key !== 'mp' && key !=='skills' && key !== 'hp' && key !== 'mp' && key !=='skills') {
               existingPlayer[key] = player[key];
             }
           });
@@ -784,38 +784,62 @@ function updateWeaponBasedOnInventory(player) {
 
 
 
-
-
-// Hàm cập nhật các chỉ số của tất cả người chơi
+// Hàm cập nhật các chỉ số của tất cả người chơi với bộ lọc kỹ năng (chỉ kiểm tra run == 1)
 async function updateAllPlayersStats() {
-  // Lấy thông tin người chơi từ server
-  const player1 = await getPlayerStat(12345);
-  const player2 = await getPlayerStat(67890);
-  const player3 = await getPlayerStat(11223);
+  try {
+    // Lấy thông tin người chơi từ server, đồng thời xử lý tất cả các request
+    const playerStats = await Promise.all([
+      getPlayerStat(12345),
+      getPlayerStat(67890),
+      getPlayerStat(11223)
+    ]);
 
-  // cập nhật lại biến toàn cục players
-  players = [player1, player2, player3];  
+    // Cập nhật lại biến toàn cục players
+    players = playerStats;
 
-  // Duyệt qua tất cả người chơi để cập nhật các chỉ số
-  players.forEach(player => {
-    // Cập nhật trang bị của người chơi từ kho đồ
-    updateWeaponBasedOnInventory(player);
+    // Duyệt qua tất cả người chơi để cập nhật các chỉ số
+    for (let i = 0; i < players.length; i++) {
+      const player = players[i];
 
-    // Tính toán các chỉ số của người chơi sau khi cập nhật trang bị
-    let updatedDame = calculateWeaponDamage(player); // Tính toán sát thương vũ khí
-    let updatedHP = calculateHP(player); // Tính toán HP từ áo giáp
-    let updatedDEF = calculateDEF(player); // Tính toán phòng thủ
-    let updatedDEFSkill = calculateDEFskill(player); // Tính toán phòng thủ kỹ năng
+      try {
+        // Kiểm tra nếu người chơi có kỹ năng và có kỹ năng nào có run == 1
+        if (player.skills && Array.isArray(player.skills)) {
+          const hasInvalidSkill = player.skills.some(skill => skill.run === 1);
 
-    // Cập nhật lại các chỉ số của người chơi trong đối tượng player
-    player.dame = updatedDame; // Cập nhật sát thương
-    player.hp_max = updatedHP; // Cập nhật HP
-    player['def-dame'] = updatedDEF; // Cập nhật phòng thủ
-    player['def-skill'] = updatedDEFSkill; // Cập nhật phòng thủ kỹ năng
-  });
+          if (hasInvalidSkill) {
+            console.log(`Bỏ qua người chơi ${player.id} vì có kỹ năng với run == 1.`);
+            continue; // Nếu có kỹ năng nào có run == 1, bỏ qua người chơi này
+          }
+        }
 
-  console.log("Cập nhật chỉ số người chơi đã hoàn tất.");
+        // Cập nhật trang bị của người chơi từ kho đồ
+        updateWeaponBasedOnInventory(player);
+
+        // Tính toán các chỉ số của người chơi sau khi cập nhật trang bị
+        let updatedDame = calculateWeaponDamage(player); // Tính toán sát thương vũ khí
+        let updatedHP = calculateHP(player); // Tính toán HP từ áo giáp
+        let updatedDEF = calculateDEF(player); // Tính toán phòng thủ
+        let updatedDEFSkill = calculateDEFskill(player); // Tính toán phòng thủ kỹ năng
+
+        // Cập nhật lại các chỉ số của người chơi trong đối tượng player
+        player.dame = updatedDame; // Cập nhật sát thương
+        player.hp_max = updatedHP; // Cập nhật HP
+        player['def-dame'] = updatedDEF; // Cập nhật phòng thủ
+        player['def-skill'] = updatedDEFSkill; // Cập nhật phòng thủ kỹ năng
+      } catch (error) {
+        console.error(`Lỗi khi cập nhật chỉ số cho người chơi ${player.id}:`, error);
+      }
+    }
+
+    console.log("Cập nhật chỉ số người chơi đã hoàn tất.");
+  } catch (error) {
+    console.error("Lỗi khi lấy thông tin người chơi từ server:", error);
+  }
 }
+
+
+
+
 
 
 function updatePlayersHpToMax() {
@@ -1089,6 +1113,7 @@ function updateSkillsBasedOnInventory(players) {
           otp4: skill.otp4,         //tạo giá trị mặc định
           otp7: skill.otp7,         //tạo giá trị mặc định
           otp8: skill.otp8,         //tạo giá trị mặc định
+          run: skill.otp8 - skill.otp8,
           skillLevel: skill.otp5,  // Cấp độ của skill
           cooldownTurns: skill.otp7 - skill.otp7   //số lượt hồi chiêu
         };
@@ -1153,7 +1178,7 @@ function updatePlayerStatsBasedOnSkills(player) {
     console.log("Không có kỹ năng nào.");
     return;
   }
-
+ 
   // Sắp xếp kỹ năng theo mức độ ưu tiên (otp8) //số lượt hồi chiêu (cooldownTurns) otp7
   player.skills.sort((a, b) => b.otp8 - a.otp8); // Sắp xếp giảm dần theo mức độ ưu tiên
 
@@ -1164,6 +1189,7 @@ function updatePlayerStatsBasedOnSkills(player) {
 
       if(skill.attackCount == skill.otp4) //chỉ tăng 1 lần đầu
       {
+        skill.run = 1
       // Tính toán các thay đổi dựa trên kỹ năng otp2
       switch(skill.skillEffect) {
         case 1: // Tăng dame
@@ -1188,7 +1214,7 @@ function updatePlayerStatsBasedOnSkills(player) {
       player.mana -= skill.manaCost;
 
       // In ra kết quả
-      console.log(`Sau khi sử dụng ${skill.skillName}:`);
+      console.log(`Sau khi ${skill.run} sử dụng ${skill.skillName}:`);
       console.log(`Dame: ${player.dame}, Def: ${player["def-dame"]}, Crit: ${player["crit-%"]}, Mana: ${player.mana}`);
 
       // Giảm số lượt của kỹ năng (attackCount)
@@ -1205,23 +1231,25 @@ function updatePlayerStatsBasedOnSkills(player) {
       // Giảm số lượt hồi chiêu nếu kỹ năng đang hồi chiêu
       skill.cooldownTurns -= 1;
       
-      console.log(`Kỹ năng ${skill.skillName} đang hồi chiêu, còn lại ${skill.cooldownTurns} lượt`);
+      console.log(`Kỹ năng ${skill.skillName} đang hồi chiêu, ${skill.run} còn lại ${skill.cooldownTurns} lượt`);
     }
   });
 }
 
-// Hàm để kiểm tra kỹ năng hết hiệu lực và xóa kỹ năng
 function checkSkillExpirationAndRemove(player) {
-  // Xóa các kỹ năng hết hiệu lực
   if (!player.skills || player.skills.length === 0) {
     console.log("Không có kỹ năng nào.");
     return;
   }
-  player.skills = player.skills.filter(skill => {
+
+  // Lặp qua các kỹ năng của player và kiểm tra nếu kỹ năng đã hết hiệu lực
+  player.skills.forEach(skill => {
     if (skill.attackCount <= 0) {
-      skill.attackCount = skill.otp4
+      // Reset lại số lượt tấn công (attackCount) của kỹ năng
+      skill.attackCount = skill.otp4; // Reset lại theo số đòn tấn công ban đầu
+      skill.run = 0
       // Sau khi số lượt còn lại là 0, giảm các chỉ số đã được tăng lên
-      switch(skill.skillEffect) {
+      switch (skill.skillEffect) {
         case 1: // Giảm dame
           player.dame -= skill.skillPower * skill.skillLevel;
           break;
@@ -1239,17 +1267,17 @@ function checkSkillExpirationAndRemove(player) {
           break;
       }
 
-      // In ra thông báo kỹ năng đã hết hiệu lực
-      console.log(`${skill.skillName} đã hết hiệu lực!`);
+      // In ra thông báo kỹ năng đã hết hiệu lực và được reset
+      console.log(`${skill.skillName} đã hết hiệu lực và được reset!`);
       console.log(`Dame: ${player.dame}, Def: ${player["def-dame"]}, Crit: ${player["crit-%"]}, Mana: ${player.mana}`);
 
-      // Trả về false để loại bỏ kỹ năng khỏi player.skills
-      return false;
+      // Đặt lại số lượt hồi chiêu (cooldownTurns)
+      skill.cooldownTurns = skill.otp7; // Đặt lại số lượt hồi chiêu sau khi hết hiệu lực
+      console.log(`Số lượt hồi chiêu của ${skill.skillName} đã được đặt lại: ${skill.cooldownTurns}`);
     }
-    // Trả về true để giữ lại kỹ năng
-    return true;
   });
 }
+
 
 
 
@@ -1359,7 +1387,6 @@ function recordPlayerAttack(player, target) {
   if (player.hp <= 0) return
 
   updatePlayerStatsBasedOnSkills(player);
-  checkSkillExpirationAndRemove(player);
   
   const playerReport = playerDamageReport.find(r => r.id === player.id);
 
@@ -1369,6 +1396,7 @@ function recordPlayerAttack(player, target) {
   // Ghi nhận đòn đánh và tổng sát thương của người chơi
   playerReport.attacks.push({ damage, isCrit, playertarget });  // Lưu playertarget cùng với thông tin đòn đánh
   playerReport.totalDamage += damage;
+  checkSkillExpirationAndRemove(player);
 
   if (target.hp > 0) {
     target.hp -= damage;
