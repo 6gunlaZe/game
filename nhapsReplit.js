@@ -231,7 +231,7 @@ function getPlayerStat(playerId) {
         if (existingPlayer) {
           // Nếu người chơi đã tồn tại, cập nhật các thuộc tính, nhưng không thay đổi hp và mp
           Object.keys(player).forEach(key => {
-            if (key !== 'hp' && key !== 'mp') {
+            if (key !== 'hp' && key !== 'mp' && key !=='skills') {
               existingPlayer[key] = player[key];
             }
           });
@@ -1086,8 +1086,11 @@ function updateSkillsBasedOnInventory(players) {
           skillEffect: skill.otp2,    // Chỉ số tác động của skill (damage, heal, crit,...)
           manaCost: skill.otp3,       // Mana tiêu tốn khi sử dụng skill
           attackCount: skill.otp4,    // Số đòn đánh có hiệu quả
+          otp4: skill.otp4,         //tạo giá trị mặc định
+          otp7: skill.otp7,         //tạo giá trị mặc định
+          otp8: skill.otp8,         //tạo giá trị mặc định
           skillLevel: skill.otp5,  // Cấp độ của skill
-          cooldownTurns: skill.otp7   //số lượt hồi chiêu
+          cooldownTurns: skill.otp7 - skill.otp7   //số lượt hồi chiêu
         };
 
         // Kiểm tra xem kỹ năng đã có trong player.skills chưa
@@ -1098,8 +1101,8 @@ function updateSkillsBasedOnInventory(players) {
         // Thêm hoặc cập nhật kỹ năng vào player.skills
         const existingSkillIndex = player.skills.findIndex(existingSkill => existingSkill.skillName === skillData.skillName);
         if (existingSkillIndex !== -1) {
-          // Cập nhật kỹ năng nếu đã tồn tại
-          player.skills[existingSkillIndex] = skillData;
+          //không cần Cập nhật kỹ năng nếu đã tồn tại 
+        //  player.skills[existingSkillIndex] = skillData;
         } else {
           // Thêm mới kỹ năng vào danh sách
           player.skills.push(skillData);
@@ -1167,13 +1170,13 @@ function updatePlayerStatsBasedOnSkills(player) {
           player.dame += skill.skillPower * skill.skillLevel;
           break;
         case 2: // Tăng def
-          player["def-dame"] += skill.skillPower * skill.skillLevel;
+          player['def-dame'] += skill.skillPower * skill.skillLevel;
           break;
         case 3: // Tăng crit%
-          player["crit-%"] += skill.skillPower * skill.skillLevel;
+          player['crit-%'] += skill.skillPower * skill.skillLevel;
           break;
         case 4: // Tăng crit damage
-          player["crit-x"] += skill.skillPower * skill.skillLevel;
+          player['crit-x'] += skill.skillPower * skill.skillLevel;
           break;
         case 5: // Tăng mana
           player.mana += skill.skillPower * skill.skillLevel;
