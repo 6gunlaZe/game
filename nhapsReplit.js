@@ -364,7 +364,7 @@ function sendPlayerStatsToTelegram(playerId, chatId) {
     .then(player => {
 
     updateWeaponBasedOnInventory(player);
-     let weaponhp = calculateHP(player) - player.health
+     let weaponhp = calculateHP(player) - player.hp_max
           let weaponDame = calculateWeaponDamage(player) - player.dame; // Gọi hàm để tính dame của vũ khí
         let weapondef = calculateDEF(player) - player['def-dame'];
   let weapondef1 = calculateDEFskill(player) - player['def-skill'];
@@ -375,7 +375,7 @@ function sendPlayerStatsToTelegram(playerId, chatId) {
 - ⚔️ **Dame**:  ${player.dame} + ${weaponDame}
 - 🌟 **exp**: ${player.exp}
 - 🏆 **Level**: ${player.level}
-- ❤️ **Health**: ${player.health_max} + ${weaponhp}
+- ❤️ **HP**: ${player.hp_max} + ${weaponhp}
 - 🔋 **Mana**: ${player.mana}
 - 🛡️ : ${player['def-dame']} + ${weapondef} (Giảm sát thương nhận vào)
 - 🎽 : ${player['def-skill']} + ${weapondef1} (Giảm hiệu quả kỹ năng đối phương)
@@ -464,7 +464,7 @@ if(grapvk)dame=dame*grapvk
 
 function calculateHP(player) {
   // Lấy giá trị otp0 của vũ khí
-  let dame0 = player.health;	
+  let dame0 = player.hp_max;	
   let otp0 = player['trang-bi']['ao'].otp0;
    let otp5 = player['trang-bi']['ao'].otp5;
   // Lấy giá trị dame cơ bản từ weaponStats dựa trên otp0
@@ -613,7 +613,7 @@ async function updateAllPlayersStats() {
 
     // Cập nhật lại các chỉ số của người chơi trong đối tượng player
     player.dame = updatedDame; // Cập nhật sát thương
-    player.health = updatedHP; // Cập nhật HP
+    player.hp_max = updatedHP; // Cập nhật HP
     player['def-dame'] = updatedDEF; // Cập nhật phòng thủ
     player['def-skill'] = updatedDEFSkill; // Cập nhật phòng thủ kỹ năng
   });
@@ -946,7 +946,7 @@ function displayDamageReport() {
     const player = players.find(p => p.id === playerReport.id);
     const playerName = player.name;  // Tên người chơi
     const playerHP = player.hp;  // Máu hiện tại của người chơi
-    const playerMaxHP = player.health_max;  // Máu tối đa của người chơi
+    const playerMaxHP = player.hp_max;  // Máu tối đa của người chơi
     const playerHPPercentage = (playerHP / playerMaxHP) * 100;  // Phần trăm máu của người chơi
 
     // Căn chỉnh tên và sát thương cho đều đặn và thêm biểu tượng cho tên và tổng sát thương
