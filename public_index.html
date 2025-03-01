@@ -1,0 +1,30 @@
+<!-- public/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khung Chat - Thông Báo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="chat-container">
+    <div id="messages"></div>
+    <!-- Nút tương tác -->
+    <div id="options">
+      <button onclick="sendOption('Option 1')">Tùy chọn 1</button>
+      <button onclick="sendOption('Option 2')">Tùy chọn 2</button>
+      <button onclick="sendOption('Option 3')">Tùy chọn 3</button>
+      <button onclick="sendOption('Option 4')">Tùy chọn 4</button>
+      <button onclick="sendOption('Option 5')">Tùy chọn 5</button>
+      <button onclick="sendOption('Option 6')">Tùy chọn 6</button>
+      <button onclick="sendOption('Option 7')">Tùy chọn 7</button>
+      <button onclick="sendOption('Option 8')">Tùy chọn 8</button>
+      <button onclick="sendOption('Option 9')">Tùy chọn 9</button>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="chat.js"></script>
+</body>
+</html>
