@@ -6,6 +6,95 @@
 
 
 
+
+
+
+
+async function updateAllPlayersStats() {
+  try {
+    // Lấy thông tin người chơi từ server, đồng thời xử lý tất cả các request
+    const playerStats = await Promise.all([
+      getPlayerStat(12345).catch(error => { console.error('Lỗi khi lấy dữ liệu player 12345:', error); return null; }),
+      getPlayerStat(67890).catch(error => { console.error('Lỗi khi lấy dữ liệu player 67890:', error); return null; }),
+      getPlayerStat(11223).catch(error => { console.error('Lỗi khi lấy dữ liệu player 11223:', error); return null; })
+    ]);
+
+    // Kiểm tra dữ liệu trả về từ server
+    if (playerStats.some(player => player === null)) {
+      console.error("Lỗi khi lấy thông tin một số người chơi. Dừng quá trình.");
+      return;
+    }
+
+    // Lọc ra tất cả các người chơi có kỹ năng với run === 1
+    const playersToUpdate = playerStats.filter(player => 
+      player.skills && Array.isArray(player.skills) && !player.skills.some(skill => skill.run === 1)
+    );
+
+    // Cập nhật trang bị cho các player không bị lọc
+    for (let player of playersToUpdate) {
+      try {
+        // Cập nhật trang bị của người chơi từ kho đồ
+        updateWeaponBasedOnInventory(player);
+
+        // Tính toán các chỉ số của người chơi sau khi cập nhật trang bị
+        let updatedDame = calculateWeaponDamage(player); // Tính toán sát thương vũ khí
+        let updatedHP = calculateHP(player); // Tính toán HP từ áo giáp
+        let updatedDEF = calculateDEF(player); // Tính toán phòng thủ
+        let updatedDEFSkill = calculateDEFskill(player); // Tính toán phòng thủ kỹ năng
+
+        // Cập nhật lại các chỉ số của người chơi trong đối tượng player
+        player.dame = updatedDame; // Cập nhật sát thương
+        player.hp_max = updatedHP; // Cập nhật HP
+        player['def-dame'] = updatedDEF; // Cập nhật phòng thủ
+        player['def-skill'] = updatedDEFSkill; // Cập nhật phòng thủ kỹ năng
+      } catch (error) {
+        console.error(`Lỗi khi cập nhật chỉ số cho người chơi ${player.id}:`, error);
+      }
+    }
+
+    // Cập nhật lại biến toàn cục players chỉ với các player.id trùng với playerStats
+    for (let i = 0; i < playerStats.length; i++) {
+      const updatedPlayer = playerStats[i];
+
+      // Tìm player trong players có id trùng với updatedPlayer.id
+      const playerIndex = players.findIndex(player => player.id === updatedPlayer.id);
+
+      if (playerIndex !== -1) {
+        // Cập nhật thông tin cho player có id trùng
+        players[playerIndex] = updatedPlayer;
+      }
+    }
+
+    console.log("Cập nhật chỉ số người chơi đã hoàn tất.");
+  } catch (error) {
+    console.error("Lỗi khi lấy thông tin người chơi từ server:", error);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function updateSkillsBasedOnInventory(player, token) {
   // 1: Kiểm tra kỹ năng trong inventory (otp6 === 9)
     // Sắp xếp kỹ năng theo mức độ ưu tiên (otp8) //số lượt hồi chiêu (cooldownTurns) otp7
