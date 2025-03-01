@@ -25,7 +25,182 @@ getPlayerStat(playerId)
 
 
 
+////////////////////////
 
+
+
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+const path = require('path');
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
+// Cung cấp tệp tĩnh từ thư mục public
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Đối tượng lưu trạng thái của người dùng
+const userSelections = {};  // Lưu trữ lựa chọn của người dùng theo socket.id
+
+// Các nhóm tùy chọn
+const optionGroups = {
+  group1: ['Option 1', 'Option 2', 'Option 3'],
+  group2: ['Option 4', 'Option 5', 'Option 6'],
+  group3: ['Option 7', 'Option 8', 'Option 9'],
+};
+
+// Lắng nghe kết nối WebSocket từ client
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  // Lắng nghe sự kiện 'userOption' từ client
+  socket.on('userOption', (option) => {
+    console.log('User selected:', option);
+
+    // Kiểm tra xem người dùng đã chọn nhóm chưa
+    if (!userSelections[socket.id]) {
+      // Người dùng chưa chọn gì, lưu nhóm của họ dựa trên tùy chọn đầu tiên
+      const selectedGroup = getOptionGroup(option);
+      if (selectedGroup) {
+        userSelections[socket.id] = {
+          selectedGroup: selectedGroup,
+          selectedOptions: [option], // Lưu tùy chọn người dùng đã chọn
+        };
+        // Thực thi hành động tùy chọn
+        handleOption(option);
+        io.emit('chatMessage', `User selected: ${option}`);
+      } else {
+        socket.emit('chatMessage', 'Invalid option.');
+      }
+    } else {
+      // Người dùng đã chọn nhóm, kiểm tra xem tùy chọn có hợp lệ không
+      const userGroup = userSelections[socket.id].selectedGroup;
+      if (optionGroups[userGroup].includes(option)) {
+        // Nếu tùy chọn thuộc nhóm người dùng đã chọn
+        handleOption(option);  // Luôn thực hiện tác vụ mỗi lần chọn
+        io.emit('chatMessage', `User selected: ${option}`);
+      } else {
+        socket.emit('chatMessage', `You can only select options from the same group: ${userGroup}`);
+      }
+    }
+  });
+
+  // Lắng nghe sự kiện disconnect
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+    delete userSelections[socket.id]; // Xóa người dùng khỏi danh sách khi họ rời đi
+  });
+});
+
+// Hàm xử lý tùy chọn
+function handleOption(option) {
+  switch (option) {
+    case 'Option 1':
+      performTaskForOption1();
+      break;
+    case 'Option 2':
+      performTaskForOption2();
+      break;
+    case 'Option 3':
+      performTaskForOption3();
+      break;
+    case 'Option 4':
+      performTaskForOption4();
+      break;
+    case 'Option 5':
+      performTaskForOption5();
+      break;
+    case 'Option 6':
+      performTaskForOption6();
+      break;
+    case 'Option 7':
+      performTaskForOption7();
+      break;
+    case 'Option 8':
+      performTaskForOption8();
+      break;
+    case 'Option 9':
+      performTaskForOption9();
+      break;
+    default:
+      console.log('No task assigned for this option.');
+  }
+}
+
+// Các hàm thực thi tác vụ cho từng tùy chọn
+function performTaskForOption1() {
+  console.log('Executing task for Option 1');
+  io.emit('chatMessage', 'Task for Option 1 executed!');
+}
+
+function performTaskForOption2() {
+  console.log('Executing task for Option 2');
+  io.emit('chatMessage', 'Task for Option 2 executed!');
+}
+
+function performTaskForOption3() {
+  console.log('Executing task for Option 3');
+  io.emit('chatMessage', 'Task for Option 3 executed!');
+}
+
+function performTaskForOption4() {
+  console.log('Executing task for Option 4');
+  io.emit('chatMessage', 'Task for Option 4 executed!');
+}
+
+function performTaskForOption5() {
+  console.log('Executing task for Option 5');
+  io.emit('chatMessage', 'Task for Option 5 executed!');
+}
+
+function performTaskForOption6() {
+  console.log('Executing task for Option 6');
+  io.emit('chatMessage', 'Task for Option 6 executed!');
+}
+
+function performTaskForOption7() {
+  console.log('Executing task for Option 7');
+  io.emit('chatMessage', 'Task for Option 7 executed!');
+}
+
+function performTaskForOption8() {
+  console.log('Executing task for Option 8');
+  io.emit('chatMessage', 'Task for Option 8 executed!');
+}
+
+function performTaskForOption9() {
+  console.log('Executing task for Option 9');
+  io.emit('chatMessage', 'Task for Option 9 executed!');
+}
+
+// Hàm xác định nhóm của một tùy chọn
+function getOptionGroup(option) {
+  if (optionGroups.group1.includes(option)) {
+    return 'group1';
+  } else if (optionGroups.group2.includes(option)) {
+    return 'group2';
+  } else if (optionGroups.group3.includes(option)) {
+    return 'group3';
+  } else {
+    return null;
+  }
+}
+
+// Khởi động server
+server.listen(3000, () => {
+  console.log('Server is running on http://localhost:3000');
+});
+
+
+
+
+
+
+
+
+//////////////////////////
 
 
 
@@ -637,6 +812,36 @@ async function updateAllPlayersStats() {
   console.log("Cập nhật chỉ số người chơi đã hoàn tất.");
 }
 
+
+function updatePlayersHpToMax() {
+  // Kiểm tra nếu biến toàn cục players có dữ liệu
+  if (players && Array.isArray(players)) {
+    // Duyệt qua tất cả các người chơi và cập nhật hp thành hp_max
+    players.forEach(player => {
+      if (player.hp_max !== undefined) {  // Kiểm tra nếu player có thuộc tính hp_max
+        player.hp = player.hp_max;  // Cập nhật hp = hp_max
+      }
+    });
+
+    console.log("Cập nhật hp cho tất cả người chơi thành công!");
+  } else {
+    console.log("Không có dữ liệu người chơi!");
+  }
+}
+
+
+
+
+
+// Gọi ngay lập tức khi ứng dụng mở
+updateAllPlayersStats()
+  .then(() => {
+    console.log("Cập nhật thành công ngay lập tức");
+  })
+  .catch((error) => {
+    console.error("Có lỗi khi cập nhật ngay lập tức:", error);
+  });
+
 // Thiết lập vòng lặp mỗi 10 giây
 setInterval(() => {
   updateAllPlayersStats()
@@ -646,7 +851,7 @@ setInterval(() => {
     .catch((error) => {
       console.error("Có lỗi khi cập nhật:", error);
     });
-}, 10000);  //  = 10s
+}, 10000);  // 10 giây
 
 
 
@@ -1148,7 +1353,7 @@ async function initGame() {
       attacks: [],
       totalDamage: 0
     }));
-
+    updatePlayersHpToMax();
     startBossFight();  // Bắt đầu trận đấu với boss là mục tiêu mặc định
   } catch (error) {
     console.error(error);  // Nếu có lỗi khi lấy dữ liệu người chơi
