@@ -847,8 +847,9 @@ updateAllPlayersStats()
     console.error("Có lỗi khi cập nhật ngay lập tức:", error);
   });
 
-// Thiết lập vòng lặp mỗi 10 giây
+// Thiết lập vòng lặp mỗi 5 giây
 setInterval(() => {
+  updateSkillsBasedOnInventory(players)
   updateAllPlayersStats()
     .then(() => {
       console.log("Cập nhật thành công sau mỗi 10 giây");
@@ -856,7 +857,7 @@ setInterval(() => {
     .catch((error) => {
       console.error("Có lỗi khi cập nhật:", error);
     });
-}, 10000);  // 10 giây
+}, 5000);  // 5 giây
 
 
 
@@ -1061,6 +1062,221 @@ var weaponStats = {
 
 
 
+
+// Cập nhật kỹ năng cho từng player trong mảng players
+function updateSkillsBasedOnInventory(players) {
+  players.forEach(player => {
+    // Lọc các kỹ năng từ inventory (otp6 === 9)
+    const skillItems = player.inventory.filter(item => item.otp6 === 9);
+
+    if (skillItems.length > 0) {
+      // Sắp xếp kỹ năng theo mức độ ưu tiên (otp8) và số lượt hồi chiêu (otp7)
+      skillItems.sort((a, b) => {
+        // Sắp xếp theo otp8 (mức độ ưu tiên) giảm dần
+        if (a.otp8 !== b.otp8) return b.otp8 - a.otp8;
+        // Nếu otp8 giống nhau, sắp xếp theo otp7 (số lượt hồi chiêu) tăng dần
+        return a.otp7 - b.otp7;
+      });
+
+      skillItems.forEach(skill => {
+        // Cập nhật thông tin kỹ năng vào "skills"
+        const skillData = {
+          skillName: skill.otp0,      // Tên kỹ năng
+          skillPower: skill.otp1,     // Độ tăng của skill
+          skillEffect: skill.otp2,    // Chỉ số tác động của skill (damage, heal, crit,...)
+          manaCost: skill.otp3,       // Mana tiêu tốn khi sử dụng skill
+          attackCount: skill.otp4,    // Số đòn đánh có hiệu quả
+          skillLevel: skill.otp5,  // Cấp độ của skill
+          cooldownTurns: skill.otp7   //số lượt hồi chiêu
+        };
+
+        // Kiểm tra xem kỹ năng đã có trong player.skills chưa
+        if (!player.skills) {
+          player.skills = []; // Nếu chưa có, khởi tạo mảng kỹ năng
+        }
+
+        // Thêm hoặc cập nhật kỹ năng vào player.skills
+        const existingSkillIndex = player.skills.findIndex(existingSkill => existingSkill.skillName === skillData.skillName);
+        if (existingSkillIndex !== -1) {
+          // Cập nhật kỹ năng nếu đã tồn tại
+          player.skills[existingSkillIndex] = skillData;
+        } else {
+          // Thêm mới kỹ năng vào danh sách
+          player.skills.push(skillData);
+        }
+
+        console.log(`Cập nhật kỹ năng ${skillData.skillName} cho player ${player.id}:`, skillData);
+
+        // Cập nhật dữ liệu lên GitHub (nếu cần thiết)
+        // updatePlayerStat(player.id, { "skills": player.skills }, token);
+      });
+    } else {
+      console.log(`Player ${player.id} không có kỹ năng trong inventory.`);
+    }
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Hàm để cập nhật chỉ số của người chơi khi sử dụng kỹ năng
+function updatePlayerStatsBasedOnSkills(player) {
+  // Kiểm tra nếu player có kỹ năng
+  if (!player.skills || player.skills.length === 0) {
+    console.log("Không có kỹ năng nào.");
+    return;
+  }
+
+  // Sắp xếp kỹ năng theo mức độ ưu tiên (otp8) //số lượt hồi chiêu (cooldownTurns) otp7
+  player.skills.sort((a, b) => b.otp8 - a.otp8); // Sắp xếp giảm dần theo mức độ ưu tiên
+
+  // Lặp qua tất cả các kỹ năng của người chơi
+  player.skills.forEach(skill => {
+    // Kiểm tra hồi chiêu (otp7) trước khi áp dụng kỹ năng
+    if (skill.attackCount > 0 && skill.cooldownTurns <= 0) {
+
+      if(skill.attackCount == skill.otp4) //chỉ tăng 1 lần đầu
+      {
+      // Tính toán các thay đổi dựa trên kỹ năng otp2
+      switch(skill.skillEffect) {
+        case 1: // Tăng dame
+          player.dame += skill.skillPower * skill.skillLevel;
+          break;
+        case 2: // Tăng def
+          player["def-dame"] += skill.skillPower * skill.skillLevel;
+          break;
+        case 3: // Tăng crit%
+          player["crit-%"] += skill.skillPower * skill.skillLevel;
+          break;
+        case 4: // Tăng crit damage
+          player["crit-x"] += skill.skillPower * skill.skillLevel;
+          break;
+        case 5: // Tăng mana
+          player.mana += skill.skillPower * skill.skillLevel;
+          break;
+        // Thêm các hiệu ứng khác tùy thuộc vào yêu cầu của bạn
+      }
+      }
+      // Giảm mana khi sử dụng kỹ năng
+      player.mana -= skill.manaCost;
+
+      // In ra kết quả
+      console.log(`Sau khi sử dụng ${skill.skillName}:`);
+      console.log(`Dame: ${player.dame}, Def: ${player["def-dame"]}, Crit: ${player["crit-%"]}, Mana: ${player.mana}`);
+
+      // Giảm số lượt của kỹ năng (attackCount)
+      skill.attackCount -= 1;
+
+      // Nếu hết lượt còn lại, bắt đầu thời gian hồi chiêu (cooldownTurns)
+      if (skill.attackCount <= 0) {
+        skill.cooldownTurns = skill.otp7; // Đặt lại số lượt hồi chiêu
+      }
+
+      console.log(`Số lượt còn lại của ${skill.skillName}: ${skill.attackCount}`);
+      console.log(`Số lượt hồi chiêu của ${skill.skillName}: ${skill.cooldownTurns}`);
+    } else if (skill.cooldownTurns > 0) {
+      // Giảm số lượt hồi chiêu nếu kỹ năng đang hồi chiêu
+      skill.cooldownTurns -= 1;
+      
+      console.log(`Kỹ năng ${skill.skillName} đang hồi chiêu, còn lại ${skill.cooldownTurns} lượt`);
+    }
+  });
+}
+
+// Hàm để kiểm tra kỹ năng hết hiệu lực và xóa kỹ năng
+function checkSkillExpirationAndRemove(player) {
+  // Xóa các kỹ năng hết hiệu lực
+  if (!player.skills || player.skills.length === 0) {
+    console.log("Không có kỹ năng nào.");
+    return;
+  }
+  player.skills = player.skills.filter(skill => {
+    if (skill.attackCount <= 0) {
+      skill.attackCount = skill.otp4
+      // Sau khi số lượt còn lại là 0, giảm các chỉ số đã được tăng lên
+      switch(skill.skillEffect) {
+        case 1: // Giảm dame
+          player.dame -= skill.skillPower * skill.skillLevel;
+          break;
+        case 2: // Giảm def
+          player["def-dame"] -= skill.skillPower * skill.skillLevel;
+          break;
+        case 3: // Giảm crit%
+          player["crit-%"] -= skill.skillPower * skill.skillLevel;
+          break;
+        case 4: // Giảm crit damage
+          player["crit-x"] -= skill.skillPower * skill.skillLevel;
+          break;
+        case 5: // Giảm mana
+          player.mana -= skill.skillPower * skill.skillLevel;
+          break;
+      }
+
+      // In ra thông báo kỹ năng đã hết hiệu lực
+      console.log(`${skill.skillName} đã hết hiệu lực!`);
+      console.log(`Dame: ${player.dame}, Def: ${player["def-dame"]}, Crit: ${player["crit-%"]}, Mana: ${player.mana}`);
+
+      // Trả về false để loại bỏ kỹ năng khỏi player.skills
+      return false;
+    }
+    // Trả về true để giữ lại kỹ năng
+    return true;
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 var GrapStats = {
     "1": 1.07, 
     "2": 1.11, 
@@ -1138,6 +1354,10 @@ function calculatePlayerDamage(player, target) {
 function recordPlayerAttack(player, target) {
 
   if (player.hp <= 0) return
+
+  updatePlayerStatsBasedOnSkills(player);
+  checkSkillExpirationAndRemove(player);
+  
   const playerReport = playerDamageReport.find(r => r.id === player.id);
 
   // Tính sát thương của người chơi (đã bao gồm phòng thủ của mục tiêu)
@@ -1359,6 +1579,7 @@ async function initGame() {
       totalDamage: 0
     }));
     updatePlayersHpToMax();
+    updateSkillsBasedOnInventory(players)
     startBossFight();  // Bắt đầu trận đấu với boss là mục tiêu mặc định
   } catch (error) {
     console.error(error);  // Nếu có lỗi khi lấy dữ liệu người chơi
