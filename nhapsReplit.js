@@ -205,8 +205,7 @@ server.listen(3000, () => {
 
 
 
-
-const fs = require('fs'); // Import mô-đun fs để làm việc với hệ thống file
+const fs = require('fs');  // Đảm bảo bạn yêu cầu thư viện fs
 
 function getPlayerStat(playerId) {
   const filePath = './playersData.json';  // Đường dẫn tới file JSON trong dự án Replit
@@ -219,31 +218,36 @@ function getPlayerStat(playerId) {
         return;
       }
 
-      // Chuyển đổi nội dung file JSON thành đối tượng JavaScript
-      const jsonData = JSON.parse(data); 
+      try {
+        // Chuyển đổi nội dung file JSON thành đối tượng JavaScript
+        const jsonData = JSON.parse(data);
 
-      // Tìm người chơi trong dữ liệu từ file
-      const player = jsonData.players.find(p => p.id === playerId);
-      if (player) {
-        // Kiểm tra xem người chơi đã có trong biến toàn cục players chưa
-        const existingPlayer = players.find(p => p.id === playerId);
+        // Tìm người chơi trong dữ liệu từ file
+        const player = jsonData.players.find(p => p.id === playerId);
+        if (player) {
+          // Kiểm tra xem người chơi đã có trong biến toàn cục players chưa
+          const existingPlayer = players.find(p => p.id === playerId);
 
-        if (existingPlayer) {
-          // Nếu người chơi đã tồn tại, cập nhật các thuộc tính, nhưng không thay đổi hp và mp
-          Object.keys(player).forEach(key => {
-            if (key !== 'hp' && key !== 'mp' && key !=='skills' && key !== 'hp' && key !== 'mp' && key !=='skills' && key !== 'hp' && key !== 'mp' && key !=='skills') {
-              existingPlayer[key] = player[key];
-            }
-          });
+          if (existingPlayer) {
+            // Nếu người chơi đã tồn tại, cập nhật các thuộc tính, nhưng không thay đổi hp và mp
+            Object.keys(player).forEach(key => {
+              // Loại trừ các thuộc tính không cần thay đổi
+              if (!['hp', 'mp','skills'].includes(key)) {
+                existingPlayer[key] = player[key];
+              }
+            });
 
-          resolve(existingPlayer);  // Trả về người chơi đã được cập nhật
+            resolve(existingPlayer);  // Trả về người chơi đã được cập nhật
+          } else {
+            // Nếu chưa có trong players, thêm vào danh sách players
+            players.push(player);
+            resolve(player);  // Trả về đối tượng người chơi mới
+          }
         } else {
-          // Nếu chưa có trong players, thêm vào danh sách players
-          players.push(player);
-          resolve(player);  // Trả về đối tượng người chơi mới
+          reject('Không tìm thấy người chơi với ID: ' + playerId);
         }
-      } else {
-        reject('Không tìm thấy người chơi với ID: ' + playerId);
+      } catch (parseError) {
+        reject('Lỗi khi phân tích dữ liệu JSON: ' + parseError);
       }
     });
   });
@@ -784,58 +788,6 @@ function updateWeaponBasedOnInventory(player) {
 
 
 
-// Hàm cập nhật các chỉ số của tất cả người chơi với bộ lọc kỹ năng (chỉ kiểm tra run == 1)
-async function updateAllPlayersStats() {
-  try {
-    // Lấy thông tin người chơi từ server, đồng thời xử lý tất cả các request
-    const playerStats = await Promise.all([
-      getPlayerStat(12345),
-      getPlayerStat(67890),
-      getPlayerStat(11223)
-    ]);
-
-    // Cập nhật lại biến toàn cục players
-    players = playerStats;
-
-    // Duyệt qua tất cả người chơi để cập nhật các chỉ số
-    for (let i = 0; i < players.length; i++) {
-      const player = players[i];
-
-      try {
-        // Kiểm tra nếu người chơi có kỹ năng và có kỹ năng nào có run == 1
-        if (player.skills && Array.isArray(player.skills)) {
-          const hasInvalidSkill = player.skills.some(skill => skill.run === 1);
-
-          if (hasInvalidSkill) {
-            console.log(`Bỏ qua người chơi ${player.id} vì có kỹ năng với run == 1.`);
-            continue; // Nếu có kỹ năng nào có run == 1, bỏ qua người chơi này
-          }
-        }
-
-        // Cập nhật trang bị của người chơi từ kho đồ
-        updateWeaponBasedOnInventory(player);
-
-        // Tính toán các chỉ số của người chơi sau khi cập nhật trang bị
-        let updatedDame = calculateWeaponDamage(player); // Tính toán sát thương vũ khí
-        let updatedHP = calculateHP(player); // Tính toán HP từ áo giáp
-        let updatedDEF = calculateDEF(player); // Tính toán phòng thủ
-        let updatedDEFSkill = calculateDEFskill(player); // Tính toán phòng thủ kỹ năng
-
-        // Cập nhật lại các chỉ số của người chơi trong đối tượng player
-        player.dame = updatedDame; // Cập nhật sát thương
-        player.hp_max = updatedHP; // Cập nhật HP
-        player['def-dame'] = updatedDEF; // Cập nhật phòng thủ
-        player['def-skill'] = updatedDEFSkill; // Cập nhật phòng thủ kỹ năng
-      } catch (error) {
-        console.error(`Lỗi khi cập nhật chỉ số cho người chơi ${player.id}:`, error);
-      }
-    }
-
-    console.log("Cập nhật chỉ số người chơi đã hoàn tất.");
-  } catch (error) {
-    console.error("Lỗi khi lấy thông tin người chơi từ server:", error);
-  }
-}
 
 
 
@@ -858,30 +810,6 @@ function updatePlayersHpToMax() {
   }
 }
 
-
-
-
-
-// Gọi ngay lập tức khi ứng dụng mở
-updateAllPlayersStats()
-  .then(() => {
-    console.log("Cập nhật thành công ngay lập tức");
-  })
-  .catch((error) => {
-    console.error("Có lỗi khi cập nhật ngay lập tức:", error);
-  });
-
-// Thiết lập vòng lặp mỗi 5 giây
-setInterval(() => {
-  updateSkillsBasedOnInventory(players)
-  updateAllPlayersStats()
-    .then(() => {
-      console.log("Cập nhật thành công sau mỗi 10 giây");
-    })
-    .catch((error) => {
-      console.error("Có lỗi khi cập nhật:", error);
-    });
-}, 5000);  // 5 giây
 
 
 
@@ -1092,7 +1020,7 @@ function updateSkillsBasedOnInventory(players) {
   players.forEach(player => {
     // Lọc các kỹ năng từ inventory (otp6 === 9)
     const skillItems = player.inventory.filter(item => item.otp6 === 9);
-
+    console.log(`Player ${player.id} dame =  ${player.dame} .`);
     if (skillItems.length > 0) {
       // Sắp xếp kỹ năng theo mức độ ưu tiên (otp8) và số lượt hồi chiêu (otp7)
       skillItems.sort((a, b) => {
@@ -1170,7 +1098,6 @@ function updateSkillsBasedOnInventory(players) {
 
 
 
-
 // Hàm để cập nhật chỉ số của người chơi khi sử dụng kỹ năng
 function updatePlayerStatsBasedOnSkills(player) {
   // Kiểm tra nếu player có kỹ năng
@@ -1178,7 +1105,7 @@ function updatePlayerStatsBasedOnSkills(player) {
     console.log("Không có kỹ năng nào.");
     return;
   }
- 
+  console.log(`Player ${player.id} dame =  ${player.dame} .`);
   // Sắp xếp kỹ năng theo mức độ ưu tiên (otp8) //số lượt hồi chiêu (cooldownTurns) otp7
   player.skills.sort((a, b) => b.otp8 - a.otp8); // Sắp xếp giảm dần theo mức độ ưu tiên
 
@@ -1186,10 +1113,10 @@ function updatePlayerStatsBasedOnSkills(player) {
   player.skills.forEach(skill => {
     // Kiểm tra hồi chiêu (otp7) trước khi áp dụng kỹ năng
     if (skill.attackCount > 0 && skill.cooldownTurns <= 0) {
-
+      skill.run = 1
       if(skill.attackCount == skill.otp4) //chỉ tăng 1 lần đầu
       {
-        skill.run = 1
+        
       // Tính toán các thay đổi dựa trên kỹ năng otp2
       switch(skill.skillEffect) {
         case 1: // Tăng dame
@@ -1241,7 +1168,7 @@ function checkSkillExpirationAndRemove(player) {
     console.log("Không có kỹ năng nào.");
     return;
   }
-
+  console.log(`Player ${player.id} dame =  ${player.dame} .`);
   // Lặp qua các kỹ năng của player và kiểm tra nếu kỹ năng đã hết hiệu lực
   player.skills.forEach(skill => {
     if (skill.attackCount <= 0) {
