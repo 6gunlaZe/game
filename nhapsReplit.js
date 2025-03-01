@@ -460,6 +460,11 @@ function sendMessage(chatId, text, reply_markup = {}) {
     reply_markup: reply_markup // Đảm bảo không gửi null
   };
 
+ /// 
+  let formattedMessage = text.replace(/\n/g, '<br>');
+  // Gửi thông điệp đã được thay thế
+  io.emit('chatMessage', formattedMessage);  // Sẽ gửi HTML với thẻ <br> cho xuống dòng
+///
   console.log('Sending message:', payload);  // Debug log: Xem payload
 
   fetch(url, {
@@ -1159,7 +1164,7 @@ function displayDamageReport() {
 
   let report = '===== Damage Report =====\n';
   report += `Boss HP: ${bossHPPercentage.toFixed(2)}%\n`;  // Hiển thị % máu của boss
-  report += '| Name                     | Total         |\n';
+  report += '|-Name------------------|-Total--------|\n';
   report += '|--------------------------|--------------|-------------|\n';
 
   playerDamageReport.forEach(playerReport => {
@@ -1171,8 +1176,8 @@ function displayDamageReport() {
     const playerHPPercentage = (playerHP / playerMaxHP) * 100;  // Phần trăm máu của người chơi
 
     // Căn chỉnh tên và sát thương cho đều đặn và thêm biểu tượng cho tên và tổng sát thương
-    const name = `🎮 ${playerName} (${playerHPPercentage.toFixed(0)}%)`.padEnd(12, ' ');  // Thêm phần trăm máu người chơi vào tên
-    const total = `💥 ${playerReport.totalDamage.toString().padStart(20, ' ')}`;  // Thêm biểu tượng cho tổng sát thương
+    const name = `🎮 ${playerName} (${playerHPPercentage.toFixed(0)}%)`.padEnd(25, ' ');  // Thêm phần trăm máu người chơi vào tên
+    const total = `💥 ${playerReport.totalDamage.toString().padStart(12, ' ')}`;  // Thêm biểu tượng cho tổng sát thương
 
     // Hiển thị từng đòn đánh trong giây hiện tại (bao gồm cả chí mạng và không chí mạng)
 const now = playerReport.attacks.map(attack => {
@@ -1192,7 +1197,7 @@ const now = playerReport.attacks.map(attack => {
 
   // Kết hợp cả chí mạng và emoji playertarget
   return `${critSymbol} ${targetEmojis}`;
-}).join(', ').padStart(12, ' ');  // Hiển thị tất cả các đòn tấn công
+}).join(', ').padStart(35, ' ');  // Hiển thị tất cả các đòn tấn công
 
 
     // Thêm dòng vào báo cáo
