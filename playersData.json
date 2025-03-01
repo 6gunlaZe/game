@@ -18,6 +18,17 @@
           "otp6": 1
         },
         {
+          "otp0": "skill_crit",
+          "otp1": 30,
+          "otp2": 3,
+          "otp3": 10,
+          "otp4": 3,
+          "otp5": 1,
+          "otp6": 9,
+          "otp7": 5,
+          "otp8": 1
+        },
+        {
           "otp0": "T5_frost_armor",
           "otp1": 20,
           "otp2": 10,
@@ -32,7 +43,7 @@
       "health": 300,
       "hp_max": 300,
       "hp": 300,
-      "mana": 100,
+      "mana": 1000,
       "def-dame": 50,
       "def-skill": 20,
       "crit-%": 15,
