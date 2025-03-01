@@ -33,7 +33,6 @@ getPlayerStat(playerId)
 
 const fs = require('fs'); // Import mô-đun fs để làm việc với hệ thống file
 
-// Hàm lấy thông số người chơi từ file playersData.json trên Replit
 function getPlayerStat(playerId) {
   const filePath = './playersData.json';  // Đường dẫn tới file JSON trong dự án Replit
 
@@ -48,16 +47,33 @@ function getPlayerStat(playerId) {
       // Chuyển đổi nội dung file JSON thành đối tượng JavaScript
       const jsonData = JSON.parse(data); 
 
-      // Tìm người chơi trong dữ liệu
+      // Tìm người chơi trong dữ liệu từ file
       const player = jsonData.players.find(p => p.id === playerId);
       if (player) {
-        resolve(player);  // Trả về đối tượng người chơi
+        // Kiểm tra xem người chơi đã có trong biến toàn cục players chưa
+        const existingPlayer = players.find(p => p.id === playerId);
+
+        if (existingPlayer) {
+          // Nếu người chơi đã tồn tại, cập nhật các thuộc tính, nhưng không thay đổi hp và mp
+          Object.keys(player).forEach(key => {
+            if (key !== 'hp' && key !== 'mp') {
+              existingPlayer[key] = player[key];
+            }
+          });
+
+          resolve(existingPlayer);  // Trả về người chơi đã được cập nhật
+        } else {
+          // Nếu chưa có trong players, thêm vào danh sách players
+          players.push(player);
+          resolve(player);  // Trả về đối tượng người chơi mới
+        }
       } else {
         reject('Không tìm thấy người chơi với ID: ' + playerId);
       }
     });
   });
 }
+
 
 
 
