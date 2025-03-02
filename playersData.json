@@ -4,7 +4,7 @@
       "id": 12345,
       "id_bot": 6708647498,
       "name": "tien",
-      "dame": 330,
+      "dame": 300,
       "exp": 3000,
       "boss": 0,
       "inventory": [
@@ -226,7 +226,7 @@
         },
         {
           "otp0": "gem",
-          "otp1": 31
+          "otp1": 36
         }
       ],
       "level": 15,
