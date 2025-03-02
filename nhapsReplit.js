@@ -783,6 +783,7 @@ function updateWeaponBasedOnInventory(player) {
       updatePlayerStat(player.id, { "trang-bi": player["trang-bi"] });
     }
   });
+
 }
 
 
@@ -813,9 +814,28 @@ function updatePlayersHpToMax() {
 
 
 
+function updateAllPlayersStats(players) {
+for (let player of players) {
+  try {
+    // Cập nhật trang bị của người chơi từ kho đồ
+    //updateWeaponBasedOnInventory(player);
 
+    // Tính toán các chỉ số của người chơi sau khi cập nhật trang bị
+    let updatedDame = calculateWeaponDamage(player); // Tính toán sát thương vũ khí
+    let updatedHP = calculateHP(player); // Tính toán HP từ áo giáp
+    let updatedDEF = calculateDEF(player); // Tính toán phòng thủ
+    let updatedDEFSkill = calculateDEFskill(player); // Tính toán phòng thủ kỹ năng
 
-
+    // Cập nhật lại các chỉ số của người chơi trong đối tượng player
+    player.dame = updatedDame; // Cập nhật sát thương
+    player.hp_max = updatedHP; // Cập nhật HP
+    player['def-dame'] = updatedDEF; // Cập nhật phòng thủ
+    player['def-skill'] = updatedDEFSkill; // Cập nhật phòng thủ kỹ năng
+  } catch (error) {
+    console.error(`Lỗi khi cập nhật chỉ số cho người chơi ${player.id}:`, error);
+  }
+}
+}
 
 
 
@@ -1258,6 +1278,34 @@ var GrapStats = {
 };
 
 
+
+// Tạo vòng lặp mỗi 20 giây (20000 milliseconds)
+const bossInterval = setInterval(() => {
+  // Kiểm tra nếu boss chết (hp <= 0)
+  if (boss.hp <= 0) {
+    // Thay đổi boss mới
+    boss = {
+      id: "boss001",
+      name: "Big Boss",
+      hp: 20000,         // Máu của boss
+      damage: 150,       // Sát thương của boss
+      defense: 50,       // Phòng thủ của boss
+      isAlive: true,     // Trạng thái sống của boss
+      boss:1,
+    };
+    
+    let textMessage = "Có boss mới\nhttps://b428ac2b-18c7-48a4-82ea-e4b045cd10b0-00-2n7uo6e4w9trh.pike.replit.dev/";
+
+    sendMessage(playerId, textMessage)
+    console.log("Boss đã chết, tạo boss mới:", boss);
+  } else {
+    console.log(`Boss hiện tại: ${boss.name}, HP: ${boss.hp}`);
+  }
+}, 20000);  // Lặp lại mỗi 20 giây (20000ms)
+
+
+
+
 let boss = {
   id: "boss001",
   name: "Big Boss",
@@ -1538,6 +1586,7 @@ async function initGame() {
     }));
     updatePlayersHpToMax();
     updateSkillsBasedOnInventory(players)
+    updateAllPlayersStats(players)
     startBossFight();  // Bắt đầu trận đấu với boss là mục tiêu mặc định
   } catch (error) {
     console.error(error);  // Nếu có lỗi khi lấy dữ liệu người chơi
