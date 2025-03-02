@@ -6,7 +6,7 @@ const token = token1.slice(0, -4);  // Bỏ đi 4 ký tự cuối
 const playerId = 12345;
 
 // Gọi hàm để lấy thông số người chơi
-getPlayerStat(playerId, token)
+getPlayerStat(playerId)
   .then(player => {
 
     const playerDame = player.dame;  // Lấy giá trị dame
@@ -17,7 +17,7 @@ getPlayerStat(playerId, token)
       dame: 200,  // Cập nhật damage
       exp: 3000,  // Cập nhật điểm kinh nghiệm
     };
-    updatePlayerStat(playerId, updatedStat, token);
+    updatePlayerStat(playerId, updatedStat);
   })
   .catch(error => {
     console.error(error);
@@ -25,119 +25,285 @@ getPlayerStat(playerId, token)
 
 
 
+////////////////////////
+
+
+
+const express = require('express');
+const http = require('http');
+const socketIo = require('socket.io');
+const path = require('path');
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
+// Cung cấp tệp tĩnh từ thư mục public
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Đối tượng lưu trạng thái của người dùng
+const userSelections = {};  // Lưu trữ lựa chọn của người dùng theo socket.id
+
+// Các nhóm tùy chọn
+const optionGroups = {
+  group1: ['Option 1', 'Option 2', 'Option 3'],
+  group2: ['Option 4', 'Option 5', 'Option 6'],
+  group3: ['Option 7', 'Option 8', 'Option 9'],
+};
+
+// Lắng nghe kết nối WebSocket từ client
+io.on('connection', (socket) => {
+  console.log('A user connected');
+
+  // Lắng nghe sự kiện 'userOption' từ client
+  socket.on('userOption', (option) => {
+    console.log('User selected:', option);
+
+    // Kiểm tra xem người dùng đã chọn nhóm chưa
+    if (!userSelections[socket.id]) {
+      // Người dùng chưa chọn gì, lưu nhóm của họ dựa trên tùy chọn đầu tiên
+      const selectedGroup = getOptionGroup(option);
+      if (selectedGroup) {
+        userSelections[socket.id] = {
+          selectedGroup: selectedGroup,
+          selectedOptions: [option], // Lưu tùy chọn người dùng đã chọn
+        };
+        // Thực thi hành động tùy chọn
+        handleOption(option);
+        io.emit('chatMessage', `User selected: ${option}`);
+      } else {
+        socket.emit('chatMessage', 'Invalid option.');
+      }
+    } else {
+      // Người dùng đã chọn nhóm, kiểm tra xem tùy chọn có hợp lệ không
+      const userGroup = userSelections[socket.id].selectedGroup;
+      if (optionGroups[userGroup].includes(option)) {
+        // Nếu tùy chọn thuộc nhóm người dùng đã chọn
+        handleOption(option);  // Luôn thực hiện tác vụ mỗi lần chọn
+        io.emit('chatMessage', `User selected: ${option}`);
+      } else {
+        socket.emit('chatMessage', `You can only select options from the same group: ${userGroup}`);
+      }
+    }
+  });
+
+  // Lắng nghe sự kiện disconnect
+  socket.on('disconnect', () => {
+    console.log('User disconnected');
+    delete userSelections[socket.id]; // Xóa người dùng khỏi danh sách khi họ rời đi
+  });
+});
+
+// Hàm xử lý tùy chọn
+function handleOption(option) {
+  switch (option) {
+    case 'Option 1':
+      performTaskForOption1();
+      break;
+    case 'Option 2':
+      performTaskForOption2();
+      break;
+    case 'Option 3':
+      performTaskForOption3();
+      break;
+    case 'Option 4':
+      performTaskForOption4();
+      break;
+    case 'Option 5':
+      performTaskForOption5();
+      break;
+    case 'Option 6':
+      performTaskForOption6();
+      break;
+    case 'Option 7':
+      performTaskForOption7();
+      break;
+    case 'Option 8':
+      performTaskForOption8();
+      break;
+    case 'Option 9':
+      performTaskForOption9();
+      break;
+    default:
+      console.log('No task assigned for this option.');
+  }
+}
+
+
+
+function performTaskForOption1() {
+  console.log('Executing task for Option 1');
+  startBossFight(players[1],players[0]);
+  startBossFight(players[0],players[1]);
+  io.emit('chatMessage', 'Tiến Atk Hải');
+}
+
+function performTaskForOption2() {
+  console.log('Executing task for Option 2');
+  io.emit('chatMessage', 'Tiến Atk Hoàng');
+}
+
+function performTaskForOption3() {
+  console.log('Executing task for Option 3');
+   startBossFight(boss,players[0]);
+  io.emit('chatMessage', 'Tiến Atk BOSS');
+}
+
+function performTaskForOption4() {
+  console.log('Executing task for Option 4');
+  io.emit('chatMessage', 'Hải Atk Tiến');
+}
+
+function performTaskForOption5() {
+  console.log('Executing task for Option 5');
+  io.emit('chatMessage', 'Hải Atk Hoàng');
+}
+
+function performTaskForOption6() {
+  console.log('Executing task for Option 6');
+  io.emit('chatMessage', 'Hải Atk BOSS');
+}
+
+function performTaskForOption7() {
+  console.log('Executing task for Option 7');
+  io.emit('chatMessage', 'Hoàng Atk Tiến');
+}
+
+function performTaskForOption8() {
+  console.log('Executing task for Option 8');
+  io.emit('chatMessage', 'Hoàng Atk Hải');
+}
+
+function performTaskForOption9() {
+  console.log('Executing task for Option 9');
+  io.emit('chatMessage', 'Hoàng Atk BOSS');
+}
+
+
+// Hàm xác định nhóm của một tùy chọn
+function getOptionGroup(option) {
+  if (optionGroups.group1.includes(option)) {
+    return 'group1';
+  } else if (optionGroups.group2.includes(option)) {
+    return 'group2';
+  } else if (optionGroups.group3.includes(option)) {
+    return 'group3';
+  } else {
+    return null;
+  }
+}
+
+// Khởi động server
+server.listen(3000, () => {
+  console.log('Server is running on http://localhost:3000');
+});
 
 
 
 
 
 
-// Hàm lấy thông số người chơi từ GitHub thông qua GitHub API
-function getPlayerStat(playerId, token) {
-  const repoOwner = '6gunlaZe';  // Tên người sở hữu repo
-  const repoName = 'game';  // Tên repository
-  const filePath = 'playersData.json';  // Đường dẫn tới file JSON trong repo
 
-  // Trả về một Promise, sẽ resolve với đối tượng player
+
+//////////////////////////
+
+
+
+
+const fs = require('fs');  // Đảm bảo bạn yêu cầu thư viện fs
+
+function getPlayerStat(playerId) {
+  const filePath = './playersData.json';  // Đường dẫn tới file JSON trong dự án Replit
+
   return new Promise((resolve, reject) => {
-    // Sử dụng GitHub API để lấy nội dung file playersData.json
-    fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `token ${token}`,
-        'Accept': 'application/vnd.github.v3+json',
-      },
-    })
-    .then(response => response.json())
-    .then(data => {
-      // Dữ liệu sẽ được trả về dưới dạng Base64, cần giải mã
-      const fileContent = atob(data.content); // Giải mã nội dung Base64
-      const jsonData = JSON.parse(fileContent); // Chuyển đổi nội dung thành JSON
+    // Đọc file playersData.json
+    fs.readFile(filePath, 'utf8', (err, data) => {
+      if (err) {
+        reject('Lỗi khi đọc file: ' + err);
+        return;
+      }
+
+      try {
+        // Chuyển đổi nội dung file JSON thành đối tượng JavaScript
+        const jsonData = JSON.parse(data);
+
+        // Tìm người chơi trong dữ liệu từ file
+        const player = jsonData.players.find(p => p.id === playerId);
+        if (player) {
+          // Kiểm tra xem người chơi đã có trong biến toàn cục players chưa
+          const existingPlayer = players.find(p => p.id === playerId);
+
+          if (existingPlayer) {
+            // Nếu người chơi đã tồn tại, cập nhật các thuộc tính, nhưng không thay đổi hp và mp
+            Object.keys(player).forEach(key => {
+              // Loại trừ các thuộc tính không cần thay đổi
+              if (!['hp', 'mp','skills'].includes(key)) {
+                existingPlayer[key] = player[key];
+              }
+            });
+
+            resolve(existingPlayer);  // Trả về người chơi đã được cập nhật
+          } else {
+            // Nếu chưa có trong players, thêm vào danh sách players
+            players.push(player);
+            resolve(player);  // Trả về đối tượng người chơi mới
+          }
+        } else {
+          reject('Không tìm thấy người chơi với ID: ' + playerId);
+        }
+      } catch (parseError) {
+        reject('Lỗi khi phân tích dữ liệu JSON: ' + parseError);
+      }
+    });
+  });
+}
+
+
+
+
+
+
+
+// Hàm cập nhật thông số người chơi trong file playersData.json
+function updatePlayerStat(playerId, updatedStat) {
+  const filePath = './playersData.json';  // Đường dẫn tới file JSON trong dự án Replit
+
+  return new Promise((resolve, reject) => {
+    // Đọc file playersData.json
+    fs.readFile(filePath, 'utf8', (err, data) => {
+      if (err) {
+        reject('Lỗi khi đọc file: ' + err);
+        return;
+      }
+
+      // Chuyển dữ liệu thành đối tượng JavaScript
+      const jsonData = JSON.parse(data);
 
       // Tìm người chơi trong dữ liệu
       const player = jsonData.players.find(p => p.id === playerId);
       if (player) {
-        resolve(player);  // Trả về đối tượng người chơi
+        // Cập nhật thông số trong player
+        Object.assign(player, updatedStat);
+
+        // Chuyển lại dữ liệu thành chuỗi JSON
+        const updatedData = JSON.stringify(jsonData, null, 2);
+
+        // Ghi lại dữ liệu cập nhật vào file
+        fs.writeFile(filePath, updatedData, 'utf8', (err) => {
+          if (err) {
+            reject('Lỗi khi ghi file: ' + err);
+            return;
+          }
+          resolve('Dữ liệu đã được cập nhật thành công!');
+        });
       } else {
         reject('Không tìm thấy người chơi với ID: ' + playerId);
       }
-    })
-    .catch(error => reject('Lỗi khi lấy thông số người chơi: ' + error));
+    });
   });
 }
 
-// Hàm cập nhật thông số người chơi trên GitHub thông qua GitHub API
-function updatePlayerStat(playerId, updatedStat, token) {
-  const repoOwner = '6gunlaZe';  // Tên người sở hữu repo
-  const repoName = 'game';  // Tên repository
-  const filePath = 'playersData.json';  // Đường dẫn tới file JSON trong repo
 
-  // Sử dụng GitHub API để lấy dữ liệu hiện tại từ GitHub
-  fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `token ${token}`,
-      'Accept': 'application/vnd.github.v3+json',
-    },
-  })
-  .then(response => response.json())
-  .then(data => {
-    // Dữ liệu sẽ được trả về dưới dạng Base64, cần giải mã
-    const fileContent = atob(data.content); // Giải mã nội dung Base64
-    const jsonData = JSON.parse(fileContent); // Chuyển đổi nội dung thành JSON
-
-    // Tìm người chơi trong dữ liệu
-    const player = jsonData.players.find(p => p.id === playerId);
-    if (player) {
-      // Cập nhật thông số trong player
-      Object.assign(player, updatedStat);
-
-      // Cập nhật lại dữ liệu
-      const updatedData = JSON.stringify(jsonData, null, 2);
-
-      // Cập nhật lại file JSON lên GitHub
-      const commitMessage = `Cập nhật thông số người chơi với ID ${playerId}`;
-
-      // Lấy SHA của file để thực hiện cập nhật
-      getFileSHA(repoOwner, repoName, filePath, token).then(fileSha => {
-        fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-          method: 'PUT',
-          headers: {
-            'Authorization': `token ${token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            message: commitMessage,
-            content: btoa(updatedData),  // Mã hóa lại dữ liệu thành Base64
-            sha: fileSha,  // SHA của file hiện tại
-          }),
-        })
-        .then(response => response.json())
-        .then(data => {
-          console.log('Dữ liệu đã được cập nhật:', data);
-        })
-        .catch(error => console.error('Lỗi khi cập nhật dữ liệu:', error));
-      });
-    } else {
-      console.log('Không tìm thấy người chơi với ID:', playerId);
-    }
-  })
-  .catch(error => console.error('Lỗi khi lấy dữ liệu hiện tại:', error));
-}
-
-// Hàm lấy SHA của file từ GitHub
-function getFileSHA(repoOwner, repoName, filePath, token) {
-  return fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-    method: 'GET',
-    headers: {
-      'Authorization': `token ${token}`,
-    },
-  })
-  .then(response => response.json())
-  .then(data => data.sha)
-  .catch(error => console.error('Lỗi khi lấy SHA của file:', error));
-}
-
-// Cách sử dụng
 
 
 
@@ -294,6 +460,9 @@ function sendSyntaxExamples(chatId) {
   sendMessage(chatId, text, reply_markup); // Gửi tin nhắn với inline keyboard
 }
 
+
+const fetch = require('node-fetch'); // Import node-fetch
+
 // Hàm gửi tin nhắn phản hồi (reply)
 function sendMessage(chatId, text, reply_markup = {}) {
   const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
@@ -302,6 +471,10 @@ function sendMessage(chatId, text, reply_markup = {}) {
     text: text,
     reply_markup: reply_markup // Đảm bảo không gửi null
   };
+
+  let formattedMessage = text.replace(/\n/g, '<br>');
+  // Gửi thông điệp đã được thay thế
+  io.emit('chatMessage', formattedMessage);  // Sẽ gửi HTML với thẻ <br> cho xuống dòng
 
   console.log('Sending message:', payload);  // Debug log: Xem payload
 
@@ -316,6 +489,8 @@ function sendMessage(chatId, text, reply_markup = {}) {
   .then(data => console.log('Message sent:', data))
   .catch(error => console.error('Error sending message:', error));
 }
+
+
 
 // Hàm xử lý khi người dùng nhấn vào nút trong inline keyboard
 function handleCallbackQuery(callbackQuery) {
@@ -393,12 +568,12 @@ setTimeout(() => {
 
 
 
-function sendPlayerStatsToTelegram(playerId, chatId, token) {
-  getPlayerStat(playerId, token)  // Lấy thông tin nhân vật từ GitHub
+function sendPlayerStatsToTelegram(playerId, chatId) {
+  getPlayerStat(playerId)  // Lấy thông tin nhân vật từ GitHub
     .then(player => {
 
-    updateWeaponBasedOnInventory(player, token);
-     let weaponhp = calculateHP(player) - player.health
+    updateWeaponBasedOnInventory(player);
+     let weaponhp = calculateHP(player) - player.hp_max
           let weaponDame = calculateWeaponDamage(player) - player.dame; // Gọi hàm để tính dame của vũ khí
         let weapondef = calculateDEF(player) - player['def-dame'];
   let weapondef1 = calculateDEFskill(player) - player['def-skill'];
@@ -409,7 +584,7 @@ function sendPlayerStatsToTelegram(playerId, chatId, token) {
 - ⚔️ **Dame**:  ${player.dame} + ${weaponDame}
 - 🌟 **exp**: ${player.exp}
 - 🏆 **Level**: ${player.level}
-- ❤️ **Health**: ${player.health_max} + ${weaponhp}
+- ❤️ **HP**: ${player.hp_max} + ${weaponhp}
 - 🔋 **Mana**: ${player.mana}
 - 🛡️ : ${player['def-dame']} + ${weapondef} (Giảm sát thương nhận vào)
 - 🎽 : ${player['def-skill']} + ${weapondef1} (Giảm hiệu quả kỹ năng đối phương)
@@ -446,7 +621,7 @@ function sendPlayerStatsToTelegram(playerId, chatId, token) {
 
 
 
-sendPlayerStatsToTelegram(12345, 6708647498, token);
+sendPlayerStatsToTelegram(12345, 6708647498);
 
 
 
@@ -498,7 +673,7 @@ if(grapvk)dame=dame*grapvk
 
 function calculateHP(player) {
   // Lấy giá trị otp0 của vũ khí
-  let dame0 = player.health;	
+  let dame0 = player.hp_max;	
   let otp0 = player['trang-bi']['ao'].otp0;
    let otp5 = player['trang-bi']['ao'].otp5;
   // Lấy giá trị dame cơ bản từ weaponStats dựa trên otp0
@@ -589,7 +764,7 @@ if(grapvk)dame=dame*grapvk
 
 
 
-function updateWeaponBasedOnInventory(player, token) {
+function updateWeaponBasedOnInventory(player) {
   // 1: vũ khí (vu-khi)
   // 2: áo (ao)
   // 3: giáp (giap)
@@ -614,9 +789,10 @@ function updateWeaponBasedOnInventory(player, token) {
       console.log(`Cập nhật ${item}:`, player["trang-bi"][item]);
 
       // Cập nhật dữ liệu lên GitHub
-      updatePlayerStat(player.id, { "trang-bi": player["trang-bi"] }, token);
+      updatePlayerStat(player.id, { "trang-bi": player["trang-bi"] });
     }
   });
+
 }
 
 
@@ -624,20 +800,34 @@ function updateWeaponBasedOnInventory(player, token) {
 
 
 
-// Hàm cập nhật các chỉ số của tất cả người chơi
-async function updateAllPlayersStats(token) {
-  // Lấy thông tin người chơi từ server
-  const player1 = await getPlayerStat(12345, token);
-  const player2 = await getPlayerStat(67890, token);
-  const player3 = await getPlayerStat(11223, token);
 
-  // cập nhật lại biến toàn cục players
-  players = [player1, player2, player3];  
 
-  // Duyệt qua tất cả người chơi để cập nhật các chỉ số
-  players.forEach(player => {
+
+
+function updatePlayersHpToMax() {
+  // Kiểm tra nếu biến toàn cục players có dữ liệu
+  if (players && Array.isArray(players)) {
+    // Duyệt qua tất cả các người chơi và cập nhật hp thành hp_max
+    players.forEach(player => {
+      if (player.hp_max !== undefined) {  // Kiểm tra nếu player có thuộc tính hp_max
+        player.hp = player.hp_max;  // Cập nhật hp = hp_max
+      }
+    });
+
+    console.log("Cập nhật hp cho tất cả người chơi thành công!");
+  } else {
+    console.log("Không có dữ liệu người chơi!");
+  }
+}
+
+
+
+
+function updateAllPlayersStats(players) {
+for (let player of players) {
+  try {
     // Cập nhật trang bị của người chơi từ kho đồ
-    updateWeaponBasedOnInventory(player, token);
+    //updateWeaponBasedOnInventory(player);
 
     // Tính toán các chỉ số của người chơi sau khi cập nhật trang bị
     let updatedDame = calculateWeaponDamage(player); // Tính toán sát thương vũ khí
@@ -647,30 +837,14 @@ async function updateAllPlayersStats(token) {
 
     // Cập nhật lại các chỉ số của người chơi trong đối tượng player
     player.dame = updatedDame; // Cập nhật sát thương
-    player.health = updatedHP; // Cập nhật HP
+    player.hp_max = updatedHP; // Cập nhật HP
     player['def-dame'] = updatedDEF; // Cập nhật phòng thủ
     player['def-skill'] = updatedDEFSkill; // Cập nhật phòng thủ kỹ năng
-  });
-
-  console.log("Cập nhật chỉ số người chơi đã hoàn tất.");
+  } catch (error) {
+    console.error(`Lỗi khi cập nhật chỉ số cho người chơi ${player.id}:`, error);
+  }
 }
-
-// Thiết lập vòng lặp mỗi 10 giây
-setInterval(() => {
-  updateAllPlayersStats(token)
-    .then(() => {
-      console.log("Cập nhật thành công sau mỗi 10 giây");
-    })
-    .catch((error) => {
-      console.error("Có lỗi khi cập nhật:", error);
-    });
-}, 10000);  //  = 10s
-
-
-
-
-
-
+}
 
 
 
@@ -869,6 +1043,227 @@ var weaponStats = {
 
 
 
+
+// Cập nhật kỹ năng cho từng player trong mảng players
+function updateSkillsBasedOnInventory(players) {
+  players.forEach(player => {
+    // Lọc các kỹ năng từ inventory (otp6 === 9)
+    const skillItems = player.inventory.filter(item => item.otp6 === 9);
+    console.log(`Player ${player.id} dame =  ${player.dame} .`);
+    if (skillItems.length > 0) {
+      // Sắp xếp kỹ năng theo mức độ ưu tiên (otp8) và số lượt hồi chiêu (otp7)
+      skillItems.sort((a, b) => {
+        // Sắp xếp theo otp8 (mức độ ưu tiên) giảm dần
+        if (a.otp8 !== b.otp8) return b.otp8 - a.otp8;
+        // Nếu otp8 giống nhau, sắp xếp theo otp7 (số lượt hồi chiêu) tăng dần
+        return a.otp7 - b.otp7;
+      });
+
+      skillItems.forEach(skill => {
+        // Cập nhật thông tin kỹ năng vào "skills"
+        const skillData = {
+          skillName: skill.otp0,      // Tên kỹ năng
+          skillPower: skill.otp1,     // Độ tăng của skill
+          skillEffect: skill.otp2,    // Chỉ số tác động của skill (damage, heal, crit,...)
+          manaCost: skill.otp3,       // Mana tiêu tốn khi sử dụng skill
+          attackCount: skill.otp4,    // Số đòn đánh có hiệu quả
+          otp4: skill.otp4,         //tạo giá trị mặc định
+          otp7: skill.otp7,         //tạo giá trị mặc định
+          otp8: skill.otp8,         //tạo giá trị mặc định
+          run: skill.otp8 - skill.otp8,
+          skillLevel: skill.otp5,  // Cấp độ của skill
+          cooldownTurns: skill.otp7 - skill.otp7   //số lượt hồi chiêu
+        };
+
+        // Kiểm tra xem kỹ năng đã có trong player.skills chưa
+        if (!player.skills) {
+          player.skills = []; // Nếu chưa có, khởi tạo mảng kỹ năng
+        }
+
+        // Thêm hoặc cập nhật kỹ năng vào player.skills
+        const existingSkillIndex = player.skills.findIndex(existingSkill => existingSkill.skillName === skillData.skillName);
+        if (existingSkillIndex !== -1) {
+          //không cần Cập nhật kỹ năng nếu đã tồn tại 
+        //  player.skills[existingSkillIndex] = skillData;
+        } else {
+          // Thêm mới kỹ năng vào danh sách
+          player.skills.push(skillData);
+        }
+
+        console.log(`Cập nhật kỹ năng ${skillData.skillName} cho player ${player.id}:`, skillData);
+
+        // Cập nhật dữ liệu lên GitHub (nếu cần thiết)
+        // updatePlayerStat(player.id, { "skills": player.skills }, token);
+      });
+    } else {
+      console.log(`Player ${player.id} không có kỹ năng trong inventory.`);
+    }
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Hàm để cập nhật chỉ số của người chơi khi sử dụng kỹ năng
+function updatePlayerStatsBasedOnSkills(player) {
+  // Kiểm tra nếu player có kỹ năng
+  if (!player.skills || player.skills.length === 0) {
+    console.log("Không có kỹ năng nào.");
+    return;
+  }
+  console.log(`Player ${player.id} dame =  ${player.dame} .`);
+  // Sắp xếp kỹ năng theo mức độ ưu tiên (otp8) //số lượt hồi chiêu (cooldownTurns) otp7
+  player.skills.sort((a, b) => b.otp8 - a.otp8); // Sắp xếp giảm dần theo mức độ ưu tiên
+
+  // Lặp qua tất cả các kỹ năng của người chơi
+  player.skills.forEach(skill => {
+    // Kiểm tra hồi chiêu (otp7) trước khi áp dụng kỹ năng
+    if (skill.attackCount > 0 && skill.cooldownTurns <= 0) {
+      skill.run = 1
+      if(skill.attackCount == skill.otp4) //chỉ tăng 1 lần đầu
+      {
+        
+      // Tính toán các thay đổi dựa trên kỹ năng otp2
+      switch(skill.skillEffect) {
+        case 1: // Tăng dame
+          player.dame += skill.skillPower * skill.skillLevel;
+          break;
+        case 2: // Tăng def
+          player['def-dame'] += skill.skillPower * skill.skillLevel;
+          break;
+        case 3: // Tăng crit%
+          player['crit-%'] += skill.skillPower * skill.skillLevel;
+          break;
+        case 4: // Tăng crit damage
+          player['crit-x'] += skill.skillPower * skill.skillLevel;
+          break;
+        case 5: // Tăng mana
+          player.mana += skill.skillPower * skill.skillLevel;
+          break;
+        // Thêm các hiệu ứng khác tùy thuộc vào yêu cầu của bạn
+      }
+      }
+      // Giảm mana khi sử dụng kỹ năng
+      player.mana -= skill.manaCost;
+
+      // In ra kết quả
+      console.log(`Sau khi ${skill.run} sử dụng ${skill.skillName}:`);
+      console.log(`Dame: ${player.dame}, Def: ${player["def-dame"]}, Crit: ${player["crit-%"]}, Mana: ${player.mana}`);
+
+      // Giảm số lượt của kỹ năng (attackCount)
+      skill.attackCount -= 1;
+
+      // Nếu hết lượt còn lại, bắt đầu thời gian hồi chiêu (cooldownTurns)
+      if (skill.attackCount <= 0) {
+        skill.cooldownTurns = skill.otp7; // Đặt lại số lượt hồi chiêu
+      }
+
+      console.log(`Số lượt còn lại của ${skill.skillName}: ${skill.attackCount}`);
+      console.log(`Số lượt hồi chiêu của ${skill.skillName}: ${skill.cooldownTurns}`);
+    } else if (skill.cooldownTurns > 0) {
+      // Giảm số lượt hồi chiêu nếu kỹ năng đang hồi chiêu
+      skill.cooldownTurns -= 1;
+      
+      console.log(`Kỹ năng ${skill.skillName} đang hồi chiêu, ${skill.run} còn lại ${skill.cooldownTurns} lượt`);
+    }
+  });
+}
+
+function checkSkillExpirationAndRemove(player) {
+  if (!player.skills || player.skills.length === 0) {
+    console.log("Không có kỹ năng nào.");
+    return;
+  }
+  console.log(`Player ${player.id} dame =  ${player.dame} .`);
+  // Lặp qua các kỹ năng của player và kiểm tra nếu kỹ năng đã hết hiệu lực
+  player.skills.forEach(skill => {
+    if (skill.attackCount <= 0) {
+      // Reset lại số lượt tấn công (attackCount) của kỹ năng
+      skill.attackCount = skill.otp4; // Reset lại theo số đòn tấn công ban đầu
+      skill.run = 0
+      // Sau khi số lượt còn lại là 0, giảm các chỉ số đã được tăng lên
+      switch (skill.skillEffect) {
+        case 1: // Giảm dame
+          player.dame -= skill.skillPower * skill.skillLevel;
+          break;
+        case 2: // Giảm def
+          player["def-dame"] -= skill.skillPower * skill.skillLevel;
+          break;
+        case 3: // Giảm crit%
+          player["crit-%"] -= skill.skillPower * skill.skillLevel;
+          break;
+        case 4: // Giảm crit damage
+          player["crit-x"] -= skill.skillPower * skill.skillLevel;
+          break;
+        case 5: // Giảm mana
+          player.mana -= skill.skillPower * skill.skillLevel;
+          break;
+      }
+
+      // In ra thông báo kỹ năng đã hết hiệu lực và được reset
+      console.log(`${skill.skillName} đã hết hiệu lực và được reset!`);
+      console.log(`Dame: ${player.dame}, Def: ${player["def-dame"]}, Crit: ${player["crit-%"]}, Mana: ${player.mana}`);
+
+      // Đặt lại số lượt hồi chiêu (cooldownTurns)
+      skill.cooldownTurns = skill.otp7; // Đặt lại số lượt hồi chiêu sau khi hết hiệu lực
+      console.log(`Số lượt hồi chiêu của ${skill.skillName} đã được đặt lại: ${skill.cooldownTurns}`);
+    }
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 var GrapStats = {
     "1": 1.07, 
     "2": 1.11, 
@@ -890,6 +1285,35 @@ var GrapStats = {
     "18": 1.99,
     "19": 2.10,
 };
+
+
+
+// Tạo vòng lặp mỗi 20 giây (20000 milliseconds)
+const bossInterval = setInterval(() => {
+  // Kiểm tra nếu boss chết (hp <= 0)
+  if (boss.hp <= 0) {
+    // Thay đổi boss mới
+    boss = {
+      id: "boss001",
+      name: "Big Boss",
+      hp: 20000,         // Máu của boss
+      damage: 150,       // Sát thương của boss
+      defense: 50,       // Phòng thủ của boss
+      isAlive: true,     // Trạng thái sống của boss
+      boss:1,
+    };
+    boss.hp = 20000
+    let textMessage = "Có boss mới\nhttps://same-mangrove-seed.glitch.me/";
+
+    sendMessage(6708647498, textMessage)
+    console.log("Boss đã chết, tạo boss mới:", boss);
+  } else {
+    console.log(`Boss hiện tại: ${boss.name}, HP: ${boss.hp}`);
+  }
+}, 20000);  // Lặp lại mỗi 20 giây (20000ms)
+
+
+
 
 
 let boss = {
@@ -946,6 +1370,9 @@ function calculatePlayerDamage(player, target) {
 function recordPlayerAttack(player, target) {
 
   if (player.hp <= 0) return
+
+  updatePlayerStatsBasedOnSkills(player);
+  
   const playerReport = playerDamageReport.find(r => r.id === player.id);
 
   // Tính sát thương của người chơi (đã bao gồm phòng thủ của mục tiêu)
@@ -954,12 +1381,12 @@ function recordPlayerAttack(player, target) {
   // Ghi nhận đòn đánh và tổng sát thương của người chơi
   playerReport.attacks.push({ damage, isCrit, playertarget });  // Lưu playertarget cùng với thông tin đòn đánh
   playerReport.totalDamage += damage;
+  checkSkillExpirationAndRemove(player);
 
   if (target.hp > 0) {
     target.hp -= damage;
   }
 }
-
 
 
 
@@ -972,7 +1399,7 @@ function displayDamageReport() {
 
   let report = '===== Damage Report =====\n';
   report += `Boss HP: ${bossHPPercentage.toFixed(2)}%\n`;  // Hiển thị % máu của boss
-  report += '| Name                     | Total         |\n';
+  report += '|-Name------------------|-Total--------|\n';
   report += '|--------------------------|--------------|-------------|\n';
 
   playerDamageReport.forEach(playerReport => {
@@ -980,12 +1407,12 @@ function displayDamageReport() {
     const player = players.find(p => p.id === playerReport.id);
     const playerName = player.name;  // Tên người chơi
     const playerHP = player.hp;  // Máu hiện tại của người chơi
-    const playerMaxHP = player.health_max;  // Máu tối đa của người chơi
+    const playerMaxHP = player.hp_max;  // Máu tối đa của người chơi
     const playerHPPercentage = (playerHP / playerMaxHP) * 100;  // Phần trăm máu của người chơi
 
     // Căn chỉnh tên và sát thương cho đều đặn và thêm biểu tượng cho tên và tổng sát thương
-    const name = `🎮 ${playerName} (${playerHPPercentage.toFixed(0)}%)`.padEnd(12, ' ');  // Thêm phần trăm máu người chơi vào tên
-    const total = `💥 ${playerReport.totalDamage.toString().padStart(20, ' ')}`;  // Thêm biểu tượng cho tổng sát thương
+    const name = `🎮 ${playerName} (${playerHPPercentage.toFixed(0)}%)`.padEnd(25, ' ');  // Thêm phần trăm máu người chơi vào tên
+    const total = `💥 ${playerReport.totalDamage.toString().padStart(12, ' ')}`;  // Thêm biểu tượng cho tổng sát thương
 
     // Hiển thị từng đòn đánh trong giây hiện tại (bao gồm cả chí mạng và không chí mạng)
 const now = playerReport.attacks.map(attack => {
@@ -1005,7 +1432,7 @@ const now = playerReport.attacks.map(attack => {
 
   // Kết hợp cả chí mạng và emoji playertarget
   return `${critSymbol} ${targetEmojis}`;
-}).join(', ').padStart(12, ' ');  // Hiển thị tất cả các đòn tấn công
+}).join(', ').padStart(35, ' ');  // Hiển thị tất cả các đòn tấn công
 
 
     // Thêm dòng vào báo cáo
@@ -1025,6 +1452,9 @@ const now = playerReport.attacks.map(attack => {
 
 let attackIntervals = [];  // Mảng lưu trữ các vòng lặp tấn công và thông tin người tấn công
 
+// Mảng để lưu trữ tất cả các setInterval báo cáo
+let reportIntervals = [];
+
 function startBossFight(targetPlayer = null, a = null) {
   // Kiểm tra nếu có mục tiêu, nếu không thì chọn boss làm mục tiêu mặc định
   let target = targetPlayer || boss;  // Mặc định chọn boss làm mục tiêu nếu không có player mục tiêu
@@ -1040,7 +1470,10 @@ function startBossFight(targetPlayer = null, a = null) {
     if (target.hp <= 0) {  // Kiểm tra nếu mục tiêu (boss hoặc player) đã chết
       displayDamageReport();  // Gửi báo cáo ngay lập tức khi mục tiêu chết
       sendMessage(-4676989627, `${target.name} đã chết!`, { parse_mode: 'HTML' });
-      clearInterval(reportInterval);  // Dừng báo cáo khi mục tiêu chết
+
+      // Dừng tất cả các báo cáo liên quan đến mục tiêu này
+       if (target.boss === 1)clearAllReports();  // Gọi hàm dừng tất cả báo cáo
+      clearInterval(reportInterval);  // Dừng vòng lặp báo cáo hiện tại
 
       // Dừng tất cả các vòng lặp tấn công nếu boss chết
       if (target.name === "big boss" && target.hp <= 0) {
@@ -1055,13 +1488,17 @@ function startBossFight(targetPlayer = null, a = null) {
       return;  // Dừng hàm, không tiếp tục thực hiện
     } else {
       // Nếu mục tiêu còn sống, tiếp tục báo cáo
-      displayDamageReport();  
-      sendFourButtons(-4676989627);
+      displayDamageReport();
+      //sendFourButtons(-4676989627);
     }
-  }, 8000);  // Mỗi 5 giây gọi báo cáo
+  }, 5000);  // Mỗi 5 giây gọi báo cáo
+
+  // Lưu ID của vòng lặp báo cáo vào mảng
+  reportIntervals.push(reportInterval);
 
   // Xử lý các tấn công của người chơi hoặc tất cả người chơi
-  if (a && target.boss === 0) {
+ // if (a && target.boss === 0) {
+     if (a) {
     // Người chơi 'a' tấn công
     handlePlayerAttack(a, target);
   } else if (a === null && target.hp > 0) {
@@ -1070,12 +1507,27 @@ function startBossFight(targetPlayer = null, a = null) {
   }
 }
 
+
+// Hàm dừng tất cả các vòng lặp báo cáo
+function clearAllReports() {
+  reportIntervals.forEach(intervalId => clearInterval(intervalId));
+  reportIntervals = [];  // Xóa mảng chứa các vòng lặp báo cáo
+  console.log("Đã dừng tất cả các vòng lặp báo cáo.");
+}
+
 // Hàm dừng tất cả các vòng lặp tấn công
 function stopAllAttacks() {
   attackIntervals.forEach(intervalObj => clearInterval(intervalObj.intervalId));
   attackIntervals = [];  // Xóa mảng chứa các vòng lặp tấn công
   console.log("Boss đã chết, dừng tất cả các vòng lặp tấn công.");
 }
+
+
+
+
+
+
+
 
 // Hàm dừng tấn công của một người chơi cụ thể
 function stopAttackOfPlayer(player) {
@@ -1087,7 +1539,6 @@ function stopAttackOfPlayer(player) {
   }
 }
 
-// Hàm xử lý tấn công của một người chơi
 function handlePlayerAttack(player, target) {
   // Kiểm tra xem đã có vòng lặp tấn công cho player chưa
   const existingInterval = attackIntervals.find(intervalObj => intervalObj.a === player);
@@ -1102,6 +1553,12 @@ function handlePlayerAttack(player, target) {
 
   // Tấn công theo tốc độ đánh của player
   const attackInterval = setInterval(() => {
+    if (target.hp <= 0) {  // Kiểm tra nếu mục tiêu đã chết
+      clearInterval(attackInterval);  // Dừng vòng lặp tấn công nếu mục tiêu đã chết
+      console.log(`${target.name} đã chết, dừng tấn công.`);
+      return;  // Dừng vòng lặp tấn công
+    }
+
     recordPlayerAttack(player, target); // Ghi nhận sát thương khi tấn công
   }, attackSpeed * 1000);  // Tốc độ đánh tính theo giây
 
@@ -1112,7 +1569,15 @@ function handlePlayerAttack(player, target) {
 
 
 
+
+
 function handleAllPlayersAttack(target) {
+  // Kiểm tra nếu mục tiêu đã chết trước khi bắt đầu
+  if (target.hp <= 0) {
+    console.log(`${target.name} đã chết, không thể tấn công.`);
+    return;  // Dừng hàm nếu mục tiêu đã chết
+  }
+
   for (let i = 0; i < players.length; i++) {
     const player = players[i];
 
@@ -1126,6 +1591,13 @@ function handleAllPlayersAttack(target) {
 
     // Tấn công theo tốc độ đánh của player
     const attackInterval = setInterval(() => {
+      // Kiểm tra lại HP của mục tiêu trước khi ghi nhận sát thương
+      if (target.hp <= 0) {
+        clearInterval(attackInterval);  // Dừng vòng lặp tấn công nếu mục tiêu đã chết
+        console.log(`${target.name} đã chết, dừng tấn công.`);
+        return;  // Thoát khỏi vòng lặp nếu mục tiêu chết
+      }
+
       recordPlayerAttack(player, target); // Ghi nhận sát thương khi tấn công
     }, attackSpeed * 1000);  // Tốc độ đánh tính theo giây
 
@@ -1148,15 +1620,16 @@ function handleAllPlayersAttack(target) {
 
 
 
+
 // Khai báo biến toàn cục
 let playerDamageReport = [];
 // Hàm khởi tạo dữ liệu người chơi và bắt đầu trận đấu
 async function initGame() {
   try {
     // Lấy dữ liệu người chơi từ GitHub
-    const player1 = await getPlayerStat(12345, token);
-    const player2 = await getPlayerStat(67890, token);
-    const player3 = await getPlayerStat(11223, token);
+    const player1 = await getPlayerStat(12345);
+    const player2 = await getPlayerStat(67890);
+    const player3 = await getPlayerStat(11223);
 
     players = [player1, player2, player3];  // Lưu mảng người chơi
 
@@ -1166,7 +1639,9 @@ async function initGame() {
       attacks: [],
       totalDamage: 0
     }));
-
+    updatePlayersHpToMax();
+    updateSkillsBasedOnInventory(players)
+    updateAllPlayersStats(players)
     startBossFight();  // Bắt đầu trận đấu với boss là mục tiêu mặc định
   } catch (error) {
     console.error(error);  // Nếu có lỗi khi lấy dữ liệu người chơi
@@ -1176,7 +1651,6 @@ async function initGame() {
 // Khởi động game
 initGame();
 
-updateAllPlayersStats(players, token)
 
 
 
