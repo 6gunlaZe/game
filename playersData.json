@@ -48,19 +48,19 @@
       "def-skill": 20,
       "crit-%": 15,
       "crit-x": 2,
-      "attach-speed": 1.5,
+      "attach-speed": 3.5,
       "attach-range": 5,
       "NeTranh": 30,
       "HutMau": 10,
       "PhanDame": 5,
       "trang-bi": {
         "ao": {
-          "otp0": "T5_frost_armor",
-          "otp1": 20,
-          "otp2": 10,
-          "otp3": 15,
-          "otp4": 25,
-          "otp5": 3
+          "otp0": "",
+          "otp1": 0,
+          "otp2": 0,
+          "otp3": 0,
+          "otp4": 0,
+          "otp5": 0
         },
         "giap": {
           "otp0": "T2_iron_shield",
@@ -133,7 +133,7 @@
       "def-skill": 25,
       "crit-%": 20,
       "crit-x": 2.5,
-      "attach-speed": 1.3,
+      "attach-speed": 3.3,
       "attach-range": 7,
       "NeTranh": 50,
       "HutMau": 15,
@@ -206,7 +206,7 @@
           "otp4": 35,
           "otp5": 40,
           "otp6": 1
-        }
+        }  
       ],
       "level": 15,
       "health_max": 700,
@@ -218,7 +218,7 @@
       "def-skill": 30,
       "crit-%": 25,
       "crit-x": 3,
-      "attach-speed": 1.1,
+      "attach-speed": 3.1,
       "attach-range": 6,
       "NeTranh": 60,
       "HutMau": 20,
