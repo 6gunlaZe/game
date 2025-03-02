@@ -1,3 +1,8 @@
+  // Kiểm tra xem damevk có tồn tại (tức là otp0 có trong weaponStats)
+    // Nếu tồn tại, tính tổng dame từ dame cơ bản và các giá trị otp1, otp2, otp3, otp4
+otp5 = cấp cường hóa = xdame theo 1 file
+
+
 ///////////////////////////////////////trang bị otp6: xác định loại trang bị (1->5)
   // 1: vũ khí (vu-khi)
   // 2: áo (ao)
