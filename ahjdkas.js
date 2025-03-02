@@ -2,7 +2,17 @@
 
 
 
-
+if (boss.hp <= 0) {
+  boss = {
+    id: "boss002",        // Mã ID mới cho boss mới
+    name: "New Boss",     // Tên boss mới
+    hp: 20000,            // Máu của boss mới
+    damage: 150,          // Sát thương của boss mới
+    defense: 50,          // Phòng thủ của boss mới
+    isAlive: true,        // Boss mới còn sống
+    boss: 1,
+  };
+}
 
 
 
