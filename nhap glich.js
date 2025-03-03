@@ -1499,42 +1499,141 @@ function dropItem(player,target) {
 
 
 const items = {
-  "T1_spear": {
-    "otp0": "T1_spear",
-          "otp1": 100,
-          "otp2": 50,
-          "otp3": 80,
-          "otp4": 12,
-          "otp5": 1,
-          "otp6": 1
-  },
-  "skill_crit": {
-    "otp0": "skill_crit",
-          "otp1": 30,
-          "otp2": 1,
-          "otp3": 10,
-          "otp4": 3,
-          "otp5": 2,
-          "otp6": 9,
-          "otp7": 5,
-          "otp8": 1
-  },
-    "gem": {
-    "otp0": "gem",
-          "otp1": 1,
+  "T1_spear": {"otp0": "T1_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T2_woodenspear": {"otp0": "T2_woodenspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T3_steelspear": {"otp0": "T3_steelspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T4_iron_spear": {"otp0": "T4_iron_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T5_trident": {"otp0": "T5_trident", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T6_war_spear": {"otp0": "T6_war_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T7_darkspear": {"otp0": "T7_darkspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T8_dragonspear": {"otp0": "T8_dragonspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T9_storm_spear": {"otp0": "T9_storm_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T10_thunder_spear": {"otp0": "T10_thunder_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T11_skyspear": {"otp0": "T11_skyspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T12_frost_spear": {"otp0": "T12_frost_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T13_venom_spear": {"otp0": "T13_venom_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T14_runespear": {"otp0": "T14_runespear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T15_legendary_spear": {"otp0": "T15_legendary_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  "T1_armor": {"otp0": "T1_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T2_iron_armor": {"otp0": "T2_iron_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T3_steel_armor": {"otp0": "T3_steel_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T4_silver_armor": {"otp0": "T4_silver_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T5_frost_armor": {"otp0": "T5_frost_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T6_fire_armor": {"otp0": "T6_fire_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T7_thunder_armor": {"otp0": "T7_thunder_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T8_mythical_armor": {"otp0": "T8_mythical_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T9_obsidian_armor": {"otp0": "T9_obsidian_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T10_ragnarok_armor": {"otp0": "T10_ragnarok_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T11_flame_armor": {"otp0": "T11_flame_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T12_wind_armor": {"otp0": "T12_wind_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T13_battle_armor": {"otp0": "T13_battle_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T14_runes_armor": {"otp0": "T14_runes_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T15_legendary_armor": {"otp0": "T15_legendary_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  "T1_shield": {"otp0": "T1_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T2_iron_shield": {"otp0": "T2_iron_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T3_steel_shield": {"otp0": "T3_steel_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T4_silver_shield": {"otp0": "T4_silver_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T5_frost_shield": {"otp0": "T5_frost_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T6_fire_shield": {"otp0": "T6_fire_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T7_thunder_shield": {"otp0": "T7_thunder_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T8_mythical_shield": {"otp0": "T8_mythical_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T9_obsidian_shield": {"otp0": "T9_obsidian_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T10_ragnarok_shield": {"otp0": "T10_ragnarok_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  "T1_gloves": {"otp0": "T1_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T2_iron_gloves": {"otp0": "T2_iron_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T3_steel_gloves": {"otp0": "T3_steel_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T4_silver_gloves": {"otp0": "T4_silver_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T5_frost_gloves": {"otp0": "T5_frost_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T6_fire_gloves": {"otp0": "T6_fire_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T7_thunder_gloves": {"otp0": "T7_thunder_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T8_mythical_gloves": {"otp0": "T8_mythical_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T9_obsidian_gloves": {"otp0": "T9_obsidian_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T10_ragnarok_gloves": {"otp0": "T10_ragnarok_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  "T1_boots": {"otp0": "T1_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T2_iron_boots": {"otp0": "T2_iron_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T3_steel_boots": {"otp0": "T3_steel_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T4_silver_boots": {"otp0": "T4_silver_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T5_frost_boots": {"otp0": "T5_frost_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T6_fire_boots": {"otp0": "T6_fire_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T7_thunder_boots": {"otp0": "T7_thunder_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T8_mythical_boots": {"otp0": "T8_mythical_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T9_obsidian_boots": {"otp0": "T9_obsidian_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T10_ragnarok_boots": {"otp0": "T10_ragnarok_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  "T1_axe": {"otp0": "T1_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T2_iron_axe": {"otp0": "T2_iron_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T3_steel_axe": {"otp0": "T3_steel_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T4_war_axe": {"otp0": "T4_war_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T5_frost_axe": {"otp0": "T5_frost_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T6_fire_axe": {"otp0": "T6_fire_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T7_thunder_axe": {"otp0": "T7_thunder_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T8_iron_waraxe": {"otp0": "T8_iron_waraxe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T9_obsidian_axe": {"otp0": "T9_obsidian_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T10_ragnarok_axe": {"otp0": "T10_ragnarok_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T11_flame_axe": {"otp0": "T11_flame_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T12_wind_axe": {"otp0": "T12_wind_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T13_battle_axe": {"otp0": "T13_battle_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T14_runes_axe": {"otp0": "T14_runes_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T15_legendary_axe": {"otp0": "T15_legendary_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  // Kiếm (Sword)
+  "T1_sword": {"otp0": "T1_sword", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T2_ironblade": {"otp0": "T2_ironblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T3_steelblade": {"otp0": "T3_steelblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T4_silverblade": {"otp0": "T4_silverblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T5_fireblade": {"otp0": "T5_fireblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T6_woodblade": {"otp0": "T6_woodblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T7_shadowblade": {"otp0": "T7_shadowblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T8_bloodsword": {"otp0": "T8_bloodsword", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T9_soulblade": {"otp0": "T9_soulblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T10_dragonblade": {"otp0": "T10_dragonblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T11_moonblade": {"otp0": "T11_moonblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T12_stormblade": {"otp0": "T12_stormblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T13_nightblade": {"otp0": "T13_nightblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T14_runesword": {"otp0": "T14_runesword", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T15_legendaryblade": {"otp0": "T15_legendaryblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  // Gậy (Staff)
+  "T1_woodenstaff": {"otp0": "T1_woodenstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T2_ironstaff": {"otp0": "T2_ironstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T3_steelstaff": {"otp0": "T3_steelstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T4_froststaff": {"otp0": "T4_froststaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T5_firestaff": {"otp0": "T5_firestaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T6_lightningstaff": {"otp0": "T6_lightningstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T7_crystalstaff": {"otp0": "T7_crystalstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T8_shadowstaff": {"otp0": "T8_shadowstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T9_mysticstaff": {"otp0": "T9_mysticstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T10_thunderstaff": {"otp0": "T10_thunderstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T11_windstaff": {"otp0": "T11_windstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T12_stormstaff": {"otp0": "T12_stormstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T13_runesstaff": {"otp0": "T13_runesstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T14_legendarystaff": {"otp0": "T14_legendarystaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T15_ultimaterstaff": {"otp0": "T15_ultimaterstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  "T1_shortbow": {"otp0": "T1_shortbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T2_woodenbow": {"otp0": "T2_woodenbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T3_steelbow": {"otp0": "T3_steelbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T4_longbow": {"otp0": "T4_longbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T5_frostbow": {"otp0": "T5_frostbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T6_flamebow": {"otp0": "T6_flamebow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T7_windbow": {"otp0": "T7_windbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T8_shadowbow": {"otp0": "T8_shadowbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T9_thunderbow": {"otp0": "T9_thunderbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T10_stormbow": {"otp0": "T10_stormbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T11_quickbow": {"otp0": "T11_quickbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T12_rune_bow": {"otp0": "T12_rune_bow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T13_venombow": {"otp0": "T13_venombow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T14_hawkbow": {"otp0": "T14_hawkbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T15_legendarybow": {"otp0": "T15_legendarybow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0}
 
-  },
-  "T5_frost_armor": {
-    "otp0": "T5_frost_armor",
-          "otp1": 20,
-          "otp2": 10,
-          "otp3": 15,
-          "otp4": 25,
-          "otp5": 3,
-          "otp6": 2
-  },
-  // Thêm các món đồ khác vào đây...
+  
 };
+
+
 
 
 
@@ -1658,6 +1757,173 @@ function increaseGemOtp1AndUpdateGitHub(player, increaseValue) {
   });
 }
 
+
+
+
+
+
+
+
+function checkdropitem(lvboss, itemsrate) {
+    // Bước 1: Lọc các item có opt5 nhỏ hơn lvboss
+    let filteredItems = Object.keys(items).filter(itemKey => items[itemKey].otp5 < lvboss);
+
+    // Bước 2: Kiểm tra điều kiện với random và otp6
+    let randomValue = Math.floor(Math.random() * 10000) + 1;
+    
+    // Lọc lại những item có otp6 lớn hơn randomValue
+    filteredItems = filteredItems.filter(itemKey => items[itemKey].otp6 > randomValue);
+
+    // Bước 3: Nếu có ít nhất 1 item đủ điều kiện, chọn ngẫu nhiên 1 item
+    if (filteredItems.length > 0) {
+        let randomIndex = Math.floor(Math.random() * filteredItems.length);  // Lấy chỉ số ngẫu nhiên
+        return filteredItems[randomIndex];  // Trả về tên item đã chọn
+    }
+
+    // Nếu không tìm thấy item nào thỏa mãn, trả về null hoặc giá trị khác
+    return null;
+}
+
+// Ví dụ về cách sử dụng hàm này
+let lvboss = 50;
+let result = checkdropitem(lvboss, items);
+
+
+
+const itemsrate = {
+  "T1_spear": {"otp0": "T1_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 900},
+  "T2_woodenspear": {"otp0": "T2_woodenspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 700},
+  "T3_steelspear": {"otp0": "T3_steelspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 5, "otp6": 500},
+  "T4_iron_spear": {"otp0": "T4_iron_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 10, "otp6": 300},
+  "T5_trident": {"otp0": "T5_trident", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 15, "otp6": 250},
+  "T6_war_spear": {"otp0": "T6_war_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 20, "otp6": 200},
+  "T7_darkspear": {"otp0": "T7_darkspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 30, "otp6": 150},
+  "T8_dragonspear": {"otp0": "T8_dragonspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 130},
+  "T9_storm_spear": {"otp0": "T9_storm_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 110},
+  "T10_thunder_spear": {"otp0": "T10_thunder_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
+  "T11_skyspear": {"otp0": "T11_skyspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T12_frost_spear": {"otp0": "T12_frost_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T13_venom_spear": {"otp0": "T13_venom_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T14_runespear": {"otp0": "T14_runespear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T15_legendary_spear": {"otp0": "T15_legendary_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  "T1_armor": {"otp0": "T1_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 900},
+  "T2_iron_armor": {"otp0": "T2_iron_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 700},
+  "T3_steel_armor": {"otp0": "T3_steel_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 5, "otp6": 500},
+  "T4_silver_armor": {"otp0": "T4_silver_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 10, "otp6": 300},
+  "T5_frost_armor": {"otp0": "T5_frost_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 15, "otp6": 250},
+  "T6_fire_armor": {"otp0": "T6_fire_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 20, "otp6": 200},
+  "T7_thunder_armor": {"otp0": "T7_thunder_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 30, "otp6": 150},
+  "T8_mythical_armor": {"otp0": "T8_mythical_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 130},
+  "T9_obsidian_armor": {"otp0": "T9_obsidian_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 110},
+  "T10_ragnarok_armor": {"otp0": "T10_ragnarok_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
+  "T11_flame_armor": {"otp0": "T11_flame_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T12_wind_armor": {"otp0": "T12_wind_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T13_battle_armor": {"otp0": "T13_battle_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T14_runes_armor": {"otp0": "T14_runes_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T15_legendary_armor": {"otp0": "T15_legendary_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  "T1_shield": {"otp0": "T1_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 10, "otp6": 900},
+  "T2_iron_shield": {"otp0": "T2_iron_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 20, "otp6": 700},
+  "T3_steel_shield": {"otp0": "T3_steel_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 30, "otp6": 400},
+  "T4_silver_shield": {"otp0": "T4_silver_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 300},
+  "T5_frost_shield": {"otp0": "T5_frost_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 200},
+  "T6_fire_shield": {"otp0": "T6_fire_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
+  "T7_thunder_shield": {"otp0": "T7_thunder_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T8_mythical_shield": {"otp0": "T8_mythical_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T9_obsidian_shield": {"otp0": "T9_obsidian_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T10_ragnarok_shield": {"otp0": "T10_ragnarok_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  "T1_gloves": {"otp0": "T1_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 10, "otp6": 900},
+  "T2_iron_gloves": {"otp0": "T2_iron_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 20, "otp6": 700},
+  "T3_steel_gloves": {"otp0": "T3_steel_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 30, "otp6": 400},
+  "T4_silver_gloves": {"otp0": "T4_silver_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 300},
+  "T5_frost_gloves": {"otp0": "T5_frost_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 200},
+  "T6_fire_gloves": {"otp0": "T6_fire_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
+  "T7_thunder_gloves": {"otp0": "T7_thunder_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T8_mythical_gloves": {"otp0": "T8_mythical_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T9_obsidian_gloves": {"otp0": "T9_obsidian_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T10_ragnarok_gloves": {"otp0": "T10_ragnarok_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  "T1_boots": {"otp0": "T1_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 10, "otp6": 900},
+  "T2_iron_boots": {"otp0": "T2_iron_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 20, "otp6": 700},
+  "T3_steel_boots": {"otp0": "T3_steel_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 30, "otp6": 400},
+  "T4_silver_boots": {"otp0": "T4_silver_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 300},
+  "T5_frost_boots": {"otp0": "T5_frost_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 200},
+  "T6_fire_boots": {"otp0": "T6_fire_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
+  "T7_thunder_boots": {"otp0": "T7_thunder_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T8_mythical_boots": {"otp0": "T8_mythical_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T9_obsidian_boots": {"otp0": "T9_obsidian_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T10_ragnarok_boots": {"otp0": "T10_ragnarok_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  "T1_axe": {"otp0": "T1_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 900},
+  "T2_iron_axe": {"otp0": "T2_iron_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 700},
+  "T3_steel_axe": {"otp0": "T3_steel_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 5, "otp6": 500},
+  "T4_war_axe": {"otp0": "T4_war_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 10, "otp6": 300},
+  "T5_frost_axe": {"otp0": "T5_frost_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 15, "otp6": 250},
+  "T6_fire_axe": {"otp0": "T6_fire_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 20, "otp6": 200},
+  "T7_thunder_axe": {"otp0": "T7_thunder_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 30, "otp6": 150},
+  "T8_iron_waraxe": {"otp0": "T8_iron_waraxe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 130},
+  "T9_obsidian_axe": {"otp0": "T9_obsidian_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 110},
+  "T10_ragnarok_axe": {"otp0": "T10_ragnarok_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
+  "T11_flame_axe": {"otp0": "T11_flame_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T12_wind_axe": {"otp0": "T12_wind_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T13_battle_axe": {"otp0": "T13_battle_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T14_runes_axe": {"otp0": "T14_runes_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T15_legendary_axe": {"otp0": "T15_legendary_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  // Kiếm (Sword)
+  "T1_sword": {"otp0": "T1_sword", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 900},
+  "T2_ironblade": {"otp0": "T2_ironblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 700},
+  "T3_steelblade": {"otp0": "T3_steelblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 5, "otp6": 500},
+  "T4_silverblade": {"otp0": "T4_silverblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 10, "otp6": 300},
+  "T5_fireblade": {"otp0": "T5_fireblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 15, "otp6": 250},
+  "T6_woodblade": {"otp0": "T6_woodblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 20, "otp6": 200},
+  "T7_shadowblade": {"otp0": "T7_shadowblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 30, "otp6": 150},
+  "T8_bloodsword": {"otp0": "T8_bloodsword", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 130},
+  "T9_soulblade": {"otp0": "T9_soulblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 110},
+  "T10_dragonblade": {"otp0": "T10_dragonblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
+  "T11_moonblade": {"otp0": "T11_moonblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T12_stormblade": {"otp0": "T12_stormblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T13_nightblade": {"otp0": "T13_nightblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T14_runesword": {"otp0": "T14_runesword", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T15_legendaryblade": {"otp0": "T15_legendaryblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  // Gậy (Staff)
+  "T1_woodenstaff": {"otp0": "T1_woodenstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 900},
+  "T2_ironstaff": {"otp0": "T2_ironstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 700},
+  "T3_steelstaff": {"otp0": "T3_steelstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 5, "otp6": 500},
+  "T4_froststaff": {"otp0": "T4_froststaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 10, "otp6": 300},
+  "T5_firestaff": {"otp0": "T5_firestaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 15, "otp6": 250},
+  "T6_lightningstaff": {"otp0": "T6_lightningstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 20, "otp6": 200},
+  "T7_crystalstaff": {"otp0": "T7_crystalstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 30, "otp6": 150},
+  "T8_shadowstaff": {"otp0": "T8_shadowstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 130},
+  "T9_mysticstaff": {"otp0": "T9_mysticstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 110},
+  "T10_thunderstaff": {"otp0": "T10_thunderstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
+  "T11_windstaff": {"otp0": "T11_windstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T12_stormstaff": {"otp0": "T12_stormstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T13_runesstaff": {"otp0": "T13_runesstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T14_legendarystaff": {"otp0": "T14_legendarystaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T15_ultimaterstaff": {"otp0": "T15_ultimaterstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  "T1_shortbow": {"otp0": "T1_shortbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 900},
+  "T2_woodenbow": {"otp0": "T2_woodenbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 700},
+  "T3_steelbow": {"otp0": "T3_steelbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 5, "otp6": 500},
+  "T4_longbow": {"otp0": "T4_longbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 10, "otp6": 300},
+  "T5_frostbow": {"otp0": "T5_frostbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 15, "otp6": 250},
+  "T6_flamebow": {"otp0": "T6_flamebow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 20, "otp6": 200},
+  "T7_windbow": {"otp0": "T7_windbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 30, "otp6": 150},
+  "T8_shadowbow": {"otp0": "T8_shadowbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 130},
+  "T9_thunderbow": {"otp0": "T9_thunderbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 110},
+  "T10_stormbow": {"otp0": "T10_stormbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
+  "T11_quickbow": {"otp0": "T11_quickbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T12_rune_bow": {"otp0": "T12_rune_bow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T13_venombow": {"otp0": "T13_venombow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T14_hawkbow": {"otp0": "T14_hawkbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T15_legendarybow": {"otp0": "T15_legendarybow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0}
+
+  
+};
 
 
 
