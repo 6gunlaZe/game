@@ -1785,7 +1785,7 @@ function checkdropitem(lvboss, itemsrate) {
     }
 
     // Bước 2: Kiểm tra điều kiện với random và otp6
-    let randomValue = Math.floor(Math.random() * 100) + 1;  // Random từ 1 đến 100
+    let randomValue = Math.floor(Math.random() * 10000) + 1;  // Random từ 1 đến 100
     console.log('Random Value:', randomValue);
 
     // Lọc lại những item có otp6 lớn hơn randomValue
