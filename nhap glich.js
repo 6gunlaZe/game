@@ -1298,6 +1298,7 @@ const bossInterval = setInterval(() => {
       id: "boss001",
       name: "Big Boss",
       hp: 20000,         // Máu của boss
+      lv:10, 
       damage: 50,       // Sát thương của boss
       defense: 50,       // Phòng thủ của boss
       isAlive: true,     // Trạng thái sống của boss
@@ -1320,7 +1321,8 @@ const bossInterval = setInterval(() => {
 let boss = {
   id: "boss001",
   name: "Big Boss",
-  hp: 20000,         // Máu của boss
+  hp: 20000, // Máu của boss
+  lv:10, 
   damage: 50,       // Sát thương của boss
   defense: 50,       // Phòng thủ của boss
   isAlive: true,     // Trạng thái sống của boss
@@ -1485,6 +1487,13 @@ function dropItem(player,target) {
     console.log(`Tổng sát thương của ${player.name}: ${totalDamage}`);
         // Đặt lại totalDamage sau khi lấy giá trị
     playerReport.totalDamage = 0;  // Đặt lại totalDamage về 0 (hoặc giá trị khác nếu cần)
+    
+    if(target.boss == 1)
+      {
+    const item  = checkdropitem(target.lv, itemsrate)
+          addItemToInventory(player.id, item)  
+        sendMessage(-4676989627, `check drop ${player.name}`, { parse_mode: 'HTML' });
+      }
     
     return totalDamage;  // Trả về tổng sát thương nếu tìm thấy
   } else {
@@ -1765,29 +1774,35 @@ function increaseGemOtp1AndUpdateGitHub(player, increaseValue) {
 
 
 function checkdropitem(lvboss, itemsrate) {
-    // Bước 1: Lọc các item có opt5 nhỏ hơn lvboss
-    let filteredItems = Object.keys(items).filter(itemKey => items[itemKey].otp5 < lvboss);
+    // Bước 1: Lọc các item có otp5 nhỏ hơn lvboss
+    let filteredItems = Object.keys(itemsrate).filter(itemKey => itemsrate[itemKey].otp5 <= lvboss);
+    console.log('Filtered Items based on otp5 <= lvboss:', filteredItems);
+
+    // Nếu không có item nào thỏa mãn điều kiện otp5 <= lvboss, trả về 222
+    if (filteredItems.length === 0) {
+        console.log('Không có món đồ nào thỏa mãn otp5 <= lvboss');
+        return 222;
+    }
 
     // Bước 2: Kiểm tra điều kiện với random và otp6
-    let randomValue = Math.floor(Math.random() * 10000) + 1;
-    
+    let randomValue = Math.floor(Math.random() * 100) + 1;  // Random từ 1 đến 100
+    console.log('Random Value:', randomValue);
+
     // Lọc lại những item có otp6 lớn hơn randomValue
-    filteredItems = filteredItems.filter(itemKey => items[itemKey].otp6 > randomValue);
+    filteredItems = filteredItems.filter(itemKey => itemsrate[itemKey].otp6 > randomValue);
+    console.log('Filtered Items after checking otp6 > randomValue:', filteredItems);
 
     // Bước 3: Nếu có ít nhất 1 item đủ điều kiện, chọn ngẫu nhiên 1 item
     if (filteredItems.length > 0) {
         let randomIndex = Math.floor(Math.random() * filteredItems.length);  // Lấy chỉ số ngẫu nhiên
+        console.log('Selected Item:', filteredItems[randomIndex]);  // In ra món đồ đã chọn
         return filteredItems[randomIndex];  // Trả về tên item đã chọn
     }
 
-    // Nếu không tìm thấy item nào thỏa mãn, trả về null hoặc giá trị khác
-    return null;
+    // Nếu không tìm thấy item nào thỏa mãn, trả về 222
+    console.log('Không có món đồ nào thỏa mãn otp6 > randomValue');
+    return 222;
 }
-
-// Ví dụ về cách sử dụng hàm này
-let lvboss = 50;
-let result = checkdropitem(lvboss, items);
-
 
 
 const itemsrate = {
@@ -2042,7 +2057,6 @@ async function initGame() {
       attacks: [],
       totalDamage: 0
     }));
-    addItemToInventory(11223, "T1_spear")
     updateSkillsBasedOnInventory(players)
     
     updateAllPlayersStats(players)
