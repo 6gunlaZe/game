@@ -1588,9 +1588,10 @@ function addItemToInventory(playerId, itemId) {
 
 
 
+
 function findItemOrder(player, itemId) {
     // Các đối tượng chứa dữ liệu các item
-  let number = 0
+    let number = 0;
     const allStats = [
         armorStats,
         shieldStats,
@@ -1605,18 +1606,22 @@ function findItemOrder(player, itemId) {
         
         // Kiểm tra xem itemId có tồn tại trong object này không
         if (stats.hasOwnProperty(itemId)) {
-          number = Object.keys(stats).indexOf(itemId) + 1; // Trả về thứ tự (cộng thêm 1 vì index bắt đầu từ 0)
-          
-          increaseGemOtp1AndUpdateGitHub(player, number)          
-          
-          
-          return
+            // Lấy số thứ tự của item theo format T1, T2, ..., T15
+            const itemLevel = itemId.match(/^T(\d+)_/); // Lấy số sau "T"
+            if (itemLevel) {
+                number = parseInt(itemLevel[1], 10); // Convert số đó thành số nguyên
+            }
+            
+            increaseGemOtp1AndUpdateGitHub(player, number);
+            return number; // Trả về số thứ tự của item
         }
     }
     
     // Nếu không tìm thấy itemId
     return null;
 }
+
+
 
 
 function increaseGemOtp1AndUpdateGitHub(player, increaseValue) {
