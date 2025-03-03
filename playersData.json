@@ -6,6 +6,7 @@
       "name": "tien",
       "dame": 330,
       "exp": 3000,
+      "gold": 0,
       "boss": 0,
       "inventory": [
         {
@@ -106,6 +107,7 @@
       "name": "khi",
       "dame": 200,
       "exp": 3000,
+      "gold": 0,
       "boss": 0,
       "inventory": [
         {
@@ -195,6 +197,7 @@
       "name": "ga",
       "dame": 250,
       "exp": 4000,
+      "gold": 0,
       "boss": 0,
       "inventory": [
         {
