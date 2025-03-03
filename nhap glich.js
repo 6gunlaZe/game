@@ -11,9 +11,6 @@ const fetch = require('node-fetch');  // Đối với Node.js
 const playerId = 12345;
 
 
-
-
-
 ////////////////////////
 
 
@@ -253,14 +250,15 @@ function getPlayerStat(playerId) {
 
 
 
-// Hàm cập nhật thông số người chơi trên GitHub thông qua GitHub API
-function updatePlayerStat(playerId, updatedStat) {
-  const repoOwner = '6gunlaZe';  // Tên người sở hữu repo
-  const repoName = 'game';  // Tên repository
-  const filePath = 'playersData.json';  // Đường dẫn tới file JSON trong repo
 
+
+function updatePlayerStat(playerId, updatedStat) {
   return new Promise((resolve, reject) => {
-    // Sử dụng GitHub API để lấy dữ liệu hiện tại từ GitHub
+    const repoOwner = '6gunlaZe';  // Tên người sở hữu repo
+    const repoName = 'game';  // Tên repository
+    const filePath = 'playersData.json';  // Đường dẫn tới file JSON trong repo
+
+    // Lấy SHA của file từ GitHub trước khi thực hiện cập nhật
     fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
       method: 'GET',
       headers: {
@@ -270,18 +268,13 @@ function updatePlayerStat(playerId, updatedStat) {
     })
     .then(response => response.json())
     .then(data => {
-      if (data.message === 'Not Found') {
-        return reject('Không tìm thấy file dữ liệu trên GitHub');
-      }
-
-      // Dữ liệu sẽ được trả về dưới dạng Base64, cần giải mã
-      const fileContent = Buffer.from(data.content, 'base64').toString('utf-8');  // Giải mã nội dung Base64 bằng Buffer
+      // Thay vì atob, sử dụng Buffer trong Node.js
+      const fileContent = Buffer.from(data.content, 'base64').toString('utf-8');  // Giải mã Base64 bằng Buffer
       const jsonData = JSON.parse(fileContent); // Chuyển đổi nội dung thành JSON
 
-      // Tìm người chơi trong dữ liệu
+      // Cập nhật thông tin người chơi
       const player = jsonData.players.find(p => p.id === playerId);
       if (player) {
-        // Cập nhật thông số trong player
         Object.assign(player, updatedStat);
 
         // Cập nhật lại dữ liệu
@@ -290,68 +283,50 @@ function updatePlayerStat(playerId, updatedStat) {
         // Cập nhật lại file JSON lên GitHub
         const commitMessage = `Cập nhật thông số người chơi với ID ${playerId}`;
 
-        // Lấy SHA của file để thực hiện cập nhật
-        getFileSHA(repoOwner, repoName, filePath).then(fileSha => {
-          fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
-            method: 'PUT',
-            headers: {
-              'Authorization': `token ${token}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              message: commitMessage,
-              content: Buffer.from(updatedData, 'utf-8').toString('base64'),  // Mã hóa lại dữ liệu thành Base64
-              sha: fileSha,  // SHA của file hiện tại
-            }),
-          })
-          .then(response => response.json())
-          .then(data => {
-            resolve('Dữ liệu đã được cập nhật: ' + JSON.stringify(data)); // resolve Promise sau khi cập nhật thành công
-          })
-          .catch(error => reject('Lỗi khi cập nhật dữ liệu: ' + error));
-        }).catch(error => reject('Lỗi khi lấy SHA của file: ' + error));
+        // Sử dụng SHA mới nhất của file từ GitHub
+        const fileSha = data.sha;
+
+        fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `token ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: commitMessage,
+            content: Buffer.from(updatedData, 'utf-8').toString('base64'),  // Mã hóa lại dữ liệu thành Base64
+            sha: fileSha,  // Sử dụng SHA của file hiện tại
+          }),
+        })
+        .then(response => response.json())
+        .then(data => {
+          resolve(data);  // Resolve Promise khi thành công
+        })
+        .catch(error => {
+          reject('Lỗi khi cập nhật dữ liệu lên GitHub: ' + error);
+        });
       } else {
         reject('Không tìm thấy người chơi với ID: ' + playerId);
       }
     })
-    .catch(error => reject('Lỗi khi lấy dữ liệu hiện tại: ' + error));
+    .catch(error => reject('Lỗi khi lấy dữ liệu hiện tại từ GitHub: ' + error));
   });
 }
 
-// Hàm lấy SHA của file từ GitHub
+
+
 function getFileSHA(repoOwner, repoName, filePath) {
   return fetch(`https://api.github.com/repos/${repoOwner}/${repoName}/contents/${filePath}`, {
     method: 'GET',
     headers: {
       'Authorization': `token ${token}`,
+      'Accept': 'application/vnd.github.v3+json',
     },
   })
   .then(response => response.json())
   .then(data => data.sha)
   .catch(error => console.error('Lỗi khi lấy SHA của file:', error));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -790,6 +765,8 @@ if(grapvk)dame=dame*grapvk
 
 
 
+
+
 function updateWeaponBasedOnInventory(player) {
   // 1: vũ khí (vu-khi)
   // 2: áo (ao)
@@ -815,7 +792,7 @@ function updateWeaponBasedOnInventory(player) {
       console.log(`Cập nhật ${item}:`, player["trang-bi"][item]);
 
       // Cập nhật dữ liệu lên GitHub
-     updatePlayerStat(player.id, { "trang-bi": player["trang-bi"] });
+    // updatePlayerStat(player.id, { "trang-bi": player["trang-bi"] });
     }
   });
 
@@ -1150,7 +1127,7 @@ function updateSkillsBasedOnInventory(players) {
 
 
 
-
+// tránh gọi quá nhiều lần liên tục nếu không sẽ lỗi 409
 // Hàm để cập nhật chỉ số của người chơi khi sử dụng kỹ năng
 function updatePlayerStatsBasedOnSkills(player) {
   // Kiểm tra nếu player có kỹ năng
@@ -1560,6 +1537,9 @@ const items = {
 };
 
 
+
+
+
 // Hàm thêm đồ vào inventory của người chơi
 function addItemToInventory(playerId, itemId) {
   // Tìm người chơi có id tương ứng
@@ -1583,7 +1563,7 @@ function addItemToInventory(playerId, itemId) {
   if (player.inventory.some(i => i.otp0 === itemId)) {
     console.log(`Món đồ ${itemId} đã có trong inventory của ${player.name}.`);
     findItemOrder(player, itemId)
-    increaseGemOtp1AndUpdateGitHub(player, 5)
+   // increaseGemOtp1AndUpdateGitHub(player, 5)
 
     
     return;
@@ -1627,7 +1607,7 @@ function findItemOrder(player, itemId) {
         if (stats.hasOwnProperty(itemId)) {
           number = Object.keys(stats).indexOf(itemId) + 1; // Trả về thứ tự (cộng thêm 1 vì index bắt đầu từ 0)
           
-          //increaseGemOtp1AndUpdateGitHub(player, number)          
+          increaseGemOtp1AndUpdateGitHub(player, number)          
           
           
           return
@@ -1672,9 +1652,6 @@ function increaseGemOtp1AndUpdateGitHub(player, increaseValue) {
     }
   });
 }
-
-
-
 
 
 
@@ -1778,7 +1755,6 @@ let checkhpp = `${'👦🏻'}   ${players[0].hp}-------|-------   ${'🐐'}   ${
 
 
 
-
 // Khai báo biến toàn cục
 let playerDamageReport = [];
 // Hàm khởi tạo dữ liệu người chơi và bắt đầu trận đấu
@@ -1790,7 +1766,6 @@ async function initGame() {
     const player3 = await getPlayerStat(11223);
     players = [player1, player2, player3];  // Lưu mảng người chơi
     // Khởi tạo báo cáo sát thương
-    
     playerDamageReport = players.map(player => ({
       id: player.id,
       attacks: [],
