@@ -1778,10 +1778,10 @@ function checkdropitem(lvboss, itemsrate) {
     let filteredItems = Object.keys(itemsrate).filter(itemKey => itemsrate[itemKey].otp5 <= lvboss);
     console.log('Filtered Items based on otp5 <= lvboss:', filteredItems);
 
-    // Nếu không có item nào thỏa mãn điều kiện otp5 <= lvboss, trả về 222
+    // Nếu không có item nào thỏa mãn điều kiện otp5 <= lvboss, trả về null 
     if (filteredItems.length === 0) {
         console.log('Không có món đồ nào thỏa mãn otp5 <= lvboss');
-        return 222;
+        return null ;
     }
 
     // Bước 2: Kiểm tra điều kiện với random và otp6
@@ -1799,9 +1799,9 @@ function checkdropitem(lvboss, itemsrate) {
         return filteredItems[randomIndex];  // Trả về tên item đã chọn
     }
 
-    // Nếu không tìm thấy item nào thỏa mãn, trả về 222
+    // Nếu không tìm thấy item nào thỏa mãn, trả về null 
     console.log('Không có món đồ nào thỏa mãn otp6 > randomValue');
-    return 222;
+    return null ;
 }
 
 
