@@ -2162,30 +2162,106 @@ const userNames = {
 };
 
 
-
-
 function handleCallbackQuery(callbackQuery) {
   const chatId = callbackQuery.message.chat.id;
   const messageId = callbackQuery.message.message_id;
   const data = callbackQuery.data;  // Lấy dữ liệu từ callback query
-  const userId = callbackQuery.from.id;  // Lấy ID của người nhấn nút
-const playerattack = players.find(p => p.id_bot === userId);
-  // Tra cứu tên người dùng từ mảng userNames
-  const userName = userNames[userId] || 'Người dùng không xác định';  // Nếu không tìm thấy userId thì hiển thị tên mặc định
+  const userId = callbackQuery.from.id;  // Lấy ID của người nhấn
+  const playerattack = players.find(p => p.id_bot === userId);  // Tra cứu người chơi từ players
+  const userName = userNames[userId] || 'Người dùng không xác định';  // Tên người dùng
 
+  // Xử lý các lựa chọn module chính
+  if (data === 'modun_fram') {
+    sendFramModule(chatId);  // Gọi module Fram
+    sendMessage(chatId, `${userName} đã chọn Modun Fram!`);
+  } else if (data === 'modun_op_do') {
+    sendEquipmentModule(chatId);  // Gọi module Ốp đồ
+    sendMessage(chatId, `${userName} đã chọn Modun Ốp đồ!`);
+  } else if (data === 'modun_shop') {
+    sendShopModule(chatId);  // Gọi module Shop
+    sendMessage(chatId, `${userName} đã chọn Modun Shop!`);
+  }
 
-  // Xử lý phản hồi khi người dùng nhấn nút
-  if (data === 'button_1') {
-    startBossFight(players[0],playerattack);
+  // Xử lý các lựa chọn trong module Fram (Level)
+  else if (data.startsWith('fram_level')) {
+    // Tách phạm vi cấp độ từ callback_data
+    const levelRange = data.split('_')[2];  // Lấy phần "1_10" từ data "fram_level_1_10"
+    
+    // Kiểm tra xem levelRange có hợp lệ không
+    console.log(`Dữ liệu cấp độ nhận được: ${levelRange}`);
+
+    // Tách minLevel và maxLevel từ chuỗi "1_10"
+    let [minLevel, maxLevel] = levelRange.split('_').map(Number);  // Chuyển từ chuỗi "1_10" thành [1, 10]
+
+    // Log minLevel và maxLevel
+    console.log(`minLevel: ${minLevel}, maxLevel: ${maxLevel}`);
+
+// Nếu maxLevel không hợp lệ, gán maxLevel = minLevel + 10
+    if (isNaN(maxLevel)) {
+      maxLevel = minLevel + 10;
+    }
+
+    // Log lại minLevel và maxLevel sau khi điều chỉnh
+    console.log(`Sau khi điều chỉnh, minLevel: ${minLevel}, maxLevel: ${maxLevel}`);
+
+    // Lọc quái vật theo cấp độ
+    const monstersInLevelRange = monsters.filter(monster => {
+      const level = parseInt(monster.level); // Chuyển cấp độ quái vật sang số
+      console.log(`Kiểm tra quái vật: ${monster.name}, Level: ${level}`);
+      return level >= minLevel && level <= maxLevel;  // So sánh đúng cấp độ quái vật
+    });
+
+    // Debug - kiểm tra danh sách quái vật lọc được
+    console.log(`Quái vật trong phạm vi cấp độ: ${monstersInLevelRange.length}`);
+
+    // Tạo danh sách các nút quái vật để người dùng chọn
+    const monsterButtons = monstersInLevelRange.map(monster => [
+      { text: `${monster.name} (Level ${monster.level})`, callback_data: `fram_monster_${monster.name}` }  // Mã callback chứa tên quái vật
+    ]);
+
+    // Thêm nút quay lại vào cuối danh sách quái vật
+    monsterButtons.push([
+      { text: 'Quay lại', callback_data: 'modun_fram' }
+    ]);
+
+    const reply_markup = {
+      inline_keyboard: monsterButtons
+    };
+
+    // Kiểm tra nếu có quái vật trong phạm vi cấp độ
+    if (monstersInLevelRange.length > 0) {
+      // Gửi danh sách quái vật cho người dùng
+      let text = `Quái vật trong cấp độ ${minLevel}-${maxLevel}:\n`;
+      monstersInLevelRange.forEach(monster => {
+        text += `${monster.name} (Level ${monster.level})\n`;
+      });
+      sendMessage(chatId, text, reply_markup);  // Gửi tin nhắn với danh sách quái vật và các nút
+    } else {
+      // Nếu không có quái vật, thông báo người dùng và vẫn giữ nút quay lại
+      sendMessage(chatId, `Không có quái vật nào trong cấp độ ${minLevel}-${maxLevel}.`, reply_markup);
+    }
+  }
+
+  // Xử lý lựa chọn quái vật trong Fram
+  else if (data.startsWith('fram_monster_')) {
+    const monsterName = data.split('_')[2];  // Lấy tên quái vật từ callback data
+    const selectedMonster = monsters.find(monster => monster.name === monsterName);
+    
+    sendMessage(chatId, `Bạn đã chọn quái vật: ${selectedMonster.name} (Level ${selectedMonster.level})`);
+  }
+
+  // Xử lý các lựa chọn khác (Shop, Ép ngọc, Cường hóa, v.v.)
+  else if (data === 'button_1') {
+    startBossFight(players[0], playerattack);  // Start fight với Tiến
     sendMessage(chatId, `${userName} đã chọn Tiến!`);
   } else if (data === 'button_2') {
-    startBossFight(players[1],playerattack);
+    startBossFight(players[1], playerattack);  // Start fight với Hải
     sendMessage(chatId, `${userName} đã chọn Hải!`);
   } else if (data === 'button_3') {
-    startBossFight(players[2],playerattack);
+    startBossFight(players[2], playerattack);  // Start fight với Hoàng
     sendMessage(chatId, `${userName} đã chọn Hoàng!`);
-  } else if (data === 'button_4') {  // Thêm điều kiện xử lý cho nút 4
-    startBossFight(boss,playerattack);
+  } else if (data === 'button_4') {  // Thêm điều kiện xử lý cho nút 4 (BOSS)
+    startBossFight(boss, playerattack);  // Start fight với BOSS
     sendMessage(chatId, `${userName} đã chọn BOSS!`);
   }
 
@@ -2212,3 +2288,106 @@ const playerattack = players.find(p => p.id_bot === userId);
     })
     .catch(error => console.error('Lỗi xóa nút:', error));
 }
+
+
+
+
+
+
+const monsters = [
+  { level: 1, name: "Quái vật 1" },
+  { level: 2, name: "Quái vật 2" },
+  { level: 3, name: "Quái vật 3" },
+  { level: 4, name: "Quái vật 4" },
+  { level: 5, name: "Quái vật 5" },
+  { level: 6, name: "Quái vật 6" },
+  { level: 7, name: "Quái vật 7" },
+  { level: 8, name: "Quái vật 8" },
+  { level: 9, name: "Quái vật 9" },
+  { level: 10, name: "Quái vật 10" },
+];
+
+
+
+// Danh sách mặt hàng trong shop
+const shopItems = [
+  { name: "Item 1", price: 100 },
+  { name: "Item 2", price: 200 },
+  { name: "Item 3", price: 300 },
+  { name: "Item 4", price: 400 },
+  // Thêm các mặt hàng khác nếu cần
+];
+
+
+// Module 1: Fram
+function sendFramModule(chatId) {
+  const reply_markup = {
+    inline_keyboard: [
+      [
+        { text: 'Level 1-10', callback_data: 'fram_level_1_10' },
+        { text: 'Level 11-20', callback_data: 'fram_level_11_20' },
+        { text: 'Level 21-30', callback_data: 'fram_level_21_30' },
+        { text: 'Level 31-40', callback_data: 'fram_level_31_40' }
+      ]
+    ]
+  };
+
+  const text = 'Chọn cấp độ để thấy quái vật:';
+  sendMessage(chatId, text, reply_markup);
+}
+
+// Module 2: Ốp đồ
+function sendEquipmentModule(chatId) {
+  const reply_markup = {
+    inline_keyboard: [
+      [
+        { text: 'Ép ngọc', callback_data: 'ep_ngoc' },
+        { text: 'Cường hóa', callback_data: 'cuong_hoa' }
+      ]
+    ]
+  };
+
+  const text = 'Chọn hành động ốp đồ:';
+  sendMessage(chatId, text, reply_markup);
+}
+
+// Module 3: Shop
+function sendShopModule(chatId) {
+  const reply_markup = {
+    inline_keyboard: shopItems.map(item => [
+      { text: `${item.name} - ${item.price} vàng`, callback_data: `buy_${item.name}` }
+    ])
+  };
+
+  const text = 'Chọn mặt hàng trong shop:';
+  sendMessage(chatId, text, reply_markup);
+}
+
+// Hàm gửi 3 nút chính khi người dùng đăng nhập
+function sendMainMenu(chatId) {
+  const reply_markup = {
+    inline_keyboard: [
+      [
+        { text: 'Modun Fram', callback_data: 'modun_fram' },
+        { text: 'Modun Ốp đồ', callback_data: 'modun_op_do' },
+        { text: 'Modun Shop', callback_data: 'modun_shop' }
+      ]
+    ]
+  };
+
+  const text = 'Chào mừng bạn đã đăng nhập! Chọn một module để tiếp tục:';
+  sendMessage(chatId, text, reply_markup);
+}
+
+
+
+// Gọi hàm sendMainMenu khi người dùng đăng nhập
+sendMainMenu(6708647498);  // Thay 123456 bằng chatId thực tế của người dùng khi đăng nhập
+
+
+
+
+
+
+
+
