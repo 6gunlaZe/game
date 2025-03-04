@@ -1490,7 +1490,7 @@ function dropItem(player,target) {
     
     if(target.boss == 1)
       {
-    const item  = checkdropitem(target.lv, itemsrate)
+    const item  = checkdropitem(target.lv, itemsrate) //// itemsrate là danh sách item drop có thể thay đổi danh sách này tùy loại quái, hàm này trả về tên item và chỉ quan tâm opt56
           addItemToInventory(player.id, item)  
         sendMessage(-4676989627, `check drop ${player.name}`, { parse_mode: 'HTML' });
       }
@@ -1507,6 +1507,8 @@ function dropItem(player,target) {
 
 
 
+
+// danh sách các món đồ drop chuẩn, kể cả sách skill, ngọc ép
 const items = {
   "T1_spear": {"otp0": "T1_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
   "T2_woodenspear": {"otp0": "T2_woodenspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
@@ -1637,8 +1639,20 @@ const items = {
   "T12_rune_bow": {"otp0": "T12_rune_bow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
   "T13_venombow": {"otp0": "T13_venombow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
   "T14_hawkbow": {"otp0": "T14_hawkbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T15_legendarybow": {"otp0": "T15_legendarybow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0}
+  "T15_legendarybow": {"otp0": "T15_legendarybow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  
+  
+  
+  
+  "gem_dame_18": { "otp0": "gem_dame_18", "otp1": 1, "otp6": 8, "otp9": 0 },
+  
+  
+  
+  
+  "skill_crit": { "otp0": "skill_crit", "otp1": 30, "otp2": 1, "otp3": 10, "otp4": 3, "otp5": 2, "otp6": 9, "otp7": 5, "otp8": 1, "otp9": 0 }
 
+  
+  
   
 };
 
@@ -1726,6 +1740,7 @@ function findItemOrder(player, itemId) {
     }
     
     // Nếu không tìm thấy itemId
+  increaseItemOtp1AndUpdateGitHub(player, itemId)
     return null;
 }
 
@@ -1768,6 +1783,39 @@ function increaseGemOtp1AndUpdateGitHub(player, increaseValue) {
 
 
 
+function increaseItemOtp1AndUpdateGitHub(player, itemId) {
+  return new Promise((resolve, reject) => {
+    // Log toàn bộ inventory để kiểm tra
+    console.log(player.inventory);
+
+    // Tìm item theo itemId trong inventory của người chơi
+    const item = player.inventory.find(item => item.otp0 === itemId);
+    
+    if (item) {
+      // Kiểm tra giá trị otp1 và khởi tạo nếu không phải số hợp lệ
+      if (typeof item.otp9 !== 'number') {
+        console.log(`Giá trị otp9 của item ${itemId} không phải là số hợp lệ, khởi tạo lại.`);
+        item.otp9 = 0; // Khởi tạo giá trị mặc định nếu không hợp lệ
+      }
+
+      // Tăng giá trị otp1 của item lên 1
+      item.otp9 += 1;
+
+      // Sau khi cập nhật giá trị otp1, gọi hàm cập nhật lên GitHub
+      updatePlayerStat(player.id, { inventory: player.inventory })
+        .then(result => {
+          console.log('Dữ liệu đã được cập nhật lên GitHub:', result);
+          resolve('Dữ liệu đã được cập nhật lên GitHub: ' + result);
+        })
+        .catch(error => {
+          console.error('Lỗi khi cập nhật dữ liệu lên GitHub:', error);
+          reject('Lỗi khi cập nhật dữ liệu lên GitHub: ' + error);
+        });
+    } else {
+      reject(`Không tìm thấy item ${itemId} trong inventory của người chơi.`);
+    }
+  });
+}
 
 
 
@@ -1805,6 +1853,9 @@ function checkdropitem(lvboss, itemsrate) {
 }
 
 
+
+
+// otp5 = lv boss   opt6 = rate số càng lớn tỉ lệ ra càng nhiều
 const itemsrate = {
   "T1_spear": {"otp0": "T1_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 900},
   "T2_woodenspear": {"otp0": "T2_woodenspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 700},
@@ -1935,8 +1986,17 @@ const itemsrate = {
   "T12_rune_bow": {"otp0": "T12_rune_bow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
   "T13_venombow": {"otp0": "T13_venombow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
   "T14_hawkbow": {"otp0": "T14_hawkbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T15_legendarybow": {"otp0": "T15_legendarybow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0}
+  "T15_legendarybow": {"otp0": "T15_legendarybow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
 
+  
+  "gem_dame_18": { "otp0": "gem_dame_18", "otp5": 1, "otp6": 800 },
+  
+  
+  
+  
+  "skill_crit": { "otp0": "skill_crit", "otp1": 30, "otp2": 1, "otp3": 10, "otp4": 3, "otp5": 2, "otp6": 900 }
+
+  
   
 };
 
@@ -2034,7 +2094,6 @@ let checkhpp = `${'👦🏻'}   ${players[0].hp}-------|-------   ${'🐐'}   ${
     console.log("Không tìm thấy báo cáo cho người chơi này.");
   }
 }
-
 
 
 
@@ -2572,7 +2631,6 @@ function handleEpNgocForPlayer(playerId_bot) {
 
 // Gọi hàm sendMainMenu khi người dùng đăng nhập
 sendMainMenu(6708647498);  
-
 
 
 
