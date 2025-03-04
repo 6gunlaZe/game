@@ -109,7 +109,8 @@
           "otp2": 10,
           "otp3": 15,
           "otp4": 25,
-          "otp5": 3
+          "otp5": 3,
+          "otp6": 2
         },
         "giap": {
           "otp0": "T2_iron_shield",
