@@ -2162,6 +2162,7 @@ const userNames = {
 };
 
 
+
 function handleCallbackQuery(callbackQuery) {
   const chatId = callbackQuery.message.chat.id;
   const messageId = callbackQuery.message.message_id;
@@ -2231,6 +2232,7 @@ function handleCallbackQuery(callbackQuery) {
     // Kiểm tra nếu có quái vật trong phạm vi cấp độ
     if (monstersInLevelRange.length > 0) {
       // Gửi danh sách quái vật cho người dùng
+      sendMainMenu(chatId)
       let text = `Quái vật trong cấp độ ${minLevel}-${maxLevel}:\n`;
       monstersInLevelRange.forEach(monster => {
         text += `${monster.name} (Level ${monster.level})\n`;
@@ -2264,6 +2266,40 @@ function handleCallbackQuery(callbackQuery) {
     startBossFight(boss, playerattack);  // Start fight với BOSS
     sendMessage(chatId, `${userName} đã chọn BOSS!`);
   }
+  
+  
+    // Xử lý lựa chọn trong module Ốp đồ
+  else if (data === 'ep_ngoc') {
+    sendMessage(chatId, 'Bạn đã chọn ép ngọc. Hãy chọn loại ngọc cần ép.');
+    sendMainMenu(chatId)
+  } else if (data === 'cuong_hoa') {
+    sendMessage(chatId, 'Bạn đã chọn cường hóa. Hãy chọn vật phẩm để cường hóa.');
+    sendMainMenu(chatId)
+  }
+
+  // Xử lý lựa chọn mua mặt hàng trong Shop
+  else if (data.startsWith('buy_')) {
+    const itemName = data.split('_')[1];
+    const item = shopItems.find(item => item.name === itemName);
+    sendMessage(chatId, `Bạn đã chọn mua ${item.name} với giá ${item.price} vàng.`);
+    sendMainMenu(chatId)
+  }
+
+    
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
 
   // Xóa các nút sau khi nhấn chỉ đối với người nhấn
   const updatedReplyMarkup = { inline_keyboard: [] };
@@ -2382,7 +2418,7 @@ function sendMainMenu(chatId) {
 
 
 // Gọi hàm sendMainMenu khi người dùng đăng nhập
-sendMainMenu(6708647498);  // Thay 123456 bằng chatId thực tế của người dùng khi đăng nhập
+sendMainMenu(6708647498);  
 
 
 
