@@ -460,9 +460,13 @@ function sendSyntaxExamples(chatId) {
   };
 sendMainMenu(chatId);  
 Menutrangbi(chatId)
+sendPlayerStatsToTelegram(chatId);
   
  // sendMessage(chatId, text, reply_markup); // Gửi tin nhắn với inline keyboard
 }
+
+
+
 
 
 
@@ -571,17 +575,24 @@ setTimeout(() => {
 
 
 
-function sendPlayerStatsToTelegram(playerId, chatId) {
-  getPlayerStat(playerId)  // Lấy thông tin nhân vật từ GitHub
-    .then(player => {
+function sendPlayerStatsToTelegram(chatId) {
+  // Tìm player dựa trên id_bot từ biến players
+  let player = players.find(p => p.id_bot === chatId); // Tìm player bằng id_bot (chatId)
 
-    updateWeaponBasedOnInventory(player);
-     let weaponhp = calculateHP(player) - player.hp_max
-          let weaponDame = calculateWeaponDamage(player) - player.dame; // Gọi hàm để tính dame của vũ khí
-        let weapondef = calculateDEF(player) - player['def-dame'];
+  if (!player) {
+    console.log("Không tìm thấy player với id_bot:", chatId);
+    sendMessage(chatId, 'Không tìm thấy thông tin nhân vật!');
+    return;
+  }
+
+  // Tính toán các chỉ số
+  let weaponhp = calculateHP(player) - player.hp_max;
+  let weaponDame = calculateWeaponDamage(player) - player.dame;
+  let weapondef = calculateDEF(player) - player['def-dame'];
   let weapondef1 = calculateDEFskill(player) - player['def-skill'];
-      // Chuẩn bị thông tin nhân vật
-      const playerStats = `
+
+  // Chuẩn bị thông tin nhân vật
+  const playerStats = `
 🧑‍💻 **Thông tin nhân vật**:
 - 🆔 **ID**: ${player.id}
 - ⚔️ **Dame**:  ${player.dame} + ${weaponDame}
@@ -604,32 +615,11 @@ function sendPlayerStatsToTelegram(playerId, chatId) {
 - ✋: ${player['trang-bi'].tay.otp0} (${player['trang-bi'].tay.otp1}-${player['trang-bi'].tay.otp2}-${player['trang-bi'].tay.otp3}-${player['trang-bi'].tay.otp4}) ✨${player['trang-bi'].tay.otp5}
 - 🦵: ${player['trang-bi'].chan.otp0} (${player['trang-bi'].chan.otp1}-${player['trang-bi'].chan.otp2}-${player['trang-bi'].chan.otp3}-${player['trang-bi'].chan.otp4}) ✨${player['trang-bi'].chan.otp5}
 - ⚔️: ${player['trang-bi']['vu-khi'].otp0} (${player['trang-bi']['vu-khi'].otp1}-${player['trang-bi']['vu-khi'].otp2}-${player['trang-bi']['vu-khi'].otp3}-${player['trang-bi']['vu-khi'].otp4}) ✨${player['trang-bi']['vu-khi'].otp5}
+  `;
 
-
-
-      `;
-
-      // Gửi thông tin qua Telegram
-      sendMessage(chatId, playerStats);  // Gửi tin nhắn đến chatId (ID người dùng hoặc ID kênh)
-    })
-    .catch(error => {
-      console.error(error);
-      sendMessage(chatId, 'Lỗi khi lấy thông tin nhân vật!');
-    });
+  // Gửi thông tin qua Telegram
+  sendMessage(chatId, playerStats);  // Gửi tin nhắn đến chatId (ID người dùng hoặc ID kênh)
 }
-
-
-
-
-
-
-
-sendPlayerStatsToTelegram(12345, 6708647498);
-
-
-
-
-
 
 
 
@@ -803,6 +793,52 @@ function updateWeaponBasedOnInventory(player) {
 
 
 
+// Hàm cập nhật trang bị cho player dựa trên id_bot
+function updatePlayerEquip( id_bot, itemId) {
+    // Tìm player theo id_bot
+    let player = players.find(p => p.id_bot === id_bot);
+
+    // Nếu không tìm thấy player, trả về thông báo
+    if (!player) {
+        console.log("Không tìm thấy player với id_bot: " + id_bot);
+        return;
+    }
+
+    // Lặp qua inventory để tìm trang bị cần cập nhật
+    let updated = false;
+    player.inventory.forEach(item => {
+        if (item.otp0 === itemId) {
+            // Kiểm tra trang bị thuộc loại nào và cập nhật
+            if (armorStats.hasOwnProperty(itemId)) {
+                player["trang-bi"]["ao"] = { ...item };
+                updated = true;
+            } else if (shieldStats.hasOwnProperty(itemId)) {
+                player["trang-bi"]["giap"] = { ...item };
+                updated = true;
+            } else if (glovesStats.hasOwnProperty(itemId)) {
+                player["trang-bi"]["tay"] = { ...item };
+                updated = true;
+            } else if (bootsStats.hasOwnProperty(itemId)) {
+                player["trang-bi"]["chan"] = { ...item };
+                updated = true;
+            } else if (weaponStats.hasOwnProperty(itemId)) {
+                player["trang-bi"]["vu-khi"] = { ...item };
+                updated = true;
+            }
+        }
+    });
+
+    // Nếu trang bị đã được cập nhật, gọi hàm updatePlayerStat để cập nhật dữ liệu
+    if (updated) {
+        updatePlayerStat(player.id, { "trang-bi": player["trang-bi"] });
+    } else {
+        console.log("Không tìm thấy trang bị hợp lệ.");
+    }
+}
+
+
+
+
 
 
 
@@ -830,7 +866,7 @@ function updateAllPlayersStats(players) {
 for (let player of players) {
   try {
     // Cập nhật trang bị của người chơi từ kho đồ
-    updateWeaponBasedOnInventory(player);
+    //updateWeaponBasedOnInventory(player);
 
     // Tính toán các chỉ số của người chơi sau khi cập nhật trang bị
     let updatedDame = calculateWeaponDamage(player); // Tính toán sát thương vũ khí
@@ -2368,21 +2404,19 @@ else if (data.startsWith('item_')) {
   }
   
   
-  else if (data === 'armor_stats' || data === 'shield_stats' || data === 'boots_stats' || data === 'weapon_stats') {
+  else if (data === 'armor_stats' || data === 'shield_stats' || data === 'boots_stats' || data === 'weapon_stats' || data === 'gloves_stats') {
     trangbiForPlayer(chatId, data);  // Gọi hàm để hiển thị item dựa trên loại module được chọn
   }
  else if (data.startsWith('trangbi_')) {
     const itemName = data.substring(8);  // Lấy toàn bộ phần sau 'trangbi_'
   Menutrangbi(chatId)
-
+   updatePlayerEquip(chatId, itemName)
     // Trả về toàn bộ tên item (ví dụ: 'T1_spear')
     sendMessage(chatId, `Bạn đã trang bị item: ${itemName}`);
   }
 
 
     
-  
-  
   
   
   
@@ -2520,7 +2554,8 @@ function Menutrangbi(chatId) {
         { text: 'Armor Stats', callback_data: 'armor_stats' },
         { text: 'Shield Stats', callback_data: 'shield_stats' },
         { text: 'Boots Stats', callback_data: 'boots_stats' },
-        { text: 'Weapon Stats', callback_data: 'weapon_stats' }
+        { text: 'Weapon Stats', callback_data: 'weapon_stats' },
+        { text: 'Gloves Stats', callback_data: 'gloves_stats' }
       ]
     ]
   };
@@ -2528,7 +2563,6 @@ function Menutrangbi(chatId) {
   const text = 'Lựa chọn để thay đổi trang bị:';
   sendMessage(chatId, text, reply_markup);
 }
-
 
 
 
@@ -2626,7 +2660,8 @@ function trangbiForPlayer(playerId_bot, selectedCategory) {
     armor_stats: armorStats,
     shield_stats: shieldStats,
     boots_stats: bootsStats,
-    weapon_stats: weaponStats
+    weapon_stats: weaponStats,
+    gloves_stats: glovesStats
   };
 
   // Lấy danh sách item dựa trên loại được chọn
@@ -2660,7 +2695,13 @@ function trangbiForPlayer(playerId_bot, selectedCategory) {
   };
 
   // Gửi tin nhắn với danh sách item và các nút
+  if (filteredItems.length > 0){
   sendMessage(playerId_bot, `Danh sách item của bạn:`, reply_markup);
+  } 
+  else {
+    sendMessage(playerId_bot, `không có item`);
+      Menutrangbi(playerId_bot)
+  }
 }
 
 
