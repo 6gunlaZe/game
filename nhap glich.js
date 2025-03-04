@@ -458,8 +458,10 @@ function sendSyntaxExamples(chatId) {
       ];
     })
   };
-
-  sendMessage(chatId, text, reply_markup); // Gửi tin nhắn với inline keyboard
+sendMainMenu(chatId);  
+Menutrangbi(chatId)
+  
+ // sendMessage(chatId, text, reply_markup); // Gửi tin nhắn với inline keyboard
 }
 
 
@@ -559,8 +561,8 @@ function performTask(key, data, chatId) {
 
 // Khởi động bot sau khi chờ 30 giây
 setTimeout(() => {
-  sendMessage(6708647498, 'Bot is now starting...!');
-  sendSyntaxExamples(6708647498);
+  //sendMessage(6708647498, 'Bot is now starting...!');
+  //sendSyntaxExamples(6708647498);
   getUpdates(); // Gọi hàm getUpdates lần đầu tiên
 }, 2000);
 
@@ -2364,7 +2366,18 @@ else if (data.startsWith('item_')) {
     sendMessage(chatId, `Bạn đã chọn mua ${item.name} với giá ${item.price} vàng.`);
     sendMainMenu(chatId)
   }
+  
+  
+  else if (data === 'armor_stats' || data === 'shield_stats' || data === 'boots_stats' || data === 'weapon_stats') {
+    trangbiForPlayer(chatId, data);  // Gọi hàm để hiển thị item dựa trên loại module được chọn
+  }
+ else if (data.startsWith('trangbi_')) {
+    const itemName = data.substring(8);  // Lấy toàn bộ phần sau 'trangbi_'
+  Menutrangbi(chatId)
 
+    // Trả về toàn bộ tên item (ví dụ: 'T1_spear')
+    sendMessage(chatId, `Bạn đã trang bị item: ${itemName}`);
+  }
 
 
     
@@ -2500,6 +2513,25 @@ function sendMainMenu(chatId) {
 
 
 
+function Menutrangbi(chatId) {
+  const reply_markup = {
+    inline_keyboard: [
+      [
+        { text: 'Armor Stats', callback_data: 'armor_stats' },
+        { text: 'Shield Stats', callback_data: 'shield_stats' },
+        { text: 'Boots Stats', callback_data: 'boots_stats' },
+        { text: 'Weapon Stats', callback_data: 'weapon_stats' }
+      ]
+    ]
+  };
+
+  const text = 'Lựa chọn để thay đổi trang bị:';
+  sendMessage(chatId, text, reply_markup);
+}
+
+
+
+
 
 
 // Giả sử data là thông tin người chơi và id người chơi cần tìm
@@ -2579,6 +2611,57 @@ function handleEpNgocForPlayer(playerId_bot) {
 
 
 
+// Hàm lọc và hiển thị item
+function trangbiForPlayer(playerId_bot, selectedCategory) {
+  // Tìm kiếm người chơi theo id
+  const player = players.find(player => player.id_bot === playerId_bot);
+
+  if (!player) {
+    console.log("Không tìm thấy người chơi với id " + playerId_bot);
+    return;
+  }
+
+  // Các danh sách item theo loại
+  const categoryMap = {
+    armor_stats: armorStats,
+    shield_stats: shieldStats,
+    boots_stats: bootsStats,
+    weapon_stats: weaponStats
+  };
+
+  // Lấy danh sách item dựa trên loại được chọn
+  const selectedCategoryItems = categoryMap[selectedCategory];
+
+  // Kiểm tra nếu loại không hợp lệ
+  if (!selectedCategoryItems) {
+    console.log("Loại module không hợp lệ: " + selectedCategory);
+    return;
+  }
+
+  // Lọc các item trong inventory có tên trùng với tên trong selectedCategoryItems
+  const filteredItems = [];
+  player.inventory.forEach(item => {
+    // Kiểm tra nếu otp0 (tên item) trùng với bất kỳ item nào trong selectedCategoryItems
+    if (selectedCategoryItems.hasOwnProperty(item.otp0)) {
+      filteredItems.push(item.otp0);  // Lấy giá trị otp0 (tên item)
+    }
+  });
+
+  // Debug - kiểm tra danh sách item lọc được
+  console.log(`Danh sách item lọc được: ${filteredItems.length}`);
+
+  // Tạo danh sách các nút item để người dùng chọn
+  const itemButtons = filteredItems.map(item => [
+    { text: item, callback_data: `trangbi_${item}` }  // Mã callback chứa tên item
+  ]);
+
+  const reply_markup = {
+    inline_keyboard: itemButtons
+  };
+
+  // Gửi tin nhắn với danh sách item và các nút
+  sendMessage(playerId_bot, `Danh sách item của bạn:`, reply_markup);
+}
 
 
 
@@ -2631,7 +2714,7 @@ function handleEpNgocForPlayer(playerId_bot) {
 
 // Gọi hàm sendMainMenu khi người dùng đăng nhập
 sendMainMenu(6708647498);  
-
+Menutrangbi(6708647498)
 
 
 
