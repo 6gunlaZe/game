@@ -11,7 +11,7 @@ otp5 = cấp cường hóa = xdame theo 1 file
   // 5: giày (chan)
 
   9 = sách skill
-  8 = ngọc
+  8 = ngọc (opt9 là xếp chồng)
   7 = item khác (ví dụ gem, vv)
           
 ////////////////////////     Kiểm tra kỹ năng trong inventory (otp6 === 9) skill
@@ -42,3 +42,4 @@ otp5 = cấp cường hóa = xdame theo 1 file
   
  //số lượt hồi chiêu (cooldownTurns) otp7
  // Sắp xếp kỹ năng theo mức độ ưu tiên (otp8)
+// chồng lấp để tăng level item (otp9)
