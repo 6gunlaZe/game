@@ -27,7 +27,8 @@
           "otp5": 2,
           "otp6": 9,
           "otp7": 5,
-          "otp8": 1
+          "otp8": 1,
+          "otp9": 0
         },
         {
           "otp0": "T5_frost_armor",
@@ -46,7 +47,8 @@
         {
           "otp0": "gem_dame_18",
           "otp1": 1,
-          "otp6": 8
+          "otp6": 8,
+          "otp9": 0
         },
         {
           "otp0": "T2_iron_armor",
