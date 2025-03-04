@@ -9,6 +9,10 @@ otp5 = cấp cường hóa = xdame theo 1 file
   // 3: giáp (giap)
   // 4: tay (tay)
   // 5: giày (chan)
+
+  9 = sách skill
+  8 = ngọc
+  7 = item khác (ví dụ gem, vv)
           
 ////////////////////////     Kiểm tra kỹ năng trong inventory (otp6 === 9) skill
         skillName: skill.otp0,      // Tên kỹ năng
