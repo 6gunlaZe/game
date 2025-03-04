@@ -2271,11 +2271,32 @@ function handleCallbackQuery(callbackQuery) {
     // Xử lý lựa chọn trong module Ốp đồ
   else if (data === 'ep_ngoc') {
     sendMessage(chatId, 'Bạn đã chọn ép ngọc. Hãy chọn loại ngọc cần ép.');
-    sendMainMenu(chatId)
-  } else if (data === 'cuong_hoa') {
-    sendMessage(chatId, 'Bạn đã chọn cường hóa. Hãy chọn vật phẩm để cường hóa.');
+    handleEpNgocForPlayer(chatId)
     sendMainMenu(chatId)
   }
+ // Xử lý lựa chọn item ép ngọc
+else if (data.startsWith('epngoc_')) {
+  const itemName = data.substring(7);  // Lấy toàn bộ phần sau 'epngoc_'
+
+  // Trả về toàn bộ tên item (ví dụ: 'T1_spear')
+  sendMessage(chatId, `Bạn đã chọn item để ép ngọc: ${itemName}`);
+}
+ 
+  
+  
+  
+  else if (data === 'cuong_hoa') {
+    sendMessage(chatId, 'Bạn đã chọn cường hóa. Hãy chọn vật phẩm để cường hóa.');
+    handleItemsForPlayer(chatId)
+    sendMainMenu(chatId)
+  }
+// Xử lý lựa chọn item
+else if (data.startsWith('item_')) {
+  const itemName = data.substring(5);  // Lấy toàn bộ phần sau 'item_'
+
+  // Trả về toàn bộ tên item (ví dụ: 'T1_spear')
+  sendMessage(chatId, `Bạn đã chọn item: ${itemName}`);
+}
 
   // Xử lý lựa chọn mua mặt hàng trong Shop
   else if (data.startsWith('buy_')) {
@@ -2284,6 +2305,8 @@ function handleCallbackQuery(callbackQuery) {
     sendMessage(chatId, `Bạn đã chọn mua ${item.name} với giá ${item.price} vàng.`);
     sendMainMenu(chatId)
   }
+
+
 
     
   
@@ -2414,6 +2437,136 @@ function sendMainMenu(chatId) {
   const text = 'Chào mừng bạn đã đăng nhập! Chọn một module để tiếp tục:';
   sendMessage(chatId, text, reply_markup);
 }
+
+
+
+
+
+
+// Giả sử data là thông tin người chơi và id người chơi cần tìm
+function handleItemsForPlayer( playerId_bot) {
+  // Tìm kiếm người chơi theo id
+  const player = players.find(player => player.id_bot === playerId_bot);
+
+  if (!player) {
+    console.log("Không tìm thấy người chơi với id " + playerId_bot);
+    return;
+  }
+
+  // Lọc các item trong inventory có otp6 không phải là 8 hoặc 9
+  const filteredItems = [];
+  player.inventory.forEach(item => {
+    if (item.otp6 !== 7 && item.otp6 !== 8 && item.otp6 !== 9) {
+      filteredItems.push(item.otp0);  // Lấy giá trị otp0 (tên item)
+    }
+  });
+
+  // Debug - kiểm tra danh sách item lọc được
+  console.log(`Danh sách item lọc được: ${filteredItems.length}`);
+
+  // Tạo danh sách các nút item để người dùng chọn
+  const itemButtons = filteredItems.map(item => [
+    { text: item, callback_data: `item_${item}` }  // Mã callback chứa tên item
+  ]);
+
+
+  const reply_markup = {
+    inline_keyboard: itemButtons
+  };
+
+  // Gửi tin nhắn với danh sách item và các nút
+  sendMessage(playerId_bot, `Danh sách item của bạn:`, reply_markup);
+}
+
+
+
+
+
+
+// Xử lý ép ngọc cho người chơi
+function handleEpNgocForPlayer(playerId_bot) {
+  // Tìm kiếm người chơi theo id
+  const player = players.find(player => player.id_bot === playerId_bot);
+
+  if (!player) {
+    console.log("Không tìm thấy người chơi với id " + playerId_bot);
+    return;
+  }
+
+  // Lọc các item trong inventory có otp6 == 8
+  const filteredItems = [];
+  player.inventory.forEach(item => {
+    if (item.otp6 === 8) {  // Chỉ lấy item có otp6 == 8
+      filteredItems.push(item.otp0);  // Lấy giá trị otp0 (tên item)
+    }
+  });
+
+  // Debug - kiểm tra danh sách item lọc được
+  console.log(`Danh sách item ép ngọc lọc được: ${filteredItems.length}`);
+
+  // Tạo danh sách các nút item để người dùng chọn
+  const itemButtons = filteredItems.map(item => [
+    { text: item, callback_data: `epngoc_${item}` }  // Sử dụng callback_data mới 'epngoc_${item}'
+  ]);
+
+  const reply_markup = {
+    inline_keyboard: itemButtons
+  };
+
+  // Gửi tin nhắn với danh sách item ép ngọc và các nút
+  sendMessage(playerId_bot, `Danh sách item có thể ép ngọc của bạn:`, reply_markup);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
