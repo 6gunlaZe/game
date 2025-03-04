@@ -2346,7 +2346,10 @@ function handleCallbackQuery(callbackQuery) {
     const monsterName = data.split('_')[2];  // Lấy tên quái vật từ callback data
     const selectedMonster = monsters.find(monster => monster.name === monsterName);
     
-    sendMessage(chatId, `Bạn đã chọn quái vật: ${selectedMonster.name} (Level ${selectedMonster.level})`);
+    const monstersKilled = calculateMonstersKilledByChatId(chatId, selectedMonster.name)
+
+    
+    sendMessage(chatId, `Bạn đã chọn quái vật: ${selectedMonster.name} (Level ${selectedMonster.level}), số lượng kill trong 5p = ${monstersKilled} `);
   }
 
   // Xử lý các lựa chọn khác (Shop, Ép ngọc, Cường hóa, v.v.)
@@ -2460,17 +2463,18 @@ else if (data.startsWith('item_')) {
 
 
 const monsters = [
-  { level: 1, name: "Quái vật 1" },
-  { level: 2, name: "Quái vật 2" },
-  { level: 3, name: "Quái vật 3" },
-  { level: 4, name: "Quái vật 4" },
-  { level: 5, name: "Quái vật 5" },
-  { level: 6, name: "Quái vật 6" },
-  { level: 7, name: "Quái vật 7" },
-  { level: 8, name: "Quái vật 8" },
-  { level: 9, name: "Quái vật 9" },
-  { level: 10, name: "Quái vật 10" },
+  { level: 1, name: "Quái vật 1", dame: 10, def: 5, hp: 100 },
+  { level: 2, name: "Quái vật 2", dame: 15, def: 7, hp: 120 },
+  { level: 3, name: "Quái vật 3", dame: 20, def: 10, hp: 140 },
+  { level: 4, name: "Quái vật 4", dame: 25, def: 12, hp: 160 },
+  { level: 5, name: "Quái vật 5", dame: 30, def: 15, hp: 180 },
+  { level: 6, name: "Quái vật 6", dame: 35, def: 17, hp: 200 },
+  { level: 7, name: "Quái vật 7", dame: 40, def: 20, hp: 220 },
+  { level: 8, name: "Quái vật 8", dame: 45, def: 23, hp: 240 },
+  { level: 9, name: "Quái vật 9", dame: 50, def: 25, hp: 260 },
+  { level: 10, name: "Quái vật 10", dame: 55, def: 30, hp: 280 }
 ];
+
 
 
 
@@ -2708,18 +2712,104 @@ function trangbiForPlayer(playerId_bot, selectedCategory) {
 
 
 
+// Đối tượng lưu trữ trạng thái vòng lặp cho mỗi chatId
+let activeLoops = {};
 
+// Hàm chính xử lý vòng lặp 30 giây cho mỗi chatId
+function calculateMonstersKilledByChatId(chatId, monsterName) {
+  const currentTime = Date.now(); // Lấy thời gian hiện tại
 
+  
+   if (!activeLoops[chatId]) {
+    activeLoops[chatId] = {
+      isRunning: false, // Khởi tạo isRunning với giá trị false
+      lastExecutedTime: currentTime, // Khởi tạo lastExecutedTime với thời gian hiện tại
+      monsterName: monsterName, // Cập nhật tên quái vật
+    }; }
+ activeLoops[chatId].monsterName = monsterName;
+  
+  // Kiểm tra xem vòng lặp đã bắt đầu cho chatId này chưa
+  if (activeLoops[chatId] && activeLoops[chatId].isRunning) {
+    console.log("Vòng lặp hiện tại đang chạy, vui lòng đợi...");
+    return; // Nếu vòng lặp trước chưa kết thúc, không thực hiện gì cả
+  }
 
+  // Nếu vòng lặp chưa chạy, đánh dấu vòng lặp này là đang chạy
+  activeLoops[chatId] = {
+    isRunning: true,
+    lastExecutedTime: currentTime,
+    monsterName: monsterName,
+  };
 
+  // Gọi hàm tính toán lần đầu tiên ngay lập tức
+  startCalculatingMonsters(chatId, monsterName);
 
+  // Sau 30 giây sẽ tự động gọi vòng lặp tiếp theo cho chatId này
+  setTimeout(() => {
+    // Khi vòng lặp 30 giây kết thúc, đánh dấu là đã chạy xong
+    activeLoops[chatId].isRunning = false;
 
+    // Cập nhật lại thông số quái vật (vì có thể thay đổi giữa các vòng lặp)
+    let updatedMonsterName = activeLoops[chatId].monsterName;
+    const monster = monsters.find(m => m.name === updatedMonsterName);
+    
+    if (monster) {
+      // Gọi lại vòng lặp với thông số quái vật mới sau 30 giây
+      console.log("Vòng lặp hoàn tất, tiếp tục vòng lặp mới với quái vật cập nhật.");
+      calculateMonstersKilledByChatId(chatId, updatedMonsterName); // Tiếp tục vòng lặp
+    } else {
+      console.error("Quái vật không tồn tại hoặc thông số quái vật đã thay đổi.");
+    }
 
+  }, 30000); // Thực hiện vòng lặp sau 30 giây
+}
 
+// Hàm tính toán số lượng quái vật giết được
+function startCalculatingMonsters(chatId, monsterName) {
+  let player = players.find(p => p.id_bot === chatId); // Tìm player bằng id_bot (chatId)
+  
+  if (!player) {
+    console.error("Không tìm thấy người chơi với id_bot: " + chatId);
+    return;
+  }
 
+  // Tìm quái vật bằng tên
+  const monster = monsters.find(m => m.name === monsterName);
+  if (!monster) {
+    console.error("Quái vật không tồn tại.");
+    return;
+  }
 
+  const baseDamage = player.dame;
+  const critChance = player['crit-%'] / 100;
+  const critMultiplier = player['crit-x'];
 
+  const attacksPerSecond = 1 / player['attach-speed'];
+  const totalAttacks = attacksPerSecond * 60 * 5; // 5 phút = 300 giây
+  
+  let monstersKilled = 0;
+  let totalDamageDealt = 0;
 
+  let remainingMonsterHp = monster.hp;
+  for (let i = 0; i < totalAttacks; i++) {
+    const isCriticalHit = Math.random() < critChance;  
+    const damageDealt = isCriticalHit ? baseDamage * critMultiplier : baseDamage;
+    
+    totalDamageDealt += damageDealt;
+    remainingMonsterHp -= damageDealt;
+    
+    if (remainingMonsterHp <= 0) {
+      monstersKilled++;
+      remainingMonsterHp = monster.hp; 
+    }
+  }
+
+  const averageDamage = totalDamageDealt / totalAttacks;
+
+  sendMessage(chatId, `Sát thương trung bình thực tế: ${averageDamage.toFixed(2)} / Tổng số tấn công: ${totalAttacks}, HP quái: ${monster.hp}, Số lượng quái vật giết trong 5 phút: ${monstersKilled}`);
+
+  return monstersKilled;
+}
 
 
 
