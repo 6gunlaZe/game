@@ -8,7 +8,7 @@
       "exp": 3000,
       "gold": 0,
       "boss": 0,
-      "framlv": 'monsters 1',
+      "framlv": "monsters1",
       "inventory": [
         {
           "otp0": "T1_spear",
