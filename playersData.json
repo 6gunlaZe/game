@@ -8,6 +8,7 @@
       "exp": 3000,
       "gold": 0,
       "boss": 0,
+      "framlv": 1,
       "inventory": [
         {
           "otp0": "T1_spear",
@@ -156,6 +157,7 @@
       "exp": 3000,
       "gold": 0,
       "boss": 0,
+      "framlv": 1,
       "inventory": [
         {
           "otp0": "bow",
@@ -316,6 +318,7 @@
       "exp": 4000,
       "gold": 0,
       "boss": 0,
+      "framlv": 1,
       "inventory": [
         {
           "otp0": "T3_sword",
