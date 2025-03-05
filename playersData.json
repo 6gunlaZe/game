@@ -250,6 +250,18 @@
           "otp4": 0,
           "otp5": 0,
           "otp6": 0
+        },
+        {
+          "otp0": "skill_crit",
+          "otp1": 30,
+          "otp2": 1,
+          "otp3": 10,
+          "otp4": 3,
+          "otp5": 2,
+          "otp6": 9,
+          "otp7": 5,
+          "otp8": 1,
+          "otp9": 0
         }
       ],
       "level": 10,
