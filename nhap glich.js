@@ -2392,7 +2392,15 @@ else if (data.startsWith('epngoc_')) {
   trangbiForPlayerWithCategory(chatId, itemName)
   
 }
- 
+ else if (data.startsWith('epngocreal_')) {
+  const data1 = data.substring(11);  
+
+  // Trả về toàn bộ tên item (ví dụ: 'T1_spear')
+  sendMessage(chatId, `Đã ép ngọc!!`);
+  processPlayerAndUpdate(chatId, data1) 
+}
+  
+  
   
   
   
@@ -2923,6 +2931,7 @@ function trangbiForPlayerWithCategory(playerId_bot, data) {
 
   // Tách giá trị category từ data
   const category = extractCategoryFromData(data);
+  //const number = extractNumberFromData(data);
 
   // Kiểm tra xem category có hợp lệ không
   if (!categoryItemMap[category]) {
@@ -2934,19 +2943,26 @@ function trangbiForPlayerWithCategory(playerId_bot, data) {
   const items = categoryItemMap[category];
 
   // Nếu category có nhiều item (ví dụ: def có tay và chân)
-  let filteredItems = [];
-if (Array.isArray(items)) {
-  filteredItems = player.inventory.filter(item => {
-    // Lọc tất cả các item trong inventory mà có otp0 trùng với phần tử trong items
-    return items.some(itemModule => itemModule.hasOwnProperty(item.otp0));
-  });
-} else {
-  filteredItems = player.inventory.filter(item => {
-    // Kiểm tra nếu otp0 của item có thuộc tính trong items
-    return items.hasOwnProperty(item.otp0);
-  });
-}
+  const filteredItems = [];
+  if (Array.isArray(items)) {
+    items.forEach(itemModule => {
+      player.inventory.forEach(item => {
+        if (itemModule.hasOwnProperty(item.otp0)) {
+          filteredItems.push(item.otp0);  // Lấy giá trị otp0 (tên item)
+        }
+      });
+    });
+  } else {
+    // Trường hợp category chỉ có một loại item (dame, hp, defskill)
+    player.inventory.forEach(item => {
+      if (items.hasOwnProperty(item.otp0)) {
+        filteredItems.push(item.otp0);  // Lấy giá trị otp0 (tên item)
+      }
+    });
+  }
 
+  
+  
  // Tạo một chuỗi chứa thông tin chi tiết về các item và các nút
 let itemDetailsText = "Thông tin chi tiết về các item đã lọc:\n\n";
   
@@ -2958,24 +2974,22 @@ let itemDetailsText = "Thông tin chi tiết về các item đã lọc:\n\n";
         // Lấy các giá trị otp1, otp2, otp3, otp4, otp5
   itemDetailsText += `
     Tên: ${item.otp0}
-    - gem 1: ${item.opt1}
-    - gem 2: ${item.opt2}
-    - gem 3: ${item.opt3}
-    - gem 4: ${item.opt4}
-    - cường hóa: ${item.opt5}\n`;
+    - gem 1: ${item.otp1}
+    - gem 2: ${item.otp2}
+    - gem 3: ${item.otp3}
+    - gem 4: ${item.otp4}
+    - Cường Hóa: ${item.otp5} 🌟  \n` ;
       }
     });  
   
   
-
-
   
   // Debug - kiểm tra danh sách item lọc được
   console.log(`Danh sách item lọc được cho category ${category}: ${filteredItems.length}`);
 
   // Tạo danh sách các nút item để người dùng chọn
   const itemButtons = filteredItems.map(item => [
-    { text: item.otp0, callback_data: `epngocreal_${item.otp0}` }  // Mã callback chứa tên item
+    { text: item, callback_data: `epngocreal_${item}_${data}` }  // Mã callback chứa tên item
   ]);
 
   const reply_markup = {
@@ -2993,6 +3007,122 @@ function extractCategoryFromData(data) {
   const parts = data.split('_');  // Tách chuỗi thành các phần từ dấu "_"
   return parts[1];  // Trả về phần thứ 2 (dame, hp, def, defskill)
 }
+// Hàm tách số từ data
+function extractNumberFromData(data) {
+  const parts = data.split('_');  // Tách chuỗi thành các phần từ dấu "_"
+  return parts[2];  // Trả về phần thứ 3 (số 18)
+}
+
+
+
+
+
+
+// Hàm thực thi các bước để cập nhật dữ liệu người chơi
+function processPlayerAndUpdate(playerId_bot, data) {
+  
+  // Tìm người chơi có id_bot tương ứng
+  const player = players.find(player => player.id_bot === playerId_bot);
+
+  if (!player) {
+    console.log("Không tìm thấy người chơi với id_bot " + playerId_bot);
+    return;
+  }
+        console.log(`Dữ liệu nhận được ${data}`);
+
+  const { itemName, category, number } = processData(data);  // Tách dữ liệu thành itemName, category, và number
+  
+  // Bước 1: Kiểm tra và xử lý gem_dame_18
+  const gemDameItem = player.inventory.find(item => item.otp0 === category);
+  if (gemDameItem) {
+    console.log(`Tìm thấy ${category} trong inventory.`);
+
+    if (gemDameItem.otp9 === 1) {
+      // Xóa gem_dame_18 nếu otp9 = 1
+      console.log(`Giảm giá trị otp9 xuống 1, xóa ${category}`);
+      player.inventory = player.inventory.filter(item => item.otp0 !== category);
+    } else if (gemDameItem.otp9 > 1) {
+      // Trừ otp9 đi 1 nếu otp9 > 1
+      console.log(`Giảm otp9 đi 1 cho ${category}`);
+      gemDameItem.otp9 -= 1;
+    }
+  } else {
+    console.log(`Không tìm thấy category ${category} trong inventory.`);
+  }
+
+  // Bước 2: Tìm kiếm T1_spear và kiểm tra các otp1, otp2, otp3, otp4
+  const spearItem = player.inventory.find(item => item.otp0 === itemName);
+  if (spearItem) {
+    console.log(`Tìm thấy ${itemName} trong inventory.`);
+    const otpValues = [spearItem.otp1, spearItem.otp2, spearItem.otp3, spearItem.otp4];
+    const minOtpValue = Math.min(...otpValues);  // Tìm giá trị nhỏ nhất trong otp1, otp2, otp3, otp4
+
+    if (minOtpValue < number) {
+      console.log(`Cập nhật giá trị otp nhỏ nhất (${minOtpValue}) thành ${number}.`);
+      // Cập nhật giá trị otp nhỏ nhất nếu minOtpValue nhỏ hơn number
+      if (minOtpValue === spearItem.otp1) {
+        spearItem.otp1 = number;
+      } else if (minOtpValue === spearItem.otp2) {
+        spearItem.otp2 = number;
+      } else if (minOtpValue === spearItem.otp3) {
+        spearItem.otp3 = number;
+      } else if (minOtpValue === spearItem.otp4) {
+        spearItem.otp4 = number;
+      }
+    } else {
+      console.log(`Không cần cập nhật ${itemName} vì giá trị nhỏ nhất (${minOtpValue}) đã lớn hơn ${number}.`);
+    }
+  } else {
+    console.log(`Không tìm thấy itemName ${itemName} trong inventory.`);
+  }
+
+  // Bước 3: Cập nhật thông tin người chơi với hàm updatePlayerStat
+  const updatedStat = {
+    inventory: player.inventory,  // Cập nhật lại inventory
+    // Thêm các thay đổi khác nếu cần
+  };
+
+  updatePlayerStat(player.id, updatedStat)
+    .then((message) => {
+      console.log("Cập nhật thành công:", message);
+    })
+    .catch((err) => {
+      console.error("Lỗi khi cập nhật:", err);
+    });
+}
+
+
+function processData(data) {
+  // Tìm vị trí của "epngocreal_" và "gem" trong chuỗi
+  const itemStart = 0;  // Vị trí bắt đầu của itemName
+  const gemIndex = data.indexOf('gem');  // Vị trí bắt đầu của "gem"
+  
+  if (gemIndex === -1) {
+    console.error("Không tìm thấy 'gem' trong dữ liệu.");
+    return;
+  }
+
+  // Tách phần itemName (ví dụ: "T2_iron_axe")
+  const itemName = data.slice(itemStart, gemIndex);  // Cắt đúng phần itemName
+  const cleanedItemName = itemName.endsWith('_') ? itemName.slice(0, -1) : itemName; // Loại bỏ _ ở cuối
+
+  // Tách phần category (ví dụ: "gem_dame_18") và số cuối (18)
+  const categoryAndNumber = data.slice(gemIndex);  // Bao gồm "gem_dame_18"
+  
+  // Tách phần category và số
+  const parts = categoryAndNumber.split('_');
+  const category = parts.join('_');  // "gem_dame_18"
+  const number = parseInt(parts[parts.length - 1]);  // Lấy số cuối cùng (18)
+
+  return { itemName: cleanedItemName, category, number };
+}
+
+
+
+
+
+
+
 
 
 
