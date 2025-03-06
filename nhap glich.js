@@ -2149,6 +2149,8 @@ async function initGame() {
     const player3 = await getPlayerStat(11223);
     players = [player1, player2, player3];  // Lưu mảng người chơi
     // Khởi tạo báo cáo sát thương
+    calculateMonstersKilledByChatId(6708647498);
+
     playerDamageReport = players.map(player => ({
       id: player.id,
       attacks: [],
@@ -2463,7 +2465,7 @@ else if (data.startsWith('item_')) {
 
 
 const monsters = [
-  { level: 1, name: "Quái vật 1", dame: 10, def: 5, hp: 100 },
+  { level: 1, name: "monsters1", dame: 10, def: 5, hp: 100 },
   { level: 2, name: "Quái vật 2", dame: 15, def: 7, hp: 120 },
   { level: 3, name: "Quái vật 3", dame: 20, def: 10, hp: 140 },
   { level: 4, name: "Quái vật 4", dame: 25, def: 12, hp: 160 },
@@ -2474,6 +2476,7 @@ const monsters = [
   { level: 9, name: "Quái vật 9", dame: 50, def: 25, hp: 260 },
   { level: 10, name: "Quái vật 10", dame: 55, def: 30, hp: 280 }
 ];
+
 
 
 
@@ -2712,6 +2715,14 @@ function trangbiForPlayer(playerId_bot, selectedCategory) {
 
 
 
+
+
+
+
+
+
+
+let landau = {};  // Đảm bảo landau là một đối tượng để lưu trạng thái cho mỗi chatId
 // Đối tượng lưu trữ trạng thái vòng lặp cho mỗi chatId
 let activeLoops = {};
 
@@ -2720,29 +2731,78 @@ function calculateMonstersKilledByChatId(chatId, monsterName) {
   const currentTime = Date.now(); // Lấy thời gian hiện tại
 
   
-   if (!activeLoops[chatId]) {
+
+
+ 
+  
+  
+  
+  
+  
+  if (!activeLoops[chatId]) {
     activeLoops[chatId] = {
       isRunning: false, // Khởi tạo isRunning với giá trị false
       lastExecutedTime: currentTime, // Khởi tạo lastExecutedTime với thời gian hiện tại
-      monsterName: monsterName, // Cập nhật tên quái vật
-    }; }
- activeLoops[chatId].monsterName = monsterName;
+    };
+    
+    
+    
+
+if (!landau[chatId]) { // Kiểm tra chỉ set lần đầu
+  landau[chatId] = 1; // Đánh dấu đã thực hiện lần đầu
+  let player = players.find(p => p.id_bot === chatId); 
+  // Lấy level của boss từ player.framlv
+  const bossLevel = player.framlv;
+
+  // Tìm tên quái vật dựa trên level từ mảng monsters
+  const selectedMonster = monsters.find(monster => monster.level === bossLevel);
+
+  if (selectedMonster) {
+    // Gán monsterName từ tên quái vật tìm được
+    activeLoops[chatId].monsterName = selectedMonster.name;
+    startCalculatingMonsters(chatId, selectedMonster.name)
+    console.log(`Gán monsterName từ level ${bossLevel}: ${selectedMonster.name}`); // Log tên quái vật
+  } else {
+    // Nếu không tìm thấy quái vật với level này
+    console.error(`Không tìm thấy quái vật với level ${bossLevel}`);
+  }
+}
+    
+    
+    
+  }
   
-  // Kiểm tra xem vòng lặp đã bắt đầu cho chatId này chưa
+  
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+if (monsterName) {
+    activeLoops[chatId].monsterName = monsterName;
+}
+
+  
+  
+    // Kiểm tra xem vòng lặp đã bắt đầu cho chatId này chưa
   if (activeLoops[chatId] && activeLoops[chatId].isRunning) {
     console.log("Vòng lặp hiện tại đang chạy, vui lòng đợi...");
     return; // Nếu vòng lặp trước chưa kết thúc, không thực hiện gì cả
   }
-
-  // Nếu vòng lặp chưa chạy, đánh dấu vòng lặp này là đang chạy
-  activeLoops[chatId] = {
-    isRunning: true,
-    lastExecutedTime: currentTime,
-    monsterName: monsterName,
-  };
-
+  
+    // Nếu vòng lặp chưa chạy, đánh dấu vòng lặp này là đang chạy
+   activeLoops[chatId].isRunning = true;
+   activeLoops[chatId].lastExecutedTime = currentTime;
+  
+  
   // Gọi hàm tính toán lần đầu tiên ngay lập tức
-  startCalculatingMonsters(chatId, monsterName);
+  startCalculatingMonsters(chatId, activeLoops[chatId].monsterName);
 
   // Sau 30 giây sẽ tự động gọi vòng lặp tiếp theo cho chatId này
   setTimeout(() => {
@@ -2764,17 +2824,36 @@ function calculateMonstersKilledByChatId(chatId, monsterName) {
   }, 30000); // Thực hiện vòng lặp sau 30 giây
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Hàm tính toán số lượng quái vật giết được
 function startCalculatingMonsters(chatId, monsterName) {
   let player = players.find(p => p.id_bot === chatId); // Tìm player bằng id_bot (chatId)
-  
   if (!player) {
     console.error("Không tìm thấy người chơi với id_bot: " + chatId);
     return;
   }
+  //activeLoops[chatId].monsterName = monsterName
 
   // Tìm quái vật bằng tên
-  const monster = monsters.find(m => m.name === monsterName);
+  const monster = monsters.find(m => m.name == monsterName);
   if (!monster) {
     console.error("Quái vật không tồn tại.");
     return;
