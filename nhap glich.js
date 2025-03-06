@@ -2389,6 +2389,8 @@ else if (data.startsWith('epngoc_')) {
 
   // Trả về toàn bộ tên item (ví dụ: 'T1_spear')
   sendMessage(chatId, `Bạn đã chọn item để ép ngọc: ${itemName}`);
+  trangbiForPlayerWithCategory(chatId, itemName)
+  
 }
  
   
@@ -2901,7 +2903,96 @@ function startCalculatingMonsters(chatId, monsterName) {
 
 
 
+// Mảng ánh xạ category sang danh sách item tương ứng
+const categoryItemMap = {
+  dame: weaponStats,        // dame -> items tương ứng với vk
+  hp: armorStats,          // hp -> items tương ứng với áo
+  def: [glovesStats, bootsStats],  // def -> tay và chân
+  defskill: shieldStats    // defskill -> giáp
+};
 
+// Hàm lọc và hiển thị item dựa trên category tính toán từ data
+function trangbiForPlayerWithCategory(playerId_bot, data) {
+  // Tìm kiếm người chơi theo id
+  const player = players.find(player => player.id_bot === playerId_bot);
+
+  if (!player) {
+    console.log("Không tìm thấy người chơi với id " + playerId_bot);
+    return;
+  }
+
+  // Tách giá trị category từ data
+  const category = extractCategoryFromData(data);
+
+  // Kiểm tra xem category có hợp lệ không
+  if (!categoryItemMap[category]) {
+    console.log("Không tìm thấy module cho category: " + category);
+    return;
+  }
+
+  // Lấy danh sách items từ categoryItemMap
+  const items = categoryItemMap[category];
+
+  // Nếu category có nhiều item (ví dụ: def có tay và chân)
+  let filteredItems = [];
+if (Array.isArray(items)) {
+  filteredItems = player.inventory.filter(item => {
+    // Lọc tất cả các item trong inventory mà có otp0 trùng với phần tử trong items
+    return items.some(itemModule => itemModule.hasOwnProperty(item.otp0));
+  });
+} else {
+  filteredItems = player.inventory.filter(item => {
+    // Kiểm tra nếu otp0 của item có thuộc tính trong items
+    return items.hasOwnProperty(item.otp0);
+  });
+}
+
+ // Tạo một chuỗi chứa thông tin chi tiết về các item và các nút
+let itemDetailsText = "Thông tin chi tiết về các item đã lọc:\n\n";
+  
+  
+  
+    player.inventory.forEach(item => {
+      // Kiểm tra nếu otp0 của item có trong filteredItems
+      if (filteredItems.includes(item.otp0)) {
+        // Lấy các giá trị otp1, otp2, otp3, otp4, otp5
+  itemDetailsText += `
+    Tên: ${item.otp0}
+    - gem 1: ${item.opt1}
+    - gem 2: ${item.opt2}
+    - gem 3: ${item.opt3}
+    - gem 4: ${item.opt4}
+    - cường hóa: ${item.opt5}\n`;
+      }
+    });  
+  
+  
+
+
+  
+  // Debug - kiểm tra danh sách item lọc được
+  console.log(`Danh sách item lọc được cho category ${category}: ${filteredItems.length}`);
+
+  // Tạo danh sách các nút item để người dùng chọn
+  const itemButtons = filteredItems.map(item => [
+    { text: item.otp0, callback_data: `epngocreal_${item.otp0}` }  // Mã callback chứa tên item
+  ]);
+
+  const reply_markup = {
+    inline_keyboard: itemButtons
+  };
+
+  // Gửi tin nhắn với danh sách item và các nút
+  if (filteredItems.length > 0){
+    sendMessage(playerId_bot, itemDetailsText, reply_markup);
+  }
+}
+
+// Hàm tách category từ data (ví dụ: gem_dame_18)
+function extractCategoryFromData(data) {
+  const parts = data.split('_');  // Tách chuỗi thành các phần từ dấu "_"
+  return parts[1];  // Trả về phần thứ 2 (dame, hp, def, defskill)
+}
 
 
 
