@@ -2347,11 +2347,18 @@ function handleCallbackQuery(callbackQuery) {
   else if (data.startsWith('fram_monster_')) {
     const monsterName = data.split('_')[2];  // Lấy tên quái vật từ callback data
     const selectedMonster = monsters.find(monster => monster.name === monsterName);
-    
     const monstersKilled = calculateMonstersKilledByChatId(chatId, selectedMonster.name)
-
-    
     sendMessage(chatId, `Bạn đã chọn quái vật: ${selectedMonster.name} (Level ${selectedMonster.level}), số lượng kill trong 5p = ${monstersKilled} `);
+    
+    // Gọi hàm updatePlayerStat với biến newFramValue
+updatePlayerStat(playerattack.id, { framlv: selectedMonster.level })
+  .then((message) => {
+    console.log(message);  // In ra thông báo cập nhật thành công
+  })
+  .catch((err) => {
+    console.error(err);  // In ra lỗi nếu có
+  });
+
   }
 
   // Xử lý các lựa chọn khác (Shop, Ép ngọc, Cường hóa, v.v.)
