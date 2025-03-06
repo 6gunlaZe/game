@@ -2412,7 +2412,7 @@ else if (data.startsWith('epngoc_')) {
 // Xử lý lựa chọn item
 else if (data.startsWith('item_')) {
   const itemName = data.substring(5);  // Lấy toàn bộ phần sau 'item_'
-
+   enhanceItem(chatId, itemName)
   // Trả về toàn bộ tên item (ví dụ: 'T1_spear')
   sendMessage(chatId, `Bạn đã chọn item: ${itemName}`);
 }
@@ -3116,6 +3116,123 @@ function processData(data) {
 
   return { itemName: cleanedItemName, category, number };
 }
+
+
+
+
+
+
+
+
+function enhanceItem(playerId, itemId) {
+  let checkup = 0
+    let number = 0;
+    const allStats = [
+        armorStats,
+        shieldStats,
+        glovesStats,
+        bootsStats,
+        weaponStats
+    ];
+
+    // Lặp qua tất cả các đối tượng để tìm kiếm itemId
+    for (let i = 0; i < allStats.length; i++) {
+        const stats = allStats[i];
+        
+        // Kiểm tra xem itemId có tồn tại trong object này không
+        if (stats.hasOwnProperty(itemId)) {
+            // Lấy số thứ tự của item theo format T1, T2, ..., T15
+            const itemLevel = itemId.match(/^T(\d+)_/); // Lấy số sau "T"
+            if (itemLevel) {
+                number = parseInt(itemLevel[1], 10); // Convert số đó thành số nguyên
+               console.log(`number = ${number} `);
+            }
+            break;  // Thoát khỏi vòng lặp nếu đã tìm thấy itemId
+        }
+    }
+
+    // Tìm người chơi với playerId
+    const player = players.find(p => p.id_bot === playerId);
+    if (!player) {
+        console.log(`Không tìm thấy người chơi với id: ${playerId}.`);
+        return;
+    }
+
+    // Tìm item trong inventory
+    const item = player.inventory.find(i => i.otp0 === itemId);
+  const itemGem = player.inventory.find(i => i.otp0 === "gem");
+    if (!item) {
+        console.log(`Không tìm thấy item ${itemId} trong inventory.`);
+        return;
+    }
+      if (!itemGem) {
+        console.log(`Không tìm thấy item ${itemGem} trong inventory.`);
+        return;
+    }
+    //number = (3 * Math.pow(3, item.otp5))*number;
+       number = item.otp5 * number + number;
+    // Kiểm tra trị số otp1 của item
+    if (number <= itemGem.otp1) {
+        // Nếu number < otp1, tiến hành nâng cấp item (tăng otp5)
+        checkup = 1
+      
+      
+      if (Math.random() * 100 <= Math.max(100 - (Math.pow(item.otp5, 1.8) * 3), 10)) {
+  console.log("Cường hóa thành công!");
+                item.otp5 += 1;
+        itemGem.otp1 -= number
+        sendMessage(playerId, `Item ${itemId}: đã được cường hóa tăng lên ${item.otp5}.  gem - ${number} còn lại (${itemGem.otp1}) `);
+        console.log(`Nâng cấp ${itemId}: otp5 đã được tăng lên ${item.otp5}.  gem - ${number} còn lại (${itemGem.otp1}) `);
+} else {
+  console.log("Cường hóa thất bại!");
+  itemGem.otp1 -= number
+  player.inventory = player.inventory.filter(item => item.otp0 !== itemId);  //xóa item
+  
+        sendMessage(playerId, `Nâng cấp ${itemId}: thất bại.  gem - ${number} còn lại (${itemGem.otp1}) `);
+        console.log(`Nâng cấp ${itemId}: thất bại, đã mất item.  gem - ${number} còn lại (${itemGem.otp1}) `);
+}
+
+      
+      
+      
+      
+      
+
+    } else {
+        console.log(`Không thể nâng cấp ${itemId} vì không đủ gem (${itemGem.otp1} ) / cần thiết gem = ${number}  `);
+        sendMessage(playerId, `Không thể nâng cấp ${itemId} vì không đủ gem (${itemGem.otp1}) / cần thiết gem = ${number}  `);
+
+    }
+ if (checkup == 0) return 
+    // Cập nhật lại thông tin người chơi sau khi nâng cấp
+    const updatedStat = {
+        inventory: player.inventory,
+        // Thêm các thay đổi khác nếu cần
+    };
+
+    // Gọi hàm updatePlayerStat để lưu lại dữ liệu
+    updatePlayerStat(player.id, updatedStat)
+        .then((message) => {
+            console.log("Cập nhật thành công:", message);
+        })
+        .catch((err) => {
+            console.error("Lỗi khi cập nhật:", err);
+        });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
