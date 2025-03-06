@@ -567,6 +567,15 @@
           "otp1": 1,
           "otp6": 8,
           "otp9": 0
+        },
+        {
+          "otp0": "T2_woodenspear",
+          "otp1": 0,
+          "otp2": 0,
+          "otp3": 0,
+          "otp4": 0,
+          "otp5": 0,
+          "otp6": 0
         }
       ],
       "level": 15,
