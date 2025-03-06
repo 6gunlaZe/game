@@ -4,11 +4,11 @@ otp5 = cấp cường hóa = xdame theo 1 file
 
 
 ///////////////////////////////////////trang bị otp6: xác định loại trang bị (1->5)
-  // 1: vũ khí (vu-khi)
-  // 2: áo (ao)
-  // 3: giáp (giap)
-  // 4: tay (tay)
-  // 5: giày (chan)
+  // 1: vũ khí (vu-khi) +dame
+  // 2: áo (ao) +hp
+  // 3: giáp (giap) +DEFskill
+  // 4: tay (tay) +def
+  // 5: giày (chan) + def
 
   9 = sách skill
   8 = ngọc (opt9 là xếp chồng)
