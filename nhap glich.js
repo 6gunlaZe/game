@@ -2409,6 +2409,13 @@ updatePlayerStat(playerattack.id, { framlv: selectedMonster.level })
   }
   
   
+      // Xử lý lựa chọn trong module Ốp đồ
+  else if (data === 'skill_') {
+    sendMessage(chatId, 'Danh sách các skill hiện tại.');
+    handlesSkills(chatId)
+  }
+  
+  
     // Xử lý lựa chọn trong module Ốp đồ
   else if (data === 'ep_ngoc') {
     sendMessage(chatId, 'Bạn đã chọn ép ngọc. Hãy chọn loại ngọc cần ép.');
@@ -2563,7 +2570,8 @@ function sendEquipmentModule(chatId) {
     inline_keyboard: [
       [
         { text: 'Ép ngọc', callback_data: 'ep_ngoc' },
-        { text: 'Cường hóa', callback_data: 'cuong_hoa' }
+        { text: 'Cường hóa', callback_data: 'cuong_hoa' },
+        { text: 'Skill', callback_data: 'skill_' }
       ]
     ]
   };
@@ -3255,6 +3263,84 @@ function enhanceItem(playerId, itemId) {
 
 
 
+
+// Xử lý ép ngọc cho người chơi (cập nhật cho kỹ năng)
+function handlesSkills(playerId_bot) {
+  // Tìm kiếm người chơi theo id
+  const player = players.find(player => player.id_bot === playerId_bot);
+
+  if (!player) {
+    console.log("Không tìm thấy người chơi với id " + playerId_bot);
+    return;
+  }
+
+  // Lọc các item trong inventory có otp6 == 9 (kỹ năng)
+  const filteredSkills = [];
+  player.inventory.forEach(item => {
+    if (item.otp6 === 9) {  // Lọc kỹ năng có otp6 == 9
+      // Lưu thông tin kỹ năng
+      filteredSkills.push({
+        skillName: item.otp0,        // Tên kỹ năng
+        skillPower: item.otp1,       // Độ tăng của skill
+        skillEffect: item.otp2,      // Chỉ số tác động của skill (dame, def, crit,...)
+        manaCost: item.otp3,         // Mana tiêu tốn khi sử dụng skill
+        attackCount: item.otp4,      // Số đòn đánh có hiệu quả
+        skillLevel: item.otp5,        // Cấp độ của skill
+        hoichieu: item.otp7,
+        soluong: item.otp9
+      });
+    }
+  });
+
+  // Debug - kiểm tra danh sách kỹ năng lọc được
+  console.log(`Danh sách kỹ năng lọc được: ${filteredSkills.length}`);
+
+  if (filteredSkills.length === 0) {
+    sendMessage(playerId_bot, "Bạn không có kỹ năng nào có thể ép ngọc.");
+    return;
+  }
+
+  // Mảng để chuyển đổi các giá trị tác động (1 = dame, 2 = def, 3 = hp, 4 = mana)
+  const effectTypes = {
+    1: 'Dame (Tấn công)',
+    2: 'Def (Phòng thủ)',
+    3: 'HP (Sức khỏe)',
+    4: 'Mana (Năng lượng)'
+  };
+
+  // Tạo danh sách các nút item để người dùng chọn
+  const skillButtons = filteredSkills.map(skill => [
+    { 
+      text: skill.skillName, 
+      callback_data: `selecskillreal_${skill.skillName}`  // Sử dụng callback_data mới 'epngoc_${skill.skillName}'
+    }
+  ]);
+
+  const reply_markup = {
+    inline_keyboard: skillButtons
+  };
+
+  // Tạo nội dung thông báo chi tiết kỹ năng
+  let skillDetails = "Danh sách kỹ năng của bạn:\n\n";
+  filteredSkills.forEach(skill => {
+    // Chuyển đổi giá trị tác động (otpEffect) thành tên trực quan hơn
+    const effectDescription = effectTypes[skill.skillEffect] || 'Không xác định';
+
+    skillDetails += `
+      Tên sách kỹ năng: ${skill.skillName}
+      Chỉ số tăng = +${skill.skillPower} ${effectDescription}
+      Mana tiêu tốn /1đòn: ${skill.manaCost} mana
+      Số đòn hiệu quả: ${skill.attackCount}
+      Sử dụng lại sau : ${skill.hoichieu} đòn đánh
+      Cấp độ kỹ năng: ${skill.skillLevel}
+      Số lượng trong kho: ${skill.soluong}
+      ----------------------
+    `;
+  });
+
+  // Gửi tin nhắn với danh sách kỹ năng và các nút
+  sendMessage(playerId_bot, skillDetails, reply_markup);
+}
 
 
 
