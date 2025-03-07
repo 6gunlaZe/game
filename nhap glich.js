@@ -2649,8 +2649,7 @@ function Menutrangbi(chatId) {
 
 
 
-// Giả sử data là thông tin người chơi và id người chơi cần tìm
-function handleItemsForPlayer( playerId_bot) {
+function handleItemsForPlayer(playerId_bot) {
   // Tìm kiếm người chơi theo id
   const player = players.find(player => player.id_bot === playerId_bot);
 
@@ -2663,18 +2662,20 @@ function handleItemsForPlayer( playerId_bot) {
   const filteredItems = [];
   player.inventory.forEach(item => {
     if (item.otp6 !== 7 && item.otp6 !== 8 && item.otp6 !== 9) {
-      filteredItems.push(item.otp0);  // Lấy giá trị otp0 (tên item)
+      filteredItems.push(item);  // Thêm toàn bộ item vào mảng filteredItems
     }
   });
 
   // Debug - kiểm tra danh sách item lọc được
   console.log(`Danh sách item lọc được: ${filteredItems.length}`);
 
-  // Tạo danh sách các nút item để người dùng chọn
+  // Tạo danh sách các nút item để người dùng chọn, bao gồm tên item và otp5
   const itemButtons = filteredItems.map(item => [
-    { text: item, callback_data: `item_${item}` }  // Mã callback chứa tên item
+    { 
+      text: `${item.otp0} - cấp CH: ${item.otp5}`,  // Hiển thị tên item và giá trị otp5
+      callback_data: `item_${item.otp0}`  // Mã callback chứa tên item
+    }
   ]);
-
 
   const reply_markup = {
     inline_keyboard: itemButtons
