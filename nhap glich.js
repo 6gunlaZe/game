@@ -3185,6 +3185,7 @@ function processData(data) {
 function enhanceItem(playerId, itemId) {
   let checkup = 0
     let number = 0;
+  let random = 0;
     const allStats = [
         armorStats,
         shieldStats,
@@ -3232,28 +3233,26 @@ function enhanceItem(playerId, itemId) {
     // Kiểm tra trị số otp1 của item
     if (number <= itemGem.otp1) {
         // Nếu number < otp1, tiến hành nâng cấp item (tăng otp5)
-        checkup = 1
+        checkup = Math.max(100 - (Math.pow(item.otp5, 1.65) * 2.2), 10)
       
-      
-      if (Math.random() * 100 <= Math.max(100 - (Math.pow(item.otp5, 1.65) * 2.2), 10)  ) {
+      random = Math.random() * 100
+      if ( random <= Math.max(100 - (Math.pow(item.otp5, 1.65) * 2.2), 10)  ) {
   console.log("Cường hóa thành công!");
                 item.otp5 += 1;
         itemGem.otp1 -= number
-        sendMessage(playerId, `Item ${itemId}: đã được cường hóa tăng lên ${item.otp5}.  gem - ${number} còn lại (${itemGem.otp1}) `);
+        sendMessage(playerId, `(${random.toFixed(2)} / ${checkup.toFixed(2)}) Item ${itemId}: đã được cường hóa tăng lên ${item.otp5}.  gem - ${number} còn lại (${itemGem.otp1}) `);
         console.log(`Nâng cấp ${itemId}: otp5 đã được tăng lên ${item.otp5}.  gem - ${number} còn lại (${itemGem.otp1}) `);
 } else {
   console.log("Cường hóa thất bại!");
   itemGem.otp1 -= number
   player.inventory = player.inventory.filter(item => item.otp0 !== itemId);  //xóa item
   
-        sendMessage(playerId, `Nâng cấp ${itemId}: thất bại.  gem - ${number} còn lại (${itemGem.otp1}) `);
+        sendMessage(playerId, `(${random.toFixed(2)} / ${checkup.toFixed(2)}) Cường hóa ${itemId}: thất bại đã mất item.  gem - ${number} còn lại (${itemGem.otp1}) `);
         console.log(`Nâng cấp ${itemId}: thất bại, đã mất item.  gem - ${number} còn lại (${itemGem.otp1}) `);
 }
 
       
-      
-      
-      
+
       
 
     } else {
@@ -3277,6 +3276,7 @@ function enhanceItem(playerId, itemId) {
             console.error("Lỗi khi cập nhật:", err);
         });
 }
+
 
 
 
@@ -3372,7 +3372,7 @@ function handlesSkills(playerId_bot) {
 function checkskillup(playerId, itemId) {
     let checkup = 0;
     let number = 0;
-
+    let random = 0
     // Tìm người chơi với playerId
     const player = players.find(p => p.id_bot === playerId);
     if (!player) {
@@ -3396,19 +3396,19 @@ function checkskillup(playerId, itemId) {
     // Kiểm tra xem otp9 có lớn hơn otp5 không
     if (otp9 >= number) {
       
-        checkup = 1;
-
-            if (Math.random() * 100 <= Math.max(100 - (otp5) * 30, 10) ) {
+        checkup = Math.max(100 - (otp5) * 30, 10);
+        random = Math.random() * 100
+            if (random <= Math.max(100 - (otp5) * 30, 10) ) {
   console.log("Cường hóa thành công!");
       item.otp5 += 1;
         item.otp9 -= number;
         console.log(`Nâng cấp thành công! ${itemId}: đã được tăng lên ${item.otp5}. sách còn lại: ${item.otp9}`);
-        sendMessage(playerId, `Item ${itemId}: đã được cường hóa tăng lên ${item.otp5}. sách còn lại: ${item.otp9}`);
+        sendMessage(playerId, `(${random.toFixed(2)} / ${checkup}) Item ${itemId}: đã được cường hóa tăng lên ${item.otp5}. sách còn lại: ${item.otp9}`);
 } else {
   console.log("Nâng cấp thất bại!");
   item.otp9 -= number
-        sendMessage(playerId, `Nâng cấp ${itemId}: thất bại.  sách - ${number} còn lại (${item.otp9}) `);
-        console.log(`Nâng cấp ${itemId}: thất bại.  sách - ${number} còn lại (${item.otp9}) `);
+        sendMessage(playerId, `(${random.toFixed(2)} / ${checkup}) Nâng cấp ${itemId}: thất bại.  sách - ${number} còn lại (${item.otp9}) `);
+        console.log(`(${random.toFixed(2)}) Nâng cấp ${itemId}: thất bại.  sách - ${number} còn lại (${item.otp9}) `);
 }
       
       
