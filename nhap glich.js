@@ -2453,7 +2453,6 @@ else if (data.startsWith('epngoc_')) {
   const data1 = data.substring(11);  
 
   // Trả về toàn bộ tên item (ví dụ: 'T1_spear')
-  sendMessage(chatId, `Đã ép ngọc!!`);
   processPlayerAndUpdate(chatId, data1) 
 }
   
@@ -3090,8 +3089,42 @@ function processPlayerAndUpdate(playerId_bot, data) {
 
   const { itemName, category, number } = processData(data);  // Tách dữ liệu thành itemName, category, và number
   
+   const spearItem = player.inventory.find(item => item.otp0 === itemName);
+    const gemDameItem = player.inventory.find(item => item.otp0 === category);
+
+  
+  if (!spearItem)return
+  
+  if (spearItem.otp5 > 0){
+     sendMessage(playerId_bot, `Không thể ép ngọc item đã cường hóa`);
+    return
+  }
+  
+  
+  if (!gemDameItem)return
+  
+  
+      // Kiểm tra và giảm tỉ lệ ép theo các giá trị otp1, otp2, otp3, otp4
+    const otpValues = [spearItem.otp1, spearItem.otp2, spearItem.otp3, spearItem.otp4];
+    let reductionRate = 100;
+
+    otpValues.forEach(otp => {
+      if (otp > 0) {
+        reductionRate -= 15;  // Mỗi otp > 0 giảm tỉ lệ ép 20%
+      }
+    });
+
+  
+
+  let random = Math.random() * 100
+  
+  if (random <= reductionRate ) {
+  
+  
+       sendMessage(playerId_bot, `${random.toFixed(2)} / ${reductionRate} Ép ngọc thành công`);
+
+  
   // Bước 1: Kiểm tra và xử lý gem_dame_18
-  const gemDameItem = player.inventory.find(item => item.otp0 === category);
   if (gemDameItem) {
     console.log(`Tìm thấy ${category} trong inventory.`);
 
@@ -3109,7 +3142,7 @@ function processPlayerAndUpdate(playerId_bot, data) {
   }
 
   // Bước 2: Tìm kiếm T1_spear và kiểm tra các otp1, otp2, otp3, otp4
-  const spearItem = player.inventory.find(item => item.otp0 === itemName);
+ 
   if (spearItem) {
     console.log(`Tìm thấy ${itemName} trong inventory.`);
     const otpValues = [spearItem.otp1, spearItem.otp2, spearItem.otp3, spearItem.otp4];
@@ -3134,6 +3167,35 @@ function processPlayerAndUpdate(playerId_bot, data) {
     console.log(`Không tìm thấy itemName ${itemName} trong inventory.`);
   }
 
+  }    
+  else {
+  console.log("Nâng cấp thất bại!");  
+   sendMessage(playerId_bot, `${random.toFixed(2)} / ${reductionRate} Ép ngọc thất bại`);
+
+      // Bước 1: Kiểm tra và xử lý gem_dame_18
+  if (gemDameItem) {
+    console.log(`Tìm thấy ${category} trong inventory.`);
+
+    if (gemDameItem.otp9 === 1) {
+      // Xóa gem_dame_18 nếu otp9 = 1
+      console.log(`Giảm giá trị otp9 xuống 1, xóa ${category}`);
+      player.inventory = player.inventory.filter(item => item.otp0 !== category);
+    } else if (gemDameItem.otp9 > 1) {
+      // Trừ otp9 đi 1 nếu otp9 > 1
+      console.log(`Giảm otp9 đi 1 cho ${category}`);
+      gemDameItem.otp9 -= 1;
+    }
+  } else {
+    console.log(`Không tìm thấy category ${category} trong inventory.`);
+  }
+    
+  }
+    
+    
+    
+    
+    
+    
   // Bước 3: Cập nhật thông tin người chơi với hàm updatePlayerStat
   const updatedStat = {
     inventory: player.inventory,  // Cập nhật lại inventory
