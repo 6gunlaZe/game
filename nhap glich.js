@@ -461,6 +461,38 @@ function sendSyntaxExamples(chatId) {
 sendMainMenu(chatId);  
 Menutrangbi(chatId)
 sendPlayerStatsToTelegram(chatId);
+var GrapStatsText = "Chỉ số cường hóa: " + Object.entries(GrapStats).map(([key, value]) => `${key}= ${value}`).join(', ');
+console.log(GrapStatsText);  
+ sendMessage(chatId, GrapStatsText) 
+  
+let textop = "Tỉ lệ ôp đồ: ";
+for (let otp5 = 1; otp5 <= 20; otp5++) {
+    // Tính toán tỉ lệ ôp đồ theo công thức đúng
+    let result = Math.max(107 - (Math.pow(otp5, 1.65) * 2.2), 10);
+    
+    // Log các bước tính toán chi tiết
+    let powResult = Math.pow(otp5, 1.8); // Tính Math.pow(otp5, 1.8)
+    let multiplied = powResult * 3; // Nhân kết quả với 3
+    let finalResult = 100 - multiplied; // Trừ từ 100
+    console.log(`otp5 = ${otp5}, Math.pow(otp5, 1.8) = ${powResult.toFixed(2)}, Multiplied = ${multiplied.toFixed(2)}, Final Result = ${finalResult.toFixed(2)}, Result = ${result}`);
+    
+    // Thêm kết quả vào chuỗi với định dạng
+    textop += `${otp5} = ${result.toFixed(0)}%, `;
+}
+
+// Xóa dấu phẩy và khoảng trắng thừa ở cuối chuỗi
+textop = textop.slice(0, -2);
+
+// Log chuỗi kết quả cuối cùng
+console.log("Chuỗi kết quả cuối cùng: ", textop);
+
+// Gửi tin nhắn (giả sử bạn có một hàm sendMessage(chatId, textop) để gửi tin nhắn)
+sendMessage(chatId, textop);
+
+  
+  
+  
+  
   
  // sendMessage(chatId, text, reply_markup); // Gửi tin nhắn với inline keyboard
 }
@@ -3177,7 +3209,7 @@ function enhanceItem(playerId, itemId) {
         checkup = 1
       
       
-      if (Math.random() * 100 <= Math.max(100 - (Math.pow(item.otp5, 1.8) * 3), 10)) {
+      if (Math.random() * 100 <= Math.max(107 - (Math.pow(item.otp5, 1.65) * 2.2), 10)  ) {
   console.log("Cường hóa thành công!");
                 item.otp5 += 1;
         itemGem.otp1 -= number
