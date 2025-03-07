@@ -466,18 +466,12 @@ console.log(GrapStatsText);
  sendMessage(chatId, GrapStatsText) 
   
 let textop = "Tỉ lệ ôp đồ: ";
-for (let otp5 = 1; otp5 <= 20; otp5++) {
+for (let otp5 = 0; otp5 <= 10; otp5++) {
     // Tính toán tỉ lệ ôp đồ theo công thức đúng
-    let result = Math.max(107 - (Math.pow(otp5, 1.65) * 2.2), 10);
-    
-    // Log các bước tính toán chi tiết
-    let powResult = Math.pow(otp5, 1.8); // Tính Math.pow(otp5, 1.8)
-    let multiplied = powResult * 3; // Nhân kết quả với 3
-    let finalResult = 100 - multiplied; // Trừ từ 100
-    console.log(`otp5 = ${otp5}, Math.pow(otp5, 1.8) = ${powResult.toFixed(2)}, Multiplied = ${multiplied.toFixed(2)}, Final Result = ${finalResult.toFixed(2)}, Result = ${result}`);
+    let result = Math.max(100 - (Math.pow(otp5, 1.65) * 2.2), 10);
     
     // Thêm kết quả vào chuỗi với định dạng
-    textop += `${otp5} = ${result.toFixed(0)}%, `;
+    textop += `${otp5+1} = ${result.toFixed(0)}%, `;
 }
 
 // Xóa dấu phẩy và khoảng trắng thừa ở cuối chuỗi
@@ -491,6 +485,24 @@ sendMessage(chatId, textop);
 
   
   
+ 
+  
+  
+ let textop1 = "Tỉ lệ nâng skill: ";
+for (let otp5 = 0; otp5 <= 3; otp5++) {
+    // Tính toán tỉ lệ ôp đồ theo công thức đúng
+    let result = Math.max(100 - (otp5) * 30, 10) 
+    // Thêm kết quả vào chuỗi với định dạng
+    textop1 += `${otp5+1} = ${result.toFixed(0)}%, `;
+}
+
+// Xóa dấu phẩy và khoảng trắng thừa ở cuối chuỗi
+textop1 = textop1.slice(0, -2);
+
+// Log chuỗi kết quả cuối cùng
+console.log("Chuỗi kết quả cuối cùng: ", textop1);
+
+sendMessage(chatId, textop1); 
   
   
   
@@ -2411,9 +2423,15 @@ updatePlayerStat(playerattack.id, { framlv: selectedMonster.level })
   
       // Xử lý lựa chọn trong module Ốp đồ
   else if (data === 'skill_') {
-    sendMessage(chatId, 'Danh sách các skill hiện tại.');
+    sendMessage(chatId, 'Lựa chọn skill để nâng cấp.');
     handlesSkills(chatId)
   }
+  // Xử lý lựa chọn skill
+else if (data.startsWith('selecskillreal_')) {
+  const itemName = data.substring(15);  
+  checkskillup(chatId, itemName)
+  sendMessage(chatId, `Bạn đã chọn skill: ${itemName}`);
+}
   
   
     // Xử lý lựa chọn trong module Ốp đồ
@@ -3217,7 +3235,7 @@ function enhanceItem(playerId, itemId) {
         checkup = 1
       
       
-      if (Math.random() * 100 <= Math.max(107 - (Math.pow(item.otp5, 1.65) * 2.2), 10)  ) {
+      if (Math.random() * 100 <= Math.max(100 - (Math.pow(item.otp5, 1.65) * 2.2), 10)  ) {
   console.log("Cường hóa thành công!");
                 item.otp5 += 1;
         itemGem.otp1 -= number
@@ -3287,7 +3305,8 @@ function handlesSkills(playerId_bot) {
         attackCount: item.otp4,      // Số đòn đánh có hiệu quả
         skillLevel: item.otp5,        // Cấp độ của skill
         hoichieu: item.otp7,
-        soluong: item.otp9
+        soluong: item.otp9,
+        uutien: item.otp8,
       });
     }
   });
@@ -3332,7 +3351,8 @@ function handlesSkills(playerId_bot) {
       Mana tiêu tốn /1đòn: ${skill.manaCost} mana
       Số đòn hiệu quả: ${skill.attackCount}
       Sử dụng lại sau : ${skill.hoichieu} đòn đánh
-      Cấp độ kỹ năng: ${skill.skillLevel}
+      Cấp độ kỹ năng: ${skill.skillLevel} (X chỉ số)
+      Mức độ ưu tiên: ${skill.uutien} (9 >>> 0)
       Số lượng trong kho: ${skill.soluong}
       ----------------------
     `;
@@ -3349,8 +3369,72 @@ function handlesSkills(playerId_bot) {
 
 
 
+function checkskillup(playerId, itemId) {
+    let checkup = 0;
+    let number = 0;
+
+    // Tìm người chơi với playerId
+    const player = players.find(p => p.id_bot === playerId);
+    if (!player) {
+        console.log(`Không tìm thấy người chơi với id: ${playerId}.`);
+        return;
+    }
+
+    // Tìm item trong inventory
+    const item = player.inventory.find(i => i.otp0 === itemId);
+
+    if (!item) {
+        console.log(`Không tìm thấy item ${itemId} trong inventory.`);
+        return;
+    }
 
 
+    // Lấy giá trị otp9 và otp5 của item
+    const otp9 = item.otp9;
+    const otp5 = item.otp5;
+    number = (3 * Math.pow(3, item.otp5));
+    // Kiểm tra xem otp9 có lớn hơn otp5 không
+    if (otp9 >= number) {
+      
+        checkup = 1;
+
+            if (Math.random() * 100 <= Math.max(100 - (otp5) * 30, 10) ) {
+  console.log("Cường hóa thành công!");
+      item.otp5 += 1;
+        item.otp9 -= number;
+        console.log(`Nâng cấp thành công! ${itemId}: đã được tăng lên ${item.otp5}. sách còn lại: ${item.otp9}`);
+        sendMessage(playerId, `Item ${itemId}: đã được cường hóa tăng lên ${item.otp5}. sách còn lại: ${item.otp9}`);
+} else {
+  console.log("Nâng cấp thất bại!");
+  item.otp9 -= number
+        sendMessage(playerId, `Nâng cấp ${itemId}: thất bại.  sách - ${number} còn lại (${item.otp9}) `);
+        console.log(`Nâng cấp ${itemId}: thất bại.  sách - ${number} còn lại (${item.otp9}) `);
+}
+      
+      
+      
+    } else {
+        console.log(`Không thể nâng cấp ${itemId} vì không đủ sách (${otp9}) / cần thiết sách = ${number}.`);
+        sendMessage(playerId, `Không thể nâng cấp ${itemId} vì không đủ sách (${otp9}) / cần thiết sách = ${number}.`);
+    }
+
+    if (checkup === 0) return;
+
+    // Cập nhật lại thông tin người chơi sau khi nâng cấp
+    const updatedStat = {
+        inventory: player.inventory,
+        // Thêm các thay đổi khác nếu cần
+    };
+
+    // Gọi hàm updatePlayerStat để lưu lại dữ liệu
+    updatePlayerStat(player.id, updatedStat)
+        .then((message) => {
+            console.log("Cập nhật thành công:", message);
+        })
+        .catch((err) => {
+            console.error("Lỗi khi cập nhật:", err);
+        });
+}
 
 
 
