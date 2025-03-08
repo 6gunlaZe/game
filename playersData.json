@@ -176,12 +176,12 @@
           "otp6": 0
         },
         "vu-khi": {
-          "otp0": "T1_spear",
-          "otp1": 10,
-          "otp2": 5,
-          "otp3": 8,
-          "otp4": 12,
-          "otp5": 3,
+          "otp0": "T3_steel_axe",
+          "otp1": 18,
+          "otp2": 18,
+          "otp3": 18,
+          "otp4": 18,
+          "otp5": 0,
           "otp6": 0
         }
       }
