@@ -1349,24 +1349,24 @@ function checkSkillExpirationAndRemove(player) {
 
 var GrapStats = {
     "1": 1.07, 
-    "2": 1.11, 
-    "3": 1.16,  
-    "4": 1.19,  
-    "5": 1.23,  
-    "6": 1.26,
-    "7": 1.30,
-    "8": 1.36,
-    "9": 1.41,
-    "10": 1.46,
-    "11": 1.51,
-    "12": 1.56,
-    "13": 1.62,
-    "14": 1.68,
-    "15": 1.75,
-    "16": 1.82,
-    "17": 1.90,
-    "18": 1.99,
-    "19": 2.10,
+    "2": 1.13, 
+    "3": 1.18,  
+    "4": 1.22,  
+    "5": 1.27,  
+    "6": 1.31,
+    "7": 1.35,
+    "8": 1.40,
+    "9": 1.47,
+    "10": 1.54,
+    "11": 1.62,
+    "12": 1.76,
+    "13": 1.92,
+    "14": 2.18,
+    "15": 2.35,
+    "16": 2.62,
+    "17": 2.90,
+    "18": 3.59,
+    "19": 4.10,
 };
 
 
@@ -2731,6 +2731,7 @@ function handleEpNgocForPlayer(playerId_bot) {
 function trangbiForPlayer(playerId_bot, selectedCategory) {
   // Tìm kiếm người chơi theo id
   const player = players.find(player => player.id_bot === playerId_bot);
+let allDisplayText = "";  // Khởi tạo biến lưu danh sách các displayText
 
   if (!player) {
     console.log("Không tìm thấy người chơi với id " + playerId_bot);
@@ -2745,6 +2746,17 @@ function trangbiForPlayer(playerId_bot, selectedCategory) {
     weapon_stats: weaponStats,
     gloves_stats: glovesStats
   };
+  
+  const categoryIcons = {
+  armor_stats: "❤️",   // Biểu tượng giáp
+  shield_stats: "🎽",  // Biểu tượng khiên
+  boots_stats: "🛡️",    // Biểu tượng giày
+  weapon_stats: "⚔️",  // Biểu tượng vũ khí
+  gloves_stats: "🛡️"   // Biểu tượng găng tay
+};
+  
+  const categoryIcon = categoryIcons[selectedCategory];
+
 
   // Lấy danh sách item dựa trên loại được chọn
   const selectedCategoryItems = categoryMap[selectedCategory];
@@ -2755,36 +2767,61 @@ function trangbiForPlayer(playerId_bot, selectedCategory) {
     return;
   }
 
+
   // Lọc các item trong inventory có tên trùng với tên trong selectedCategoryItems
   const filteredItems = [];
   player.inventory.forEach(item => {
     // Kiểm tra nếu otp0 (tên item) trùng với bất kỳ item nào trong selectedCategoryItems
     if (selectedCategoryItems.hasOwnProperty(item.otp0)) {
-      filteredItems.push(item.otp0);  // Lấy giá trị otp0 (tên item)
+      filteredItems.push(item);  // Thêm toàn bộ item vào mảng filteredItems
     }
   });
 
   // Debug - kiểm tra danh sách item lọc được
   console.log(`Danh sách item lọc được: ${filteredItems.length}`);
 
-  // Tạo danh sách các nút item để người dùng chọn
-  const itemButtons = filteredItems.map(item => [
-    { text: item, callback_data: `trangbi_${item}` }  // Mã callback chứa tên item
-  ]);
+  // Tạo danh sách các nút item để người dùng chọn, bao gồm tên item và thông tin chi tiết
+  const itemButtons = filteredItems.map(item => {
+    const itemName = item.otp0;  // Tên item (dựa trên otp0)
+    const otp1 = item.otp1;
+    const otp2 = item.otp2;
+    const otp3 = item.otp3;
+    const otp4 = item.otp4;
+    const otp5 = item.otp5;
+
+    // Lấy giá trị chỉ số từ selectedCategoryItems (ví dụ: từ armorStats, shieldStats...)
+    const categoryValue = selectedCategoryItems[itemName];  // Lấy giá trị chỉ số cho item từ categoryMap
+
+    // Tính toán tỷ lệ từ GrapStats dựa trên otp5
+    const grapMultiplier = GrapStats[otp5] || 1; // Nếu otp5 không có trong GrapStats, dùng tỷ lệ 1 (không thay đổi)
+
+    // Tính giá trị thực của chỉ số với tỷ lệ từ GrapStats
+    const finalValue = (otp1 + otp2 + otp3 + otp4 + categoryValue) * grapMultiplier;
+
+    // Tính giá trị hiển thị cho text của nút item (bao gồm thông tin otp1, otp2, otp3 và otp5)
+    const displayText = `${itemName} ${categoryIcon}: ${finalValue.toFixed(0)}/${otp5}⭐ :${otp1}-${otp2}-${otp3}-${otp4}  `;
+    
+  // Thêm displayText vào danh sách các displayText
+    allDisplayText += displayText + "\n";  // Thêm mỗi displayText vào chuỗi, cách nhau bằng dấu xuống dòng
+    
+    return [
+      { text: displayText, callback_data: `trangbi_${itemName}` }  // Mã callback chứa tên item
+    ];
+  });
 
   const reply_markup = {
     inline_keyboard: itemButtons
   };
 
   // Gửi tin nhắn với danh sách item và các nút
-  if (filteredItems.length > 0){
-  sendMessage(playerId_bot, `Danh sách item của bạn:`, reply_markup);
-  } 
-  else {
-    sendMessage(playerId_bot, `không có item`);
-      Menutrangbi(playerId_bot)
+  if (filteredItems.length > 0) {
+    sendMessage(playerId_bot, `Danh sách item của bạn:\n${allDisplayText}`, reply_markup);
+  } else {
+    sendMessage(playerId_bot, `Không có item`);
+    Menutrangbi(playerId_bot)
   }
 }
+
 
 
 
