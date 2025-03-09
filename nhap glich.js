@@ -2501,7 +2501,7 @@ else if (data.startsWith('buy_')) {
         if (playerattack.gold >= item.price) {
             // Giảm vàng của người chơi và thêm item vào kho đồ
             playerattack.gold -= item.price;
-
+            handleItemEffects(playerattack, item)
             sendMessage(chatId, `Bạn đã mua ${item.name} với giá ${item.price} vàng. Bạn còn ${playerattack.gold} vàng.`);
         } else {
             sendMessage(chatId, `Bạn không đủ vàng để mua ${item.name}. Bạn cần ${item.price - playerattack.gold} vàng nữa.`);
@@ -3196,7 +3196,8 @@ function processPlayerAndUpdate(playerId_bot, data) {
 
   
 
-  let random = Math.random() * 100
+  let random = Math.random() * 100 - player.rate
+  player.rate = 0
   
   if (random <= reductionRate ) {
   
@@ -3377,7 +3378,8 @@ function enhanceItem(playerId, itemId) {
         // Nếu number < otp1, tiến hành nâng cấp item (tăng otp5)
         checkup = Math.max(100 - (Math.pow(item.otp5, 1.65) * 2.2), 10)
       
-      random = Math.random() * 100
+      random = Math.random() * 100 - player.rate
+      player.rate = 0
       if ( random <= Math.max(100 - (Math.pow(item.otp5, 1.65) * 2.2), 10)  ) {
   console.log("Cường hóa thành công!");
                 item.otp5 += 1;
@@ -3539,7 +3541,8 @@ function checkskillup(playerId, itemId) {
     if (otp9 >= number) {
       
         checkup = Math.max(100 - (otp5) * 30, 10);
-        random = Math.random() * 100
+        random = Math.random() * 100 - player.rate
+      player.rate = 0
             if (random <= Math.max(100 - (otp5) * 30, 10) ) {
   console.log("Cường hóa thành công!");
       item.otp5 += 1;
@@ -3586,6 +3589,97 @@ function checkskillup(playerId, itemId) {
 
 
 
+// Hàm xử lý các tác dụng của món item
+function handleItemEffects(player, item) {
+    // Kiểm tra item và thực hiện các hành động phù hợp
+    if (item.name === "Bùa +5% rate") {
+        player.rate = 5;  
+        sendMessage(player.id_bot, `Tỷ lệ may mắn của bạn đã tăng thêm ${player.rate}%.`, { parse_mode: 'HTML' });
+
+    } else if (item.name === "Bùa +10% rate") {
+        // Tăng tỷ lệ may mắn
+        player.rate = 10;
+        sendMessage(player.id_bot, `Tỷ lệ may mắn của bạn đã tăng thêm ${player.rate}%.`, { parse_mode: 'HTML' });
+    } else if (item.name === "Bùa +15% rate") {
+        // Tăng tỷ lệ may mắn
+        player.rate = 15;
+        sendMessage(player.id_bot, `Tỷ lệ may mắn của bạn đã tăng thêm ${player.rate}%.`, { parse_mode: 'HTML' });
+      
+    } else if (item.name === "Bùa triệu hồi boss lv1") {
+        // Triệu hồi boss cấp 1 (Giả sử hàm triệu hồi boss đã được định nghĩa)
+        summonBoss(players, 1);  // Triệu hồi boss cấp 1
+        sendMessage(player.id_bot, "Boss cấp 1 đã được triệu hồi!", { parse_mode: 'HTML' });
+
+    } else if (item.name === "Bùa triệu hồi boss lv5") {
+        // Triệu hồi boss cấp 5
+        summonBoss(players, 5);  // Triệu hồi boss cấp 5
+        sendMessage(player.id_bot, "Boss cấp 5 đã được triệu hồi!", { parse_mode: 'HTML' });
+
+    } else if (item.name === "Bùa triệu hồi boss lv10") {
+        // Triệu hồi boss cấp 10
+        summonBoss(players, 10);  // Triệu hồi boss cấp 10
+        sendMessage(player.id_bot, "Boss cấp 10 đã được triệu hồi!", { parse_mode: 'HTML' });
+
+    } else if (item.name === "Bùa triệu hồi boss lv20") {
+        // Triệu hồi boss cấp 20
+        summonBoss(players, 20);  // Triệu hồi boss cấp 20
+        sendMessage(player.id_bot, "Boss cấp 20 đã được triệu hồi!", { parse_mode: 'HTML' });
+
+    } else if (item.name === "Bùa triệu hồi boss lv30") {
+        // Triệu hồi boss cấp 30
+        summonBoss(players, 30);  // Triệu hồi boss cấp 30
+        sendMessage(player.id_bot, "Boss cấp 30 đã được triệu hồi!", { parse_mode: 'HTML' });
+
+    } else if (item.name === "Bùa triệu hồi boss lv40") {
+        // Triệu hồi boss cấp 40
+        summonBoss(players, 40);  // Triệu hồi boss cấp 40
+        sendMessage(player.id_bot, "Boss cấp 40 đã được triệu hồi!", { parse_mode: 'HTML' });
+
+    } else if (item.name === "Bùa triệu hồi boss lv50") {
+        // Triệu hồi boss cấp 50
+        summonBoss(players, 50);  // Triệu hồi boss cấp 50
+        sendMessage(player.id_bot, "Boss cấp 50 đã được triệu hồi!", { parse_mode: 'HTML' });
+
+    } else if (item.name === "Bùa triệu hồi boss lv60") {
+        // Triệu hồi boss cấp 60
+        summonBoss(players, 60);  // Triệu hồi boss cấp 60
+        sendMessage(player.id_bot, "Boss cấp 60 đã được triệu hồi!", { parse_mode: 'HTML' });
+
+    } else if (item.name === "Bùa triệu hồi boss lv70") {
+        // Triệu hồi boss cấp 70
+        summonBoss(players, 70);  // Triệu hồi boss cấp 70
+        sendMessage(player.id_bot, "Boss cấp 70 đã được triệu hồi!", { parse_mode: 'HTML' });
+
+    }
+}
+
+
+// Giả sử hàm summonBoss sẽ tạo ra một boss mới và thông báo cho người chơi
+function summonBoss(players,level) {
+    // Tạo boss mới với cấp độ tương ứng và thông báo cho người chơi
+    console.log(`Boss cấp ${level} đã được triệu hồi `);
+    // Logic thêm để tạo ra boss...
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3614,9 +3708,3 @@ function checkskillup(playerId, itemId) {
 // Gọi hàm sendMainMenu khi người dùng đăng nhập
 sendMainMenu(6708647498);  
 Menutrangbi(6708647498)
-
-
-
-
-
-
