@@ -1802,6 +1802,7 @@ function addItemToInventory(playerId, itemId) {
 
 
 
+  // Kiểm tra nếu món đồ đã có trong inventory
 
 function findItemOrder(player, itemId) {
     // Các đối tượng chứa dữ liệu các item
@@ -1826,12 +1827,12 @@ function findItemOrder(player, itemId) {
                 number = parseInt(itemLevel[1], 10); // Convert số đó thành số nguyên
             }
             
-            increaseGemOtp1AndUpdateGitHub(player, number);
+            increaseGemOtp1AndUpdateGitHub(player, number);  //nếu là trang bị đã có thì tăng lên 1 của gem theo bậc
             return number; // Trả về số thứ tự của item
         }
     }
     
-    // Nếu không tìm thấy itemId
+    // nếu các item drop không phải trang bị thì sẽ auto +1 ở chỉ số otp9
   increaseItemOtp1AndUpdateGitHub(player, itemId)
     return null;
 }
