@@ -252,7 +252,7 @@ function getPlayerStat(playerId) {
 
 
 
-function updatePlayerStat(playerId, updatedStat) {
+function updatePlayerStat(playerId, updatedStat, commit = 0 ) {
   return new Promise((resolve, reject) => {
     const repoOwner = '6gunlaZe';  // Tên người sở hữu repo
     const repoName = 'game';  // Tên repository
@@ -280,8 +280,50 @@ function updatePlayerStat(playerId, updatedStat) {
         // Cập nhật lại dữ liệu
         const updatedData = JSON.stringify(jsonData, null, 2);
 
-        // Cập nhật lại file JSON lên GitHub
-        const commitMessage = `Cập nhật thông số người chơi với ID ${playerId}`;
+    // Xử lý thông báo commit tùy theo giá trị của commit
+    let commitMessage = `Cập nhật thông số người chơi với ID ${playerId}`;
+    switch (commit) {
+      case 1:
+        commitMessage = `Cập nhật thông số người chơi ${playerId}: cập nhật vàng`;
+        break;
+      case 2:
+        commitMessage = `Cập nhật thông số người chơi ${playerId}: cập nhật lv fram quái`;
+        break;
+      case 3:
+        commitMessage = `Cập nhật thông số người chơi ${playerId}: +gem`;
+        break;
+      case 4:
+        commitMessage = `Cập nhật thông số người chơi ${playerId}: cập nhật đồ mới`;
+        break;
+      case 5:
+        commitMessage = `Cập nhật thông số người chơi ${playerId}: Thay đổi trang bị`;
+        break;
+      case 6:
+        commitMessage = `Cập nhật thông số người chơi ${playerId}: +otp9 của ngọc / skill`;
+        break;
+              case 7:
+        commitMessage = `Cập nhật thông số người chơi ${playerId}: ép ngọc`;
+        break;
+              case 8:
+        commitMessage = `Cập nhật thông số người chơi ${playerId}: cường hóa`;
+        break;
+              case 9:
+        commitMessage = `Cập nhật thông số người chơi ${playerId}: up skill`;
+        break;
+              case 10:
+        commitMessage = `Cập nhật thông số người chơi ${playerId}: +otp9 của ngọc / skill`;
+        break;
+              case 11:
+        commitMessage = `Cập nhật thông số người chơi ${playerId}: - gold shop`;
+        break;
+              case 12:
+        commitMessage = `Cập nhật thông số người chơi ${playerId}: +otp9 của ngọc / skill`;
+        break;
+      default:
+        // Giữ commit mặc định nếu commit không hợp lệ hoặc không có giá trị
+        commitMessage = `Cập nhật thông số người chơi với ID ${playerId}`;
+        break;
+    }
 
         // Sử dụng SHA mới nhất của file từ GitHub
         const fileSha = data.sha;
@@ -874,7 +916,7 @@ function updatePlayerEquip( id_bot, itemId) {
 
     // Nếu trang bị đã được cập nhật, gọi hàm updatePlayerStat để cập nhật dữ liệu
     if (updated) {
-        updatePlayerStat(player.id, { "trang-bi": player["trang-bi"] });
+        updatePlayerStat(player.id, { "trang-bi": player["trang-bi"] }, 5);
     } else {
         console.log("Không tìm thấy trang bị hợp lệ.");
     }
@@ -1371,30 +1413,7 @@ var GrapStats = {
 
 
 
-// Tạo vòng lặp mỗi 20 giây (20000 milliseconds)
-const bossInterval = setInterval(() => {
-  // Kiểm tra nếu boss chết (hp <= 0)
-  if (boss.hp <= 0) {
-    // Thay đổi boss mới
-    boss = {
-      id: "boss001",
-      name: "Big Boss",
-      hp: 20000,         // Máu của boss
-      lv:10, 
-      damage: 50,       // Sát thương của boss
-      defense: 50,       // Phòng thủ của boss
-      isAlive: true,     // Trạng thái sống của boss
-      boss:1,
-    };
-    boss.hp = 20000
-    let textMessage = "Có boss mới\nhttps://same-mangrove-seed.glitch.me/";
 
-    sendMessage(6708647498, textMessage)
-    console.log("Boss đã chết, tạo boss mới:", boss);
-  } else {
-    console.log(`Boss hiện tại: ${boss.name}, HP: ${boss.hp}`);
-  }
-}, 20000);  // Lặp lại mỗi 20 giây (20000ms)
 
 
 
@@ -1789,7 +1808,7 @@ function addItemToInventory(playerId, itemId) {
   console.log(`Đã thêm món đồ ${itemId} vào inventory của ${player.name}.`);
 
   // Cập nhật lại dữ liệu người chơi sau khi thêm món đồ
-  updatePlayerStat(playerId, { inventory: player.inventory })
+  updatePlayerStat(playerId, { inventory: player.inventory }, 4)
     .then((message) => {
       console.log(message);  // In ra thông báo cập nhật thành công
     })
@@ -1859,7 +1878,7 @@ function increaseGemOtp1AndUpdateGitHub(player, increaseValue) {
       gemItem.otp1 += increaseValue;
 
       // Sau khi cập nhật giá trị otp1, gọi hàm cập nhật lên GitHub
-      updatePlayerStat(player.id, { inventory: player.inventory })
+      updatePlayerStat(player.id, { inventory: player.inventory }, 3)
         .then(result => {
           console.log('Dữ liệu đã được cập nhật lên GitHub:', result);
           resolve('Dữ liệu đã được cập nhật lên GitHub: ' + result);
@@ -1895,7 +1914,7 @@ function increaseItemOtp1AndUpdateGitHub(player, itemId) {
       item.otp9 += 1;
 
       // Sau khi cập nhật giá trị otp1, gọi hàm cập nhật lên GitHub
-      updatePlayerStat(player.id, { inventory: player.inventory })
+      updatePlayerStat(player.id, { inventory: player.inventory }, 6)
         .then(result => {
           console.log('Dữ liệu đã được cập nhật lên GitHub:', result);
           resolve('Dữ liệu đã được cập nhật lên GitHub: ' + result);
@@ -2412,7 +2431,7 @@ function handleCallbackQuery(callbackQuery) {
     sendMessage(chatId, `Bạn đã chọn quái vật: ${selectedMonster.name} (Level ${selectedMonster.level}), số lượng kill trong 5p = ${monstersKilled} `);
     
     // Gọi hàm updatePlayerStat với biến newFramValue
-updatePlayerStat(playerattack.id, { framlv: selectedMonster.level })
+updatePlayerStat(playerattack.id, { framlv: selectedMonster.level }, 2)
   .then((message) => {
     console.log(message);  // In ra thông báo cập nhật thành công
   })
@@ -2501,7 +2520,19 @@ else if (data.startsWith('buy_')) {
         if (playerattack.gold >= item.price) {
             // Giảm vàng của người chơi và thêm item vào kho đồ
             playerattack.gold -= item.price;
+          
+                // Gọi hàm updatePlayerStat với 
+   updatePlayerStat(playerattack.id, { gold: playerattack.gold }, 11)
+  .then((message) => {
+    console.log(message);  // In ra thông báo cập nhật thành công
+  })
+  .catch((err) => {
+    console.error(err);  // In ra lỗi nếu có
+  });
+          
+          
             handleItemEffects(playerattack, item)
+
             sendMessage(chatId, `Bạn đã mua ${item.name} với giá ${item.price} vàng. Bạn còn ${playerattack.gold} vàng.`);
         } else {
             sendMessage(chatId, `Bạn không đủ vàng để mua ${item.name}. Bạn cần ${item.price - playerattack.gold} vàng nữa.`);
@@ -3027,7 +3058,7 @@ function startCalculatingMonsters(chatId, monsterName) {
   player.gold = Number(player.gold); // Đảm bảo player.gold là kiểu số
   player.gold += Math.round(totalDamageDealt / 100);
       // Gọi hàm updatePlayerStat với 
-   updatePlayerStat(player.id, { gold: player.gold })
+   updatePlayerStat(player.id, { gold: player.gold }, 1)
   .then((message) => {
     console.log(message);  // In ra thông báo cập nhật thành công
   })
@@ -3283,7 +3314,7 @@ function processPlayerAndUpdate(playerId_bot, data) {
     // Thêm các thay đổi khác nếu cần
   };
 
-  updatePlayerStat(player.id, updatedStat)
+  updatePlayerStat(player.id, updatedStat, 7)
     .then((message) => {
       console.log("Cập nhật thành công:", message);
     })
@@ -3412,7 +3443,7 @@ function enhanceItem(playerId, itemId) {
     };
 
     // Gọi hàm updatePlayerStat để lưu lại dữ liệu
-    updatePlayerStat(player.id, updatedStat)
+    updatePlayerStat(player.id, updatedStat, 8)
         .then((message) => {
             console.log("Cập nhật thành công:", message);
         })
@@ -3572,7 +3603,7 @@ function checkskillup(playerId, itemId) {
     };
 
     // Gọi hàm updatePlayerStat để lưu lại dữ liệu
-    updatePlayerStat(player.id, updatedStat)
+    updatePlayerStat(player.id, updatedStat, 9)
         .then((message) => {
             console.log("Cập nhật thành công:", message);
         })
@@ -3654,14 +3685,63 @@ function handleItemEffects(player, item) {
 }
 
 
-// Giả sử hàm summonBoss sẽ tạo ra một boss mới và thông báo cho người chơi
-function summonBoss(players,level) {
-    // Tạo boss mới với cấp độ tương ứng và thông báo cho người chơi
-    console.log(`Boss cấp ${level} đã được triệu hồi `);
-    // Logic thêm để tạo ra boss...
+// Hàm summonBoss để triệu hồi boss mới và tăng sức mạnh theo cấp độ
+function summonBoss(players, level) {
+    // Tính toán sức mạnh boss theo cấp độ
+    let hp = Math.round(20000 * Math.pow(1.07, level));
+    
+    // Damage tăng theo hệ số mũ nhỏ (17% mỗi cấp)
+    let damage = Math.round(50 * Math.pow(1.15, level) + (level * 5));
+    
+    // Defense tăng tuyến tính (tăng 2 mỗi cấp)
+    let defense = 50 + (level * 7);
+
+    // Kiểm tra nếu boss đã chết (hp <= 0)
+    if (boss.hp <= 0) {
+        // Thay đổi boss mới với sức mạnh theo cấp độ
+        boss = {
+            id: "boss001",
+            name: "Big Boss",
+            hp: hp,                      // HP được tính toán theo cấp độ
+            lv: level,                   // Cấp độ boss
+            damage: damage,              // Sát thương được tính toán theo cấp độ
+            defense: defense,            // Phòng thủ được tính toán theo cấp độ
+            isAlive: true,               // Trạng thái sống của boss
+            boss: 1,
+        };
+        
+        // Gửi thông báo về boss mới
+        let textMessage = `Có boss mới cấp ${level}\n  ${boss.name}, Cấp: ${boss.lv}, HP: ${boss.hp}, Damage: ${boss.damage}, Defense: ${boss.defense} \n https://same-mangrove-seed.glitch.me/`;
+        sendMessage(6708647498, textMessage);
+            //thêm các sendMessage khi có người chơi khác
+
+      
+      
+    updateSkillsBasedOnInventory(players)
+    
+    updateAllPlayersStats(players)
+      
+    updatePlayersHpToMax();
+      
+    startBossFight(boss,players[0]);
+    startBossFight(boss,players[1]);
+    startBossFight(boss,players[2]); 
+      
+      
+      
+      
+      
+      
+    } else {
+        console.log(`Boss hiện tại chưa chết: ${boss.name}, Cấp: ${boss.lv}, HP: ${boss.hp}, Damage: ${boss.damage}, Defense: ${boss.defense}`);
+      sendMessage(6708647498, `Boss hiện tại chưa chết: ${boss.name}, Cấp: ${boss.lv}, HP: ${boss.hp}, Damage: ${boss.damage}, Defense: ${boss.defense}`);
+      //thêm các sendMessage khi có người chơi khác
+      
+      
+      
+    }
 }
-
-
+ 
 
 
 
