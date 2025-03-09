@@ -1248,9 +1248,6 @@ function updateSkillsBasedOnInventory(players) {
 
 
 
-
-
-
 // tránh gọi quá nhiều lần liên tục nếu không sẽ lỗi 409
 // Hàm để cập nhật chỉ số của người chơi khi sử dụng kỹ năng
 function updatePlayerStatsBasedOnSkills(player) {
@@ -1543,12 +1540,33 @@ function handlePlayerAttack(player, target) {
     attackIntervals = attackIntervals.filter(intervalObj => intervalObj.a !== player);  // Xóa 'a' khỏi danh sách lưu trữ
   }
 
+  // Kiểm tra nếu player đã chết, dừng tấn công
+if (player.hp <= 0) {
+  console.log(`${player.name} đã chết, dừng tấn công.`);
+  clearInterval(existingInterval.intervalId);  // Dừng vòng lặp nếu player chết
+  sendMessage(player.id_bot, `${player.name} đã chết và không thể tấn công nữa.`, { parse_mode: 'HTML' });
+  return;  // Dừng hàm nếu player đã chết
+}
+
+
+  
   // Tính toán tốc độ tấn công và sát thương
   const attackSpeed = player['attach-speed'];  // Tốc độ đánh của player
   const damage = calculatePlayerDamage(player, target);  // Tính sát thương mỗi đòn đánh của player
 
   // Tấn công theo tốc độ đánh của player
   const attackInterval = setInterval(() => {
+    
+    // Kiểm tra nếu player đã chết trong khi tấn công
+if (player.hp <= 0) {
+  clearInterval(attackInterval);  // Dừng vòng lặp nếu player chết
+  console.log(`${player.name} đã chết, dừng tấn công.`);
+  sendMessage(player.id_bot, `${player.name} đã chết và không thể tiếp tục tấn công.`, { parse_mode: 'HTML' });
+  return;  // Dừng vòng lặp nếu player chết
+}
+
+    
+    
     if (target.hp <= 0) {  // Kiểm tra nếu mục tiêu đã chết
       clearInterval(attackInterval);  // Dừng vòng lặp tấn công nếu mục tiêu đã chết
       console.log(`${target.name} đã chết, dừng tấn công.`);
@@ -1605,12 +1623,17 @@ if (target.boss == 1) {
 
   player.gold = Number(player.gold); // Đảm bảo player.gold là kiểu số
   player.gold += Math.round(totalDamage / 10);
+    
+  player.exp = Number(player.exp); // Đảm bảo player.gold là kiểu số
+  player.exp += Math.round(totalDamage / 10);    
+    
     return totalDamage;  // Trả về tổng sát thương nếu tìm thấy
   } else {
     console.log("Không tìm thấy playerReport với id này.");
     return 0;  // Trả về 0 nếu không tìm thấy
   }
 }
+
 
 
 
@@ -2212,6 +2235,7 @@ let checkhpp = `${'👦🏻'}   ${players[0].hp}-------|-------   ${'🐐'}   ${
     console.log("Không tìm thấy báo cáo cho người chơi này.");
   }
 }
+
 
 
 
@@ -2970,7 +2994,7 @@ function calculateMonstersKilledByChatId(chatId, monsterName) {
   activeLoops[chatId].lastExecutedTime = nextTime;
 
   // Gọi hàm tính toán lần đầu tiên ngay lập tức
-  startCalculatingMonsters(chatId, activeLoops[chatId].monsterName);
+  if (activeLoops[chatId])startCalculatingMonsters(chatId, activeLoops[chatId].monsterName);
 
   // Sau thời gian tính toán sẽ tự động gọi vòng lặp tiếp theo cho chatId này
   setTimeout(() => {
@@ -2991,10 +3015,6 @@ function calculateMonstersKilledByChatId(chatId, monsterName) {
 
   }, nextTime - currentTime); // Thực hiện vòng lặp sau khoảng thời gian từ currentTime đến nextTime
 }
-
-
-
-
 
 
 
@@ -3057,8 +3077,12 @@ function startCalculatingMonsters(chatId, monsterName) {
   
   player.gold = Number(player.gold); // Đảm bảo player.gold là kiểu số
   player.gold += Math.round(totalDamageDealt / 100);
+  
+  player.exp = Number(player.exp); // Đảm bảo player.gold là kiểu số
+  player.exp += Math.round(totalDamageDealt / 100);
+  
       // Gọi hàm updatePlayerStat với 
-   updatePlayerStat(player.id, { gold: player.gold }, 1)
+  updatePlayerStat(player.id, { exp: player.exp, gold: player.gold }, 1)
   .then((message) => {
     console.log(message);  // In ra thông báo cập nhật thành công
   })
@@ -3070,9 +3094,6 @@ function startCalculatingMonsters(chatId, monsterName) {
 
   }
   
-  
-
-
   
 
 
@@ -3717,9 +3738,9 @@ function summonBoss(players, level) {
 
       
       
-    updateSkillsBasedOnInventory(players)
+    //updateSkillsBasedOnInventory(players)
     
-    updateAllPlayersStats(players)
+    //updateAllPlayersStats(players)
       
     updatePlayersHpToMax();
       
