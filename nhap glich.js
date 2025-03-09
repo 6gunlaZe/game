@@ -661,6 +661,7 @@ setTimeout(() => {
 
 
 
+
 function sendPlayerStatsToTelegram(chatId) {
   // Tìm player dựa trên id_bot từ biến players
   let player = players.find(p => p.id_bot === chatId); // Tìm player bằng id_bot (chatId)
@@ -2405,6 +2406,7 @@ function sendFourButtons(chatId) {
 
 
 
+
 // Mảng chứa thông tin người dùng (userId và tên)
 const userNames = {
   6708647498: 'Tien',
@@ -2487,8 +2489,9 @@ function handleCallbackQuery(callbackQuery) {
       // Gửi danh sách quái vật cho người dùng
       sendMainMenu(chatId)
       let text = `Quái vật trong cấp độ ${minLevel}-${maxLevel}:\n`;
+      
       monstersInLevelRange.forEach(monster => {
-        text += `${monster.name} (Level ${monster.level})\n`;
+        text += `(Level ${monster.level})  hp-${monster.hp} dame-${monster.dame} def-${monster.def} \n`;
       });
       sendMessage(chatId, text, reply_markup);  // Gửi tin nhắn với danh sách quái vật và các nút
     } else {
