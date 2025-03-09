@@ -2998,6 +2998,8 @@ function calculateMonstersKilledByChatId(chatId, monsterName) {
     };
   }
 
+  if (landau[chatId] == 1)landau[chatId] = 2;
+  
   // Thiết lập lần đầu tiên cho chatId này
   if (!landau[chatId]) { 
     landau[chatId] = 1; // Đánh dấu đã thực hiện lần đầu
@@ -3010,6 +3012,7 @@ function calculateMonstersKilledByChatId(chatId, monsterName) {
     if (selectedMonster) {
       activeLoops[chatId].monsterName = selectedMonster.name;
       startCalculatingMonsters(chatId, selectedMonster.name);
+            console.log(`frammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm 11111111111111111`);
       console.log(`Gán monsterName từ level ${bossLevel}: ${selectedMonster.name}`);
     } else {
       console.error(`Không tìm thấy quái vật với level ${bossLevel}`);
@@ -3047,7 +3050,7 @@ function calculateMonstersKilledByChatId(chatId, monsterName) {
   activeLoops[chatId].lastExecutedTime = nextTime;
 
   // Gọi hàm tính toán lần đầu tiên ngay lập tức
-  if (activeLoops[chatId])startCalculatingMonsters(chatId, activeLoops[chatId].monsterName);
+  if (landau[chatId] == 2)startCalculatingMonsters(chatId, activeLoops[chatId].monsterName);
 
   // Sau thời gian tính toán sẽ tự động gọi vòng lặp tiếp theo cho chatId này
   setTimeout(() => {
@@ -3062,14 +3065,13 @@ function calculateMonstersKilledByChatId(chatId, monsterName) {
       // Gọi lại vòng lặp với thông số quái vật mới sau mỗi vòng lặp
       console.log("Vòng lặp hoàn tất, tiếp tục vòng lặp mới với quái vật cập nhật.");
       calculateMonstersKilledByChatId(chatId, updatedMonsterName); // Tiếp tục vòng lặp
+                  console.log(`frammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm 22222222222222222`);
     } else {
       console.error("Quái vật không tồn tại hoặc thông số quái vật đã thay đổi.");
     }
 
   }, nextTime - currentTime); // Thực hiện vòng lặp sau khoảng thời gian từ currentTime đến nextTime
 }
-
-
 
 
 
