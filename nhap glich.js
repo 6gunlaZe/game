@@ -1561,7 +1561,7 @@ function handlePlayerAttack(player, target) {
 function dropItem(player,target) {
   // Tìm playerReport tương ứng với player.id
   const playerReport = playerDamageReport.find(report => report.id === player.id);
-
+  let tangrate = 0
   // Kiểm tra nếu tìm thấy playerReport và lấy totalDamage
   if (playerReport) {
     const totalDamage = playerReport.totalDamage;
@@ -1570,13 +1570,22 @@ function dropItem(player,target) {
         // Đặt lại totalDamage sau khi lấy giá trị
     playerReport.totalDamage = 0;  // Đặt lại totalDamage về 0 (hoặc giá trị khác nếu cần)
     
-    if(target.boss == 1)
-      {
-    const item  = checkdropitem(target.lv, itemsrate) //// itemsrate là danh sách item drop có thể thay đổi danh sách này tùy loại quái, hàm này trả về tên item và chỉ quan tâm opt56
-          addItemToInventory(player.id, item)  
-        sendMessage(-4676989627, `check drop ${player.name}`, { parse_mode: 'HTML' });
-      }
+    tangrate = Math.round(totalDamage / 100);
     
+if (target.boss == 1) {
+    const item = checkdropitem(target.lv, itemsrate, tangrate);  // Kiểm tra drop item
+    if (item !== null) {  // Nếu item không phải null
+        addItemToInventory(player.id, item);  // Thêm item vào inventory
+        sendMessage(-4676989627, `check drop ${player.name} - Món đồ rơi: ${item}`, { parse_mode: 'HTML' });
+    } else {
+        console.log('Không có món đồ nào được rơi.');  // In ra nếu không có item rơi
+        // Gửi thông báo khi không có item rơi
+        sendMessage(-4676989627, `Không có món đồ nào rơi từ boss ${target.boss} cho người chơi ${player.name}.`, { parse_mode: 'HTML' });
+    }
+}
+
+  player.gold = Number(player.gold); // Đảm bảo player.gold là kiểu số
+  player.gold += Math.round(totalDamage / 10);
     return totalDamage;  // Trả về tổng sát thương nếu tìm thấy
   } else {
     console.log("Không tìm thấy playerReport với id này.");
@@ -1590,7 +1599,8 @@ function dropItem(player,target) {
 
 
 
-// danh sách các món đồ drop chuẩn, kể cả sách skill, ngọc ép
+
+// danh sách các món đồ drop chuẩn, kể cả sách skill, ngọc ép / nghĩa là các chỉ số chuẩn ban đầu của item
 const items = {
   "T1_spear": {"otp0": "T1_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
   "T2_woodenspear": {"otp0": "T2_woodenspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
@@ -1903,7 +1913,13 @@ function increaseItemOtp1AndUpdateGitHub(player, itemId) {
 
 
 
-function checkdropitem(lvboss, itemsrate) {
+function checkdropitem(lvboss, itemsrate, tangrate) {
+  
+      // Kiểm tra tangrate, nếu không phải là số hoặc không nhập, gán tangrate = 0
+    if (isNaN(tangrate) || tangrate === undefined) {
+        tangrate = 0;
+    }
+  
     // Bước 1: Lọc các item có otp5 nhỏ hơn lvboss
     let filteredItems = Object.keys(itemsrate).filter(itemKey => itemsrate[itemKey].otp5 <= lvboss);
     console.log('Filtered Items based on otp5 <= lvboss:', filteredItems);
@@ -1915,7 +1931,7 @@ function checkdropitem(lvboss, itemsrate) {
     }
 
     // Bước 2: Kiểm tra điều kiện với random và otp6
-    let randomValue = Math.floor(Math.random() * 10000) + 1;  // Random từ 1 đến 100
+    let randomValue = Math.floor(Math.random() * 10000) + 1 - tangrate;  // Random từ 1 đến 100
     console.log('Random Value:', randomValue);
 
     // Lọc lại những item có otp6 lớn hơn randomValue
@@ -1937,7 +1953,7 @@ function checkdropitem(lvboss, itemsrate) {
 
 
 
-// otp5 = lv boss   opt6 = rate số càng lớn tỉ lệ ra càng nhiều
+// otp5 = lv boss   opt6 = rate số càng lớn tỉ lệ ra càng nhiều , danh sách này chỉ càn quan tâm otp5 - 6
 const itemsrate = {
   "T1_spear": {"otp0": "T1_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 900},
   "T2_woodenspear": {"otp0": "T2_woodenspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 700},
@@ -2879,8 +2895,8 @@ function calculateMonstersKilledByChatId(chatId, monsterName) {
   // Nếu vòng lặp chưa chạy, đánh dấu vòng lặp này là đang chạy
   activeLoops[chatId].isRunning = true;
 
-  // Bắt đầu vòng lặp sau 30 giây (currentTime + 30000)
-  let nextTime = currentTime + 30000;
+  // Bắt đầu vòng lặp sau 30 giây (currentTime + 300000)
+  let nextTime = currentTime + 300000;
 
   // Kiểm tra các mốc thời gian của các người chơi khác để đảm bảo cách nhau ít nhất 1 giây
   for (const id in activeLoops) {
@@ -2981,8 +2997,26 @@ function startCalculatingMonsters(chatId, monsterName) {
 
   sendMessage(chatId, `Sát thương trung bình thực tế: ${averageDamage.toFixed(2)} / Tổng số tấn công: ${totalAttacks}, HP quái: ${monster.hp}, Số lượng quái vật giết trong 5 phút: ${monstersKilled}`);
 
+  
+  player.gold = Number(player.gold); // Đảm bảo player.gold là kiểu số
+  player.gold += Math.round(totalDamageDealt / 100);
+      // Gọi hàm updatePlayerStat với 
+   updatePlayerStat(player.id, { gold: player.gold })
+  .then((message) => {
+    console.log(message);  // In ra thông báo cập nhật thành công
+  })
+  .catch((err) => {
+    console.error(err);  // In ra lỗi nếu có
+  });
+  
   return monstersKilled;
-}
+
+  }
+  
+  
+
+
+  
 
 
 
