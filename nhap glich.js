@@ -2490,13 +2490,29 @@ else if (data.startsWith('item_')) {
   sendMessage(chatId, `Bạn đã chọn item: ${itemName}`);
 }
 
-  // Xử lý lựa chọn mua mặt hàng trong Shop
-  else if (data.startsWith('buy_')) {
+// Xử lý lựa chọn mua mặt hàng trong Shop
+else if (data.startsWith('buy_')) {
     const itemName = data.split('_')[1];
     const item = shopItems.find(item => item.name === itemName);
-    sendMessage(chatId, `Bạn đã chọn mua ${item.name} với giá ${item.price} vàng.`);
-    sendMainMenu(chatId)
-  }
+    
+    // Kiểm tra nếu item tồn tại
+    if (item) {
+        // Kiểm tra nếu người chơi có đủ vàng để mua
+        if (playerattack.gold >= item.price) {
+            // Giảm vàng của người chơi và thêm item vào kho đồ
+            playerattack.gold -= item.price;
+
+            sendMessage(chatId, `Bạn đã mua ${item.name} với giá ${item.price} vàng. Bạn còn ${playerattack.gold} vàng.`);
+        } else {
+            sendMessage(chatId, `Bạn không đủ vàng để mua ${item.name}. Bạn cần ${item.price - playerattack.gold} vàng nữa.`);
+        }
+    } else {
+        sendMessage(chatId, `Món hàng ${itemName} không tồn tại trong cửa hàng.`);
+    }
+    
+    sendMainMenu(chatId);  // Hiển thị lại menu chính sau khi thực hiện mua
+}
+
   
   
   else if (data === 'armor_stats' || data === 'shield_stats' || data === 'boots_stats' || data === 'weapon_stats' || data === 'gloves_stats') {
@@ -2573,10 +2589,19 @@ const monsters = [
 
 // Danh sách mặt hàng trong shop
 const shopItems = [
-  { name: "Item 1", price: 100 },
-  { name: "Item 2", price: 200 },
-  { name: "Item 3", price: 300 },
-  { name: "Item 4", price: 400 },
+  { name: "Bùa +5% rate", price: 10000 },
+  { name: "Bùa +10% rate", price: 50000 },
+  { name: "Bùa +15% rate", price: 300000 },
+  { name: "Bùa triệu hồi boss lv1", price: 40000 },
+    { name: "Bùa triệu hồi boss lv5", price: 100000 },
+    { name: "Bùa triệu hồi boss lv10", price: 400000 },
+    { name: "Bùa triệu hồi boss lv20", price: 600000 },
+    { name: "Bùa triệu hồi boss lv30", price: 900000 },
+    { name: "Bùa triệu hồi boss lv40", price: 1400000 },
+    { name: "Bùa triệu hồi boss lv50", price: 2000000 },
+    { name: "Bùa triệu hồi boss lv60", price: 3400000 },
+    { name: "Bùa triệu hồi boss lv70", price: 5400000 },
+
   // Thêm các mặt hàng khác nếu cần
 ];
 
