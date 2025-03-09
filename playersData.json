@@ -59,7 +59,7 @@
           "otp0": "gem_dame_18",
           "otp1": 1,
           "otp6": 8,
-          "otp9": 86
+          "otp9": 85
         },
         {
           "otp0": "T2_iron_axe",
@@ -118,7 +118,7 @@
         {
           "otp0": "T4_war_axe",
           "otp1": 18,
-          "otp2": 0,
+          "otp2": 18,
           "otp3": 0,
           "otp4": 0,
           "otp5": 0,
