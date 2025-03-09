@@ -7,6 +7,7 @@
       "dame": 330,
       "exp": 3000,
       "gold": 84905,
+      "rate": 0,
       "boss": 0,
       "framlv": 10,
       "inventory": [
@@ -211,6 +212,7 @@
       "dame": 200,
       "exp": 3000,
       "gold": 0,
+      "rate": 0,
       "boss": 0,
       "framlv": 1,
       "inventory": [
@@ -501,6 +503,7 @@
       "dame": 250,
       "exp": 4000,
       "gold": 0,
+      "rate": 0,
       "boss": 0,
       "framlv": 1,
       "inventory": [
