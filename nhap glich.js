@@ -879,17 +879,55 @@ function updateWeaponBasedOnInventory(player) {
 
 
 
+
+
 // Hàm cập nhật trang bị cho player dựa trên id_bot
 function updatePlayerEquip( id_bot, itemId) {
     // Tìm player theo id_bot
     let player = players.find(p => p.id_bot === id_bot);
-
+    let type = ""
     // Nếu không tìm thấy player, trả về thông báo
     if (!player) {
         console.log("Không tìm thấy player với id_bot: " + id_bot);
         return;
     }
 
+  
+  
+      player.inventory.forEach(item => {
+        if (item.otp0 === itemId) {
+            // Kiểm tra trang bị thuộc loại nào và cập nhật
+            if (armorStats.hasOwnProperty(itemId)) {
+                type = "armor"
+                            console.log("HPmax ban đầu: " + player.hp_max);
+                player.hp_max += thaydoitrangbi_Re(player, type, itemId)
+              console.log("cập nhật lại HP: " + player.hp_max);
+
+            } else if (shieldStats.hasOwnProperty(itemId)) {
+                type = "defenseSkill"
+                player['def-skill'] += thaydoitrangbi_Re(player, type, itemId)
+
+            } else if (glovesStats.hasOwnProperty(itemId)) {
+                type = "defense"
+                player['def-dame'] += thaydoitrangbi_Re(player, type, itemId)
+
+            } else if (bootsStats.hasOwnProperty(itemId)) {
+                type = "defenseBoots"
+                player['def-dame'] += thaydoitrangbi_Re(player, type, itemId)
+
+            } else if (weaponStats.hasOwnProperty(itemId)) {
+                type = "weapon"
+                player.dame += thaydoitrangbi_Re(player, type, itemId)
+
+            }
+        }
+    });
+  
+  
+  
+  
+  
+  
     // Lặp qua inventory để tìm trang bị cần cập nhật
     let updated = false;
     player.inventory.forEach(item => {
@@ -2008,11 +2046,11 @@ const itemsrate = {
   "T8_dragonspear": {"otp0": "T8_dragonspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 130},
   "T9_storm_spear": {"otp0": "T9_storm_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 110},
   "T10_thunder_spear": {"otp0": "T10_thunder_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
-  "T11_skyspear": {"otp0": "T11_skyspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T12_frost_spear": {"otp0": "T12_frost_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T13_venom_spear": {"otp0": "T13_venom_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T14_runespear": {"otp0": "T14_runespear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T15_legendary_spear": {"otp0": "T15_legendary_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T11_skyspear": {"otp0": "T11_skyspear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 70, "otp6": 0},
+  "T12_frost_spear": {"otp0": "T12_frost_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 80, "otp6": 0},
+  "T13_venom_spear": {"otp0": "T13_venom_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 90, "otp6": 0},
+  "T14_runespear": {"otp0": "T14_runespear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 100, "otp6": 0},
+  "T15_legendary_spear": {"otp0": "T15_legendary_spear", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 110, "otp5": 0, "otp6": 0},
   
   "T1_armor": {"otp0": "T1_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 900},
   "T2_iron_armor": {"otp0": "T2_iron_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 700},
@@ -2024,11 +2062,11 @@ const itemsrate = {
   "T8_mythical_armor": {"otp0": "T8_mythical_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 130},
   "T9_obsidian_armor": {"otp0": "T9_obsidian_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 110},
   "T10_ragnarok_armor": {"otp0": "T10_ragnarok_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
-  "T11_flame_armor": {"otp0": "T11_flame_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T12_wind_armor": {"otp0": "T12_wind_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T13_battle_armor": {"otp0": "T13_battle_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T14_runes_armor": {"otp0": "T14_runes_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T15_legendary_armor": {"otp0": "T15_legendary_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T11_flame_armor": {"otp0": "T11_flame_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 70, "otp6": 0},
+  "T12_wind_armor": {"otp0": "T12_wind_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 80, "otp6": 0},
+  "T13_battle_armor": {"otp0": "T13_battle_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 90, "otp6": 0},
+  "T14_runes_armor": {"otp0": "T14_runes_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 100, "otp6": 0},
+  "T15_legendary_armor": {"otp0": "T15_legendary_armor", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 110, "otp6": 0},
   
   "T1_shield": {"otp0": "T1_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 10, "otp6": 900},
   "T2_iron_shield": {"otp0": "T2_iron_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 20, "otp6": 700},
@@ -2036,10 +2074,10 @@ const itemsrate = {
   "T4_silver_shield": {"otp0": "T4_silver_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 300},
   "T5_frost_shield": {"otp0": "T5_frost_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 200},
   "T6_fire_shield": {"otp0": "T6_fire_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
-  "T7_thunder_shield": {"otp0": "T7_thunder_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T8_mythical_shield": {"otp0": "T8_mythical_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T9_obsidian_shield": {"otp0": "T9_obsidian_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T10_ragnarok_shield": {"otp0": "T10_ragnarok_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T7_thunder_shield": {"otp0": "T7_thunder_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 70, "otp6": 0},
+  "T8_mythical_shield": {"otp0": "T8_mythical_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 80, "otp6": 0},
+  "T9_obsidian_shield": {"otp0": "T9_obsidian_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 90, "otp6": 0},
+  "T10_ragnarok_shield": {"otp0": "T10_ragnarok_shield", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 100, "otp6": 0},
   
   "T1_gloves": {"otp0": "T1_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 10, "otp6": 900},
   "T2_iron_gloves": {"otp0": "T2_iron_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 20, "otp6": 700},
@@ -2047,10 +2085,10 @@ const itemsrate = {
   "T4_silver_gloves": {"otp0": "T4_silver_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 300},
   "T5_frost_gloves": {"otp0": "T5_frost_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 200},
   "T6_fire_gloves": {"otp0": "T6_fire_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
-  "T7_thunder_gloves": {"otp0": "T7_thunder_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T8_mythical_gloves": {"otp0": "T8_mythical_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T9_obsidian_gloves": {"otp0": "T9_obsidian_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T10_ragnarok_gloves": {"otp0": "T10_ragnarok_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T7_thunder_gloves": {"otp0": "T7_thunder_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 70, "otp6": 0},
+  "T8_mythical_gloves": {"otp0": "T8_mythical_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 80, "otp6": 0},
+  "T9_obsidian_gloves": {"otp0": "T9_obsidian_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 90, "otp6": 0},
+  "T10_ragnarok_gloves": {"otp0": "T10_ragnarok_gloves", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 100, "otp6": 0},
   
   "T1_boots": {"otp0": "T1_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 10, "otp6": 900},
   "T2_iron_boots": {"otp0": "T2_iron_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 20, "otp6": 700},
@@ -2058,10 +2096,10 @@ const itemsrate = {
   "T4_silver_boots": {"otp0": "T4_silver_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 300},
   "T5_frost_boots": {"otp0": "T5_frost_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 200},
   "T6_fire_boots": {"otp0": "T6_fire_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
-  "T7_thunder_boots": {"otp0": "T7_thunder_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T8_mythical_boots": {"otp0": "T8_mythical_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T9_obsidian_boots": {"otp0": "T9_obsidian_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T10_ragnarok_boots": {"otp0": "T10_ragnarok_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T7_thunder_boots": {"otp0": "T7_thunder_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 70, "otp6": 0},
+  "T8_mythical_boots": {"otp0": "T8_mythical_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 80, "otp6": 0},
+  "T9_obsidian_boots": {"otp0": "T9_obsidian_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 90, "otp6": 0},
+  "T10_ragnarok_boots": {"otp0": "T10_ragnarok_boots", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 100, "otp6": 0},
   
   "T1_axe": {"otp0": "T1_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 900},
   "T2_iron_axe": {"otp0": "T2_iron_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 700},
@@ -2073,11 +2111,11 @@ const itemsrate = {
   "T8_iron_waraxe": {"otp0": "T8_iron_waraxe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 130},
   "T9_obsidian_axe": {"otp0": "T9_obsidian_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 110},
   "T10_ragnarok_axe": {"otp0": "T10_ragnarok_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
-  "T11_flame_axe": {"otp0": "T11_flame_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T12_wind_axe": {"otp0": "T12_wind_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T13_battle_axe": {"otp0": "T13_battle_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T14_runes_axe": {"otp0": "T14_runes_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T15_legendary_axe": {"otp0": "T15_legendary_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T11_flame_axe": {"otp0": "T11_flame_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 70, "otp6": 0},
+  "T12_wind_axe": {"otp0": "T12_wind_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 80, "otp6": 0},
+  "T13_battle_axe": {"otp0": "T13_battle_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 90, "otp6": 0},
+  "T14_runes_axe": {"otp0": "T14_runes_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 100, "otp6": 0},
+  "T15_legendary_axe": {"otp0": "T15_legendary_axe", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 110, "otp5": 0, "otp6": 0},
   
   // Kiếm (Sword)
   "T1_sword": {"otp0": "T1_sword", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 900},
@@ -2090,11 +2128,11 @@ const itemsrate = {
   "T8_bloodsword": {"otp0": "T8_bloodsword", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 130},
   "T9_soulblade": {"otp0": "T9_soulblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 110},
   "T10_dragonblade": {"otp0": "T10_dragonblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
-  "T11_moonblade": {"otp0": "T11_moonblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T12_stormblade": {"otp0": "T12_stormblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T13_nightblade": {"otp0": "T13_nightblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T14_runesword": {"otp0": "T14_runesword", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T15_legendaryblade": {"otp0": "T15_legendaryblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T11_moonblade": {"otp0": "T11_moonblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 70, "otp6": 0},
+  "T12_stormblade": {"otp0": "T12_stormblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 80, "otp6": 0},
+  "T13_nightblade": {"otp0": "T13_nightblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 90, "otp6": 0},
+  "T14_runesword": {"otp0": "T14_runesword", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 100, "otp6": 0},
+  "T15_legendaryblade": {"otp0": "T15_legendaryblade", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 110, "otp5": 0, "otp6": 0},
   
   // Gậy (Staff)
   "T1_woodenstaff": {"otp0": "T1_woodenstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 900},
@@ -2107,11 +2145,11 @@ const itemsrate = {
   "T8_shadowstaff": {"otp0": "T8_shadowstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 130},
   "T9_mysticstaff": {"otp0": "T9_mysticstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 110},
   "T10_thunderstaff": {"otp0": "T10_thunderstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
-  "T11_windstaff": {"otp0": "T11_windstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T12_stormstaff": {"otp0": "T12_stormstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T13_runesstaff": {"otp0": "T13_runesstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T14_legendarystaff": {"otp0": "T14_legendarystaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T15_ultimaterstaff": {"otp0": "T15_ultimaterstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T11_windstaff": {"otp0": "T11_windstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 70, "otp6": 0},
+  "T12_stormstaff": {"otp0": "T12_stormstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 80, "otp6": 0},
+  "T13_runesstaff": {"otp0": "T13_runesstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 90, "otp6": 0},
+  "T14_legendarystaff": {"otp0": "T14_legendarystaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 100, "otp6": 0},
+  "T15_ultimaterstaff": {"otp0": "T15_ultimaterstaff", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 110, "otp6": 0},
   
   "T1_shortbow": {"otp0": "T1_shortbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 900},
   "T2_woodenbow": {"otp0": "T2_woodenbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 700},
@@ -2123,11 +2161,11 @@ const itemsrate = {
   "T8_shadowbow": {"otp0": "T8_shadowbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 40, "otp6": 130},
   "T9_thunderbow": {"otp0": "T9_thunderbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 50, "otp6": 110},
   "T10_stormbow": {"otp0": "T10_stormbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 60, "otp6": 100},
-  "T11_quickbow": {"otp0": "T11_quickbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T12_rune_bow": {"otp0": "T12_rune_bow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T13_venombow": {"otp0": "T13_venombow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T14_hawkbow": {"otp0": "T14_hawkbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
-  "T15_legendarybow": {"otp0": "T15_legendarybow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 0, "otp6": 0},
+  "T11_quickbow": {"otp0": "T11_quickbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 70, "otp6": 0},
+  "T12_rune_bow": {"otp0": "T12_rune_bow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 80, "otp6": 0},
+  "T13_venombow": {"otp0": "T13_venombow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 90, "otp6": 0},
+  "T14_hawkbow": {"otp0": "T14_hawkbow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 100, "otp6": 0},
+  "T15_legendarybow": {"otp0": "T15_legendarybow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 110, "otp6": 0},
 
   
   "gem_dame_18": { "otp0": "gem_dame_18", "otp5": 1, "otp6": 800 },
@@ -3772,9 +3810,201 @@ function summonBoss(players, level) {
 
 
 
+function thaydoitrangbi_Re(player, type, item2) {
+  let result = 0;  // Biến lưu kết quả cho item 1
+  let item2Total = 0;  // Biến lưu kết quả cho item 2
+  let item;
+  let chenh = 0
+  // Định nghĩa item dựa trên loại tính toán
+  switch (type) {
+    case 'weapon':
+      if (!player['trang-bi']['vu-khi'] || !player['trang-bi']['vu-khi'].otp0) {
+        console.log("Weapon item does not exist or is incomplete!");
+        item = {
+          otp0: 0,
+          otp5: 0,
+          otp1: 0,
+          otp2: 0,
+          otp3: 0,
+          otp4: 0,
+          stats: weaponStats,
+          grapStats: GrapStats
+        };
+      } else {
+        item = {
+          otp0: player['trang-bi']['vu-khi'].otp0,
+          otp5: player['trang-bi']['vu-khi'].otp5,
+          otp1: player['trang-bi']['vu-khi'].otp1,
+          otp2: player['trang-bi']['vu-khi'].otp2,
+          otp3: player['trang-bi']['vu-khi'].otp3,
+          otp4: player['trang-bi']['vu-khi'].otp4,
+          stats: weaponStats,
+          grapStats: GrapStats
+        };
+      }
+      break;
 
+    case 'armor':
+      if (!player['trang-bi']['ao'] || !player['trang-bi']['ao'].otp0) {
+        console.log("Armor item does not exist or is incomplete!");
+        item = {
+          otp0: 0,
+          otp5: 0,
+          otp1: 0,
+          otp2: 0,
+          otp3: 0,
+          otp4: 0,
+          stats: armorStats,
+          grapStats: GrapStats
+        };
+      } else {
+        item = {
+          otp0: player['trang-bi']['ao'].otp0,
+          otp5: player['trang-bi']['ao'].otp5,
+          otp1: player['trang-bi']['ao'].otp1,
+          otp2: player['trang-bi']['ao'].otp2,
+          otp3: player['trang-bi']['ao'].otp3,
+          otp4: player['trang-bi']['ao'].otp4,
+          stats: armorStats,
+          grapStats: GrapStats
+        };
+      }
+      break;
 
+    case 'defense':
+      if (!player['trang-bi']['tay'] || !player['trang-bi']['tay'].otp0) {
+        console.log("Gloves item does not exist or is incomplete!");
+        item = {
+          otp0: 0,
+          otp5: 0,
+          otp1: 0,
+          otp2: 0,
+          otp3: 0,
+          otp4: 0,
+          stats: glovesStats,
+          grapStats: GrapStats
+        };
+      } else {
+        item = {
+          otp0: player['trang-bi']['tay'].otp0,
+          otp5: player['trang-bi']['tay'].otp5,
+          otp1: player['trang-bi']['tay'].otp1,
+          otp2: player['trang-bi']['tay'].otp2,
+          otp3: player['trang-bi']['tay'].otp3,
+          otp4: player['trang-bi']['tay'].otp4,
+          stats: glovesStats,
+          grapStats: GrapStats
+        };
+      }
+      break;
 
+    case 'defenseBoots':
+      if (!player['trang-bi']['chan'] || !player['trang-bi']['chan'].otp0) {
+        console.log("Boots item does not exist or is incomplete!");
+        item = {
+          otp0: 0,
+          otp5: 0,
+          otp1: 0,
+          otp2: 0,
+          otp3: 0,
+          otp4: 0,
+          stats: bootsStats,
+          grapStats: GrapStats
+        };
+      } else {
+        item = {
+          otp0: player['trang-bi']['chan'].otp0,
+          otp5: player['trang-bi']['chan'].otp5,
+          otp1: player['trang-bi']['chan'].otp1,
+          otp2: player['trang-bi']['chan'].otp2,
+          otp3: player['trang-bi']['chan'].otp3,
+          otp4: player['trang-bi']['chan'].otp4,
+          stats: bootsStats,
+          grapStats: GrapStats
+        };
+      }
+      break;
+
+    case 'defenseSkill':
+      if (!player['trang-bi']['giap'] || !player['trang-bi']['giap'].otp0) {
+        console.log("Shield item does not exist or is incomplete!");
+        item = {
+          otp0: 0,
+          otp5: 0,
+          otp1: 0,
+          otp2: 0,
+          otp3: 0,
+          otp4: 0,
+          stats: shieldStats,
+          grapStats: GrapStats
+        };
+      } else {
+        item = {
+          otp0: player['trang-bi']['giap'].otp0,
+          otp5: player['trang-bi']['giap'].otp5,
+          otp1: player['trang-bi']['giap'].otp1,
+          otp2: player['trang-bi']['giap'].otp2,
+          otp3: player['trang-bi']['giap'].otp3,
+          otp4: player['trang-bi']['giap'].otp4,
+          stats: shieldStats,
+          grapStats: GrapStats
+        };
+      }
+      break;
+
+    default:
+      console.log("Unknown type!");
+      return 0;
+  }
+
+  // Lấy giá trị cơ bản từ `stats` theo `otp0` của item
+  let baseStat = item.stats[item.otp0];
+  let grapStat = item.grapStats[item.otp5];
+
+  // Kiểm tra xem `baseStat` có tồn tại không
+  if (baseStat) {
+    let total = baseStat + item.otp1 + item.otp2 + item.otp3 + item.otp4;
+
+    if (grapStat) total *= grapStat;
+
+    result = Math.round(total);
+  }
+
+  // Tìm item2 trong inventory của player dựa trên tên otp0
+  let item2Stat = null;
+  if (item2 && player.inventory) {
+    // Giả sử trong inventory của player có cấu trúc tương tự như item
+    let foundItem = player.inventory.find(inventoryItem => inventoryItem.otp0 === item2);
+    if (foundItem) {
+      item2Stat = foundItem;
+    }
+  }
+
+  // Nếu tìm thấy item2, tính toán tương tự và so sánh
+  if (item2Stat) {
+    let baseStat2 = item.stats[item2Stat.otp0];  // Dùng stats từ item1
+    let grapStat2 = item.grapStats[item2Stat.otp5];  // Dùng grapStats từ item1
+
+    if (baseStat2) {
+      let item2Total = baseStat2 + item2Stat.otp1 + item2Stat.otp2 + item2Stat.otp3 + item2Stat.otp4;
+
+      if (grapStat2) item2Total *= grapStat2;
+
+      item2Total =  Math.round(item2Total);
+
+      console.log(`Item 1 Total: ${result}`);
+      console.log(`Item 2 Total: ${item2Total}`);
+
+      chenh = item2Total - result;  // Tính độ chênh lệch chính xác
+    }
+  } else {
+    console.log("Item2 not found in player's inventory!");
+    chenh = 0;  // Nếu không tìm thấy item2, độ chênh lệch là 0
+  }
+
+  console.log(`Độ tăng chỉ số ============ : ${chenh}`);
+  return chenh;
+}
 
 
 
