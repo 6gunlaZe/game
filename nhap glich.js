@@ -672,10 +672,10 @@ function sendPlayerStatsToTelegram(chatId) {
   }
 
   // Tính toán các chỉ số
-  let weaponhp = calculateHP(player) - player.hp_max;
-  let weaponDame = calculateWeaponDamage(player) - player.dame;
-  let weapondef = calculateDEF(player) - player['def-dame'];
-  let weapondef1 = calculateDEFskill(player) - player['def-skill'];
+  let weaponhp = calculateHP(player) - player.hp_max - player.level * 50;
+  let weaponDame = calculateWeaponDamage(player) - player.dame - player.level * 5;
+  let weapondef = calculateDEF(player) - player['def-dame'] - player.level * 2;
+  let weapondef1 = calculateDEFskill(player) - player['def-skill'] - player.level * 2;
 
   // Chuẩn bị thông tin nhân vật
   const playerStats = `
@@ -722,6 +722,7 @@ function sendPlayerStatsToTelegram(chatId) {
 function calculateWeaponDamage(player) {
   // Lấy giá trị otp0 của vũ khí
   let dame0 = player.dame;	
+  dame0 += player.level * 5
   let otp0 = player['trang-bi']['vu-khi'].otp0;
    let otp5 = player['trang-bi']['vu-khi'].otp5;
   // Lấy giá trị dame cơ bản từ weaponStats dựa trên otp0
@@ -753,6 +754,7 @@ if(grapvk)dame=dame*grapvk
 function calculateHP(player) {
   // Lấy giá trị otp0 của vũ khí
   let dame0 = player.hp_max;	
+  dame0 += player.level * 50
   let otp0 = player['trang-bi']['ao'].otp0;
    let otp5 = player['trang-bi']['ao'].otp5;
   // Lấy giá trị dame cơ bản từ weaponStats dựa trên otp0
@@ -778,6 +780,7 @@ if(grapvk)dame=dame*grapvk
 function calculateDEF(player) {
   // Lấy giá trị otp0 của vũ khí
   let dame0 = player['def-dame'];	
+  dame0 += player.level * 2
   let otp0 = player['trang-bi']['tay'].otp0;
    let otp5 = player['trang-bi']['tay'].otp5;
   let otp01 = player['trang-bi']['chan'].otp0;
@@ -817,6 +820,7 @@ if(grapvk1)dame=dame*grapvk
 function calculateDEFskill(player) {
   // Lấy giá trị otp0 của vũ khí
   let dame0 = player['def-skill'];	
+  dame0 += player.level * 2
   let otp0 = player['trang-bi']['giap'].otp0;
    let otp5 = player['trang-bi']['giap'].otp5;
 
@@ -1106,6 +1110,7 @@ var bootsStats = {
     "T14_runes_boots": 430,
     "T15_legendary_boots": 500
 };
+
 
 
 
@@ -2293,6 +2298,11 @@ async function initGame() {
     // Khởi tạo báo cáo sát thương
     calculateMonstersKilledByChatId(6708647498);
 
+    
+    calculatePlayerLevel(player1)
+    calculatePlayerLevel(player2)
+    calculatePlayerLevel(player3)
+    
     playerDamageReport = players.map(player => ({
       id: player.id,
       attacks: [],
@@ -2312,6 +2322,8 @@ async function initGame() {
 
 // Khởi động game
 initGame();
+
+
 
 
 
@@ -4014,7 +4026,23 @@ function thaydoitrangbi_Re(player, type, item2) {
 
 
 
-
+function calculatePlayerLevel(player) {
+  let level = 1;
+  let baseExp = 1000; // EXP cần để lên cấp đầu tiên (có thể thay đổi)
+  let multiplier = 1.68; // Hệ số để tăng độ khó (càng lớn thì độ khó càng cao)
+  let totalExp = player.exp
+  let expRequired = baseExp; // EXP yêu cầu cho cấp độ hiện tại
+  
+  // Tính cấp độ dựa trên EXP hiện tại
+  while (totalExp >= expRequired) {
+    totalExp -= expRequired; // Trừ EXP đã dùng cho cấp hiện tại
+    level++; // Tăng level lên
+    expRequired = Math.round(baseExp * Math.pow(level, multiplier)); // Tính EXP cần cho cấp tiếp theo
+  }
+  
+  player.level = level
+  return level;
+}
 
 
 
