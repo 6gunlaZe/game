@@ -1329,6 +1329,39 @@ function updatePlayerStatsBasedOnSkills(player) {
         case 5: // Tăng mana
           player.mana += skill.skillPower * skill.skillLevel;
           break;
+          
+          case 6: // Tăng hp
+          player.hp_max += skill.skillPower * skill.skillLevel;
+          break;
+          
+          case 7: // Tăng attack speed
+          player['attach-speed'] += skill.skillPower * skill.skillLevel;
+          break;
+          
+          case 8: // Tăng def skill
+          player['def-skill'] += skill.skillPower * skill.skillLevel;
+          break;
+          
+          case 9: // Tăng né tránh
+          player.NeTranh += skill.skillPower * skill.skillLevel;
+          break;
+          
+          case 10: // Tăng hút máu
+          player.HutMau += skill.skillPower * skill.skillLevel;
+          break;
+          
+          case 11: // Tăng phản dame
+          player.PhanDame += skill.skillPower * skill.skillLevel;
+          break;
+          
+          case 12: // Tăng attack range
+          player['attach-range'] += skill.skillPower * skill.skillLevel;
+          break;
+          
+          
+          
+          
+          
         // Thêm các hiệu ứng khác tùy thuộc vào yêu cầu của bạn
       }
       }
@@ -1387,6 +1420,41 @@ function checkSkillExpirationAndRemove(player) {
         case 5: // Giảm mana
           player.mana -= skill.skillPower * skill.skillLevel;
           break;
+          
+              case 6: // Tăng hp
+          player.hp_max -= skill.skillPower * skill.skillLevel;
+          break;
+          
+          case 7: // Tăng attack speed
+          player['attach-speed'] -= skill.skillPower * skill.skillLevel;
+          break;
+          
+          case 8: // Tăng def skill
+          player['def-skill'] -= skill.skillPower * skill.skillLevel;
+          break;
+          
+          case 9: // Tăng né tránh
+          player.NeTranh -= skill.skillPower * skill.skillLevel;
+          break;
+          
+          case 10: // Tăng hút máu
+          player.HutMau -= skill.skillPower * skill.skillLevel;
+          break;
+          
+          case 11: // Tăng phản dame
+          player.PhanDame -= skill.skillPower * skill.skillLevel;
+          break;
+          
+          case 12: // Tăng attack range
+          player['attach-range'] -= skill.skillPower * skill.skillLevel;
+          break;      
+          
+          
+          
+          
+          
+          
+          
       }
 
       // In ra thông báo kỹ năng đã hết hiệu lực và được reset
@@ -1399,9 +1467,6 @@ function checkSkillExpirationAndRemove(player) {
     }
   });
 }
-
-
-
 
 
 
