@@ -1397,8 +1397,67 @@ function checkSkillExpirationAndRemove(player) {
     return;
   }
   console.log(`Player ${player.id} dame =  ${player.dame} .`);
+  
+  const playerReport = playerDamageReport.find(r => r.id === player.id);
+    // Bảng ánh xạ tên kỹ năng và emoji
+const skillEmojiMap = {
+  1: "💪",   // Ví dụ: skillEffect 1 => emoji 🛡️
+  2: "🛡️",    // Ví dụ: skillEffect 2 => emoji ⚔️
+  3: "✴️",    // Ví dụ: skillEffect 3 => emoji 🔥
+  4: "☄️",   // Ví dụ: skillEffect 1 => emoji 🛡️
+  5: "💧",    // Ví dụ: skillEffect 2 => emoji ⚔️
+  6: "🍷",    // Ví dụ: skillEffect 3 => emoji 🔥
+  7: "🚀",   // Ví dụ: skillEffect 1 => emoji 🛡️
+  8: "🎽",    // Ví dụ: skillEffect 2 => emoji ⚔️
+  9: "🍃",    // Ví dụ: skillEffect 3 => emoji 🔥
+  10: "🧛",   // Ví dụ: skillEffect 1 => emoji 🛡️
+  11: "♻",    // Ví dụ: skillEffect 2 => emoji ⚔️
+  12: "😈",    // Ví dụ: skillEffect 3 => emoji 🔥
+  13: "🛡️",   // Ví dụ: skillEffect 1 => emoji 🛡️
+  14: "⚔️",    // Ví dụ: skillEffect 2 => emoji ⚔️
+  15: "🔥",    // Ví dụ: skillEffect 3 => emoji 🔥
+  // Thêm các ánh xạ khác nếu cần...
+};
+
+  
+
+// Kiểm tra xem đã có thuộc tính `skill` trong `playerReport` hay chưa
+if (playerReport.skill === undefined) {
+  // Nếu chưa có `skill`, gán nó là chuỗi rỗng
+  playerReport.skill = "📓";
+} else {
+  // Nếu đã có `skill`, đặt lại giá trị của `skill` thành chuỗi rỗng
+  playerReport.skill = "📓";
+}
+  
+  
+  
+  
+  
+  
+  
+  
   // Lặp qua các kỹ năng của player và kiểm tra nếu kỹ năng đã hết hiệu lực
   player.skills.forEach(skill => {
+    
+    
+if (skill.run === 1) {
+  const skillEmoji = skillEmojiMap[skill.skillEffect] || "🎮";  // Tra cứu emoji dựa trên tên kỹ năng
+
+  // Kiểm tra xem đã có thuộc tính `skill` trong playerReport hay chưa
+  if (playerReport.skill === undefined) {
+    // Nếu chưa có, gán giá trị skill bằng emoji của kỹ năng
+    playerReport.skill = skillEmoji;
+  } else {
+    // Nếu đã có `skill`, nối emoji vào giá trị hiện tại của skill
+    playerReport.skill += skillEmoji;
+  }
+
+  console.log(`${skill.skillName} đang chạy! ${skillEmoji}`);
+}
+
+    
+    
     if (skill.attackCount <= 0) {
       // Reset lại số lượt tấn công (attackCount) của kỹ năng
       skill.attackCount = skill.otp4; // Reset lại theo số đòn tấn công ban đầu
@@ -2339,7 +2398,10 @@ if (playerName === 'tien') {
       const d11 = attack.isRange ? `⚔︎` : '';
       const e11 = attack.isHutmau  ? `🩸` : '';
 
-      
+      // Tạo biến để lưu giá trị của skill
+      const playerSkill = (playerReport.skill === undefined) ? "" : playerReport.skill;
+
+
       
       
       // Hiển thị các emoji tùy theo giá trị playertarget
@@ -2353,7 +2415,7 @@ if (playerName === 'tien') {
       }
 
       // Kết hợp cả chí mạng và emoji playertarget
-      return `${critSymbol} ${b11} ${c11} ${d11} ${e11} ${targetEmojis}`;
+      return `${critSymbol} ${b11} ${c11} ${d11} ${e11} ${playerSkill} ${targetEmojis}`;
     }).join(', ').padStart(35, ' ');  // Hiển thị tất cả các đòn tấn công
 
     
