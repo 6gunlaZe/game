@@ -1547,18 +1547,38 @@ function calculatePlayerDamage(player, target) {
   const baseDamage = player.dame; // Sát thương cơ bản của người chơi
   const critChance = player['crit-%']; // Tỉ lệ chí mạng
   const critMultiplier = player['crit-x']; // Nhân đôi sát thương khi chí mạng
-
+  const range = player['attach-range'];  //tỉ lệ đánh 2 lần liên tiếp
+  const hutmau = player.HutMau; 
+  let isNetranh = false
+  let isPhandame = false
+  
   // Kiểm tra xem người chơi có chí mạng không
   const isCrit = Math.random() < critChance / 100; // Xác suất chí mạng (từ 0 đến 1)
-  let finalDamage = isCrit ? baseDamage * critMultiplier : baseDamage; // Sát thương cuối cùng khi có chí mạng
+  const isRange = Math.random() < range / 100; // Xác suất chí mạng (từ 0 đến 1)
+  const isHutmau = Math.random() < hutmau / 100; 
 
+  let finalDamage = isCrit ? baseDamage * critMultiplier : baseDamage; // Sát thương cuối cùng khi có chí mạng
+      finalDamage = isRange ? finalDamage * 2 : finalDamage;
+      player.hp += isHutmau ? finalDamage : 0;
+  
+  
+  
+  
   // Nếu mục tiêu là boss
-  if (target && target.isBoss) {
+  if (target && target.boss == 1) {
     finalDamage -= target.defense;  // Phòng thủ của boss giảm sát thương người chơi gây ra
   }
   // Nếu mục tiêu là người chơi
-  else if (target && target.isPlayer) {
+  else if (target && target.boss == 0) {
     finalDamage -= target['def-dame'];  // Phòng thủ của người chơi giảm sát thương người chơi gây ra
+    
+    const netranh = target.NeTranh;
+    const phandame = target.PhanDame;
+     isNetranh = Math.random() < netranh / 100; 
+     isPhandame = Math.random() < phandame / 100; 
+     finalDamage = isNetranh ? 0 : finalDamage;
+     player.hp -= isPhandame ? finalDamage : 0;
+    
   }
 
   // Đảm bảo rằng sát thương không âm
@@ -1570,6 +1590,10 @@ function calculatePlayerDamage(player, target) {
   return {
     damage: finalDamage,  // Sát thương tính ra sau khi giảm phòng thủ
     isCrit: isCrit,       // Kiểm tra nếu là chí mạng
+    isNetranh : isNetranh,
+    isPhandame : isPhandame,
+    isRange : isRange,
+    isHutmau : isHutmau,
     playertarget: playertarget // Thông tin về người chơi tấn công
   };
 }
@@ -1585,11 +1609,17 @@ function recordPlayerAttack(player, target) {
   
   const playerReport = playerDamageReport.find(r => r.id === player.id);
 
+  
   // Tính sát thương của người chơi (đã bao gồm phòng thủ của mục tiêu)
-  const { damage, isCrit, playertarget } = calculatePlayerDamage(player, target);  // Lấy playertarget từ hàm
+const result = calculatePlayerDamage(player, target);  // Lấy toàn bộ kết quả từ hàm
 
-  // Ghi nhận đòn đánh và tổng sát thương của người chơi
-  playerReport.attacks.push({ damage, isCrit, playertarget });  // Lưu playertarget cùng với thông tin đòn đánh
+// Destructure các thuộc tính từ result
+const { damage, isCrit, playertarget, isNetranh, isPhandame, isRange, isHutmau } = result;
+
+// Ghi nhận đòn đánh và tổng sát thương của người chơi
+playerReport.attacks.push({ damage, isCrit, playertarget, isNetranh, isPhandame, isRange, isHutmau });
+
+
   playerReport.totalDamage += damage;
   checkSkillExpirationAndRemove(player);
   if (target.hp > 0) {
@@ -2303,6 +2333,15 @@ if (playerName === 'tien') {
       // Thêm emoji ⚡ khi chí mạng
       const critSymbol = attack.isCrit ? `${damage} ⚡` : damage;
 
+      
+      const b11 = attack.isNetranh ? `🍃` : '';
+      const c11 = attack.isPhandame ? `🦔` : '';
+      const d11 = attack.isRange ? `⚔︎` : '';
+      const e11 = attack.isHutmau  ? `🩸` : '';
+
+      
+      
+      
       // Hiển thị các emoji tùy theo giá trị playertarget
       let targetEmojis = '';
       if (attack.playertarget === 1) {
@@ -2314,7 +2353,7 @@ if (playerName === 'tien') {
       }
 
       // Kết hợp cả chí mạng và emoji playertarget
-      return `${critSymbol} ${targetEmojis}`;
+      return `${critSymbol} ${b11} ${c11} ${d11} ${e11} ${targetEmojis}`;
     }).join(', ').padStart(35, ' ');  // Hiển thị tất cả các đòn tấn công
 
     
