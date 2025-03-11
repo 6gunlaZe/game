@@ -546,7 +546,7 @@ console.log("Chuỗi kết quả cuối cùng: ", textop1);
 
 sendMessage(chatId, textop1); 
   
-  
+
   
  // sendMessage(chatId, text, reply_markup); // Gửi tin nhắn với inline keyboard
 }
@@ -889,6 +889,7 @@ function updateWeaponBasedOnInventory(player) {
 // Hàm cập nhật trang bị cho player dựa trên id_bot
 function updatePlayerEquip( id_bot, itemId) {
     // Tìm player theo id_bot
+  let vukhi = 1
     let player = players.find(p => p.id_bot === id_bot);
     let type = ""
     // Nếu không tìm thấy player, trả về thông báo
@@ -953,6 +954,7 @@ function updatePlayerEquip( id_bot, itemId) {
             } else if (weaponStats.hasOwnProperty(itemId)) {
                 player["trang-bi"]["vu-khi"] = { ...item };
                 updated = true;
+              vukhi = 2
             }
         }
     });
@@ -960,6 +962,14 @@ function updatePlayerEquip( id_bot, itemId) {
     // Nếu trang bị đã được cập nhật, gọi hàm updatePlayerStat để cập nhật dữ liệu
     if (updated) {
         updatePlayerStat(player.id, { "trang-bi": player["trang-bi"] }, 5);
+      
+      if (vukhi == 2){
+        checkcharDownandUp(player);
+        const message1112 = generateWeaponTypeInfo();  
+              sendMessage(player.id_bot, message1112);  
+
+                     }
+      
     } else {
         console.log("Không tìm thấy trang bị hợp lệ.");
     }
@@ -1013,8 +1023,6 @@ for (let player of players) {
   }
 }
 }
-
-
 
 
 
@@ -2428,7 +2436,7 @@ let checkhpp = `${'👦🏻'}   ${players[0].hp}-------|-------   ${'🐐'}   ${
 
     // Chỉ hiển thị thông tin của boss nếu target.boss === 1
     
-      report += `| ${'🐉 Boss HP:'.padEnd(25, ' ')} | ${bossHP.toString().padStart(12, ' ')} | ${bossHPPercentage.toFixed(0)}% |`;
+      report += `| ${'🐉 Boss HP:'.padEnd(25, ' ')} | ${bossHP.toString().padStart(12, ' ')} | ${bossHPPercentage.toFixed(0)}% | dame T-K-G: `;
     
     report += bossAttack(players, boss) 
     report += '\n'
@@ -2465,7 +2473,9 @@ async function initGame() {
     // Khởi tạo báo cáo sát thương
     calculateMonstersKilledByChatId(6708647498);
 
-    
+    checkcharDownandUp(player1)
+    checkcharDownandUp(player2)
+    checkcharDownandUp(player3)
     calculatePlayerLevel(player1)
     calculatePlayerLevel(player2)
     calculatePlayerLevel(player3)
@@ -4214,6 +4224,210 @@ function calculatePlayerLevel(player) {
   player.level = level
   return level;
 }
+
+
+
+
+
+
+
+// Các chỉ số tăng cho từng loại vũ khí (char)
+const charStats = {
+  1: {
+    hp_max: 5000,   // Đao (Axe) tăng health_max
+    mana: 100,        // Đao (Axe) tăng mana
+    "def-dame": 10,   // Đao (Axe) tăng def-dame
+  },
+  2: {
+    hp_max: 30,   // Kiếm (Sword) tăng health_max
+    mana: 50,         // Kiếm (Sword) tăng mana
+    "crit-%": 50,      // Kiếm (Sword) tăng crit-%
+  },
+  3: {
+    hp_max: 40,   // Gậy (Staff) tăng health_max
+    mana: 5000,   // Gậy (Staff) tăng def-dame
+    "crit-%": 10,     // Gậy (Staff) tăng crit-%
+  },
+  4: {
+    hp_max: 20,   // Cung (Bow) tăng health_max
+    mana: 150,        // Cung (Bow) tăng mana
+    "attach-speed": -0.8, // Cung (Bow) tăng attach-speed
+  },
+  5: {
+    hp_max: 25,   // Thương (Spear) tăng health_max
+    "def-skill": 1000,  // Thương (Spear) tăng def-skill
+    "crit-x": 1,      // Thương (Spear) tăng crit-x
+  },
+  6: {
+    // Loại vũ khí không xác định không tăng thuộc tính nào
+    mana: 0,
+  }
+};
+
+
+
+
+
+// Hàm kiểm tra loại vũ khí và cập nhật biến char trong player
+function getWeaponType(weaponName, player) {
+  if (weaponName.includes("axe")) {
+    player.char = 1;  // Đao (Axe)
+  } else if (weaponName.includes("sword")) {
+    player.char = 2;  // Kiếm (Sword)
+  } else if (weaponName.includes("staff")) {
+    player.char = 3;  // Gậy (Staff)
+  } else if (weaponName.includes("bow")) {
+    player.char = 4;  // Cung (Bow)
+  } else if (weaponName.includes("spear")) {
+    player.char = 5;  // Thương (Spear)
+  } else {
+    player.char = 6;  // Loại vũ khí không xác định
+  }
+}
+
+
+
+// Hàm tính toán và cập nhật thuộc tính của người chơi
+function checkcharUP(player) {
+  const weaponName = player["trang-bi"]["vu-khi"].otp0;  // Lấy tên vũ khí từ "vu-khi"
+  if (weaponStats[weaponName]) {
+    // Nếu vũ khí tồn tại trong weaponStats, cập nhật loại vũ khí cho player
+    getWeaponType(weaponName, player);
+
+    // Lấy các chỉ số tăng theo char
+    const statIncrease = charStats[player.char];
+
+    // Cập nhật các thuộc tính của người chơi
+    for (let stat in statIncrease) {
+      player[stat] += statIncrease[stat];  // Tăng các thuộc tính theo chỉ số tăng
+    }
+    console.log(`${player.name} có vũ khí: ${weaponName}, Loại: ${player.char}, Các thuộc tính mới:`, player);
+  } else {
+    // Nếu vũ khí không tồn tại trong weaponStats, thông báo không xác định
+    console.log(`${player.name} có vũ khí "${weaponName}" không xác định.`);
+  }
+}
+
+
+
+
+
+
+// Hàm trừ đi chỉ số khi thay đổi vũ khí
+function checkcharDownandUp(player) {
+
+  const weaponName = player["trang-bi"]["vu-khi"].otp0;  // Lấy tên vũ khí từ "vu-khi"
+  
+  // Nếu player.char chưa được xác định, gán giá trị mặc định là 6 (loại vũ khí không xác định)
+  const previousChar = player.char !== undefined ? player.char : 6;  // Kiểm tra nếu player.char đã được gán giá trị, nếu chưa thì mặc định là 6
+
+  if (weaponStats[weaponName]) {
+    // Nếu vũ khí tồn tại trong weaponStats, cập nhật loại vũ khí cho player
+    getWeaponType(weaponName, player);  // Cập nhật loại vũ khí mới
+
+    // Lấy các chỉ số giảm theo char cũ
+    const previousStatDecrease = charStats[previousChar];
+
+    // Trừ các thuộc tính của người chơi (lúc trước)
+    for (let stat in previousStatDecrease) {
+      player[stat] -= previousStatDecrease[stat];  // Giảm các thuộc tính theo chỉ số giảm
+    }
+
+    // Lấy các chỉ số tăng theo char mới
+    const statIncrease = charStats[player.char];
+
+    // Cập nhật các thuộc tính của người chơi với chỉ số mới
+    for (let stat in statIncrease) {
+      player[stat] += statIncrease[stat];  // Tăng các thuộc tính theo chỉ số tăng
+    }
+
+    console.log(`${player.name} thay đổi vũ khí: ${weaponName}, Loại: ${player.char}, Các thuộc tính mới:`, player);
+  } else {
+    // Nếu vũ khí không tồn tại trong weaponStats, thông báo không xác định
+    console.log(`${player.name} có vũ khí "${weaponName}" không xác định.`);
+  }
+}
+
+
+
+
+
+
+
+
+
+// Hàm tạo thông báo tổng quát khi bắt đầu game cho các loại vũ khí
+function generateWeaponTypeInfo() {
+  let message = "Thông tin về các loại vũ khí và chỉ số tăng:\n";
+
+  // Duyệt qua các loại vũ khí (char)
+  for (let char in charStats) {
+    let statIncrease = charStats[char];
+    message += `\nLoại vũ khí ${getWeaponName(char)}:`;
+
+    // Thêm các chỉ số vào thông báo
+    if (statIncrease.hp_max) {
+      message += `\n  - Tăng HP Max: ${statIncrease.hp_max}`;
+    }
+    if (statIncrease.mana) {
+      message += `\n  - Tăng Mana: ${statIncrease.mana}`;
+    }
+    if (statIncrease["def-dame"]) {
+      message += `\n  - Tăng Def-Dame: ${statIncrease["def-dame"]}`;
+    }
+    if (statIncrease["crit-%"]) {
+      message += `\n  - Tăng Crit-Rate: ${statIncrease["crit-%"]}%`;
+    }
+    if (statIncrease["attach-speed"]) {
+      message += `\n  - Tăng Attach-Speed: ${statIncrease["attach-speed"]}`;
+    }
+    if (statIncrease["def-skill"]) {
+      message += `\n  - Tăng Def-Skill: ${statIncrease["def-skill"]}`;
+    }
+    if (statIncrease["crit-x"]) {
+      message += `\n  - Tăng Crit-X: ${statIncrease["crit-x"]}`;
+    }
+  }
+
+  return message;
+}
+
+// Hàm trả về tên vũ khí theo loại (char)
+function getWeaponName(char) {
+  switch (char) {
+    case '1': return "Đao (Axe)";
+    case '2': return "Kiếm (Sword)";
+    case '3': return "Gậy (Staff)";
+    case '4': return "Cung (Bow)";
+    case '5': return "Thương (Spear)";
+    case '6': return "Vũ khí không xác định";
+    default: return "Vũ khí không xác định";
+  }
+}
+
+// Gọi hàm khi game bắt đầu hoặc khi người chơi cần thông báo
+//  const message = generateWeaponTypeInfo();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
