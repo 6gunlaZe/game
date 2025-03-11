@@ -1984,14 +1984,143 @@ const items = {
   
   
   
-  "gem_dame_18": { "otp0": "gem_dame_18", "otp1": 1, "otp6": 8, "otp9": 0 },
-  
-  
-  
-  
-  "skill_crit": { "otp0": "skill_crit", "otp1": 30, "otp2": 1, "otp3": 10, "otp4": 3, "otp5": 2, "otp6": 9, "otp7": 5, "otp8": 1, "otp9": 0 }
+"gem_dame_5": { "otp0": "gem_dame_5", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_7": { "otp0": "gem_dame_7", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_9": { "otp0": "gem_dame_9", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_12": { "otp0": "gem_dame_12", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_15": { "otp0": "gem_dame_15", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_18": { "otp0": "gem_dame_18", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_21": { "otp0": "gem_dame_21", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_25": { "otp0": "gem_dame_25", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_30": { "otp0": "gem_dame_30", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_35": { "otp0": "gem_dame_35", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_40": { "otp0": "gem_dame_40", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_45": { "otp0": "gem_dame_45", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_50": { "otp0": "gem_dame_50", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_55": { "otp0": "gem_dame_55", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_60": { "otp0": "gem_dame_60", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_65": { "otp0": "gem_dame_65", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_70": { "otp0": "gem_dame_70", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_80": { "otp0": "gem_dame_80", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_90": { "otp0": "gem_dame_90", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_dame_100": { "otp0": "gem_dame_100", "otp1": 1, "otp6": 8, "otp9": 1 },
 
   
+  
+"gem_def_5": { "otp0": "gem_def_5", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_7": { "otp0": "gem_def_7", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_9": { "otp0": "gem_def_9", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_12": { "otp0": "gem_def_12", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_15": { "otp0": "gem_def_15", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_18": { "otp0": "gem_def_18", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_21": { "otp0": "gem_def_21", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_25": { "otp0": "gem_def_25", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_30": { "otp0": "gem_def_30", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_35": { "otp0": "gem_def_35", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_40": { "otp0": "gem_def_40", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_45": { "otp0": "gem_def_45", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_50": { "otp0": "gem_def_50", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_55": { "otp0": "gem_def_55", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_60": { "otp0": "gem_def_60", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_65": { "otp0": "gem_def_65", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_70": { "otp0": "gem_def_70", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_80": { "otp0": "gem_def_80", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_90": { "otp0": "gem_def_90", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_def_100": { "otp0": "gem_def_100", "otp1": 1, "otp6": 8, "otp9": 1 },
+  
+  
+  
+"gem_defskill_5": { "otp0": "gem_defskill_5", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_7": { "otp0": "gem_defskill_7", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_9": { "otp0": "gem_defskill_9", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_12": { "otp0": "gem_defskill_12", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_15": { "otp0": "gem_defskill_15", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_18": { "otp0": "gem_defskill_18", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_21": { "otp0": "gem_defskill_21", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_25": { "otp0": "gem_defskill_25", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_30": { "otp0": "gem_defskill_30", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_35": { "otp0": "gem_defskill_35", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_40": { "otp0": "gem_defskill_40", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_45": { "otp0": "gem_defskill_45", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_50": { "otp0": "gem_defskill_50", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_55": { "otp0": "gem_defskill_55", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_60": { "otp0": "gem_defskill_60", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_65": { "otp0": "gem_defskill_65", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_70": { "otp0": "gem_defskill_70", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_80": { "otp0": "gem_defskill_80", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_90": { "otp0": "gem_defskill_90", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_defskill_100": { "otp0": "gem_defskill_100", "otp1": 1, "otp6": 8, "otp9": 1 },
+  
+  
+  
+  
+"gem_hp_50": { "otp0": "gem_hp_50", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_70": { "otp0": "gem_hp_70", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_90": { "otp0": "gem_hp_90", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_120": { "otp0": "gem_hp_120", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_150": { "otp0": "gem_hp_150", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_180": { "otp0": "gem_hp_180", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_210": { "otp0": "gem_hp_210", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_250": { "otp0": "gem_hp_250", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_300": { "otp0": "gem_hp_300", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_350": { "otp0": "gem_hp_350", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_400": { "otp0": "gem_hp_400", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_450": { "otp0": "gem_hp_450", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_500": { "otp0": "gem_hp_500", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_550": { "otp0": "gem_hp_550", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_600": { "otp0": "gem_hp_600", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_650": { "otp0": "gem_hp_650", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_700": { "otp0": "gem_hp_700", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_800": { "otp0": "gem_hp_800", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_900": { "otp0": "gem_hp_900", "otp1": 1, "otp6": 8, "otp9": 1 },
+"gem_hp_1000": { "otp0": "gem_hp_1000", "otp1": 1, "otp6": 8, "otp9": 1 },
+ 
+  
+  
+  
+
+  
+  "skill_dame1": { "otp0": "skill_dame1", "otp1": 10, "otp2": 1, "otp3": 10, "otp4": 3, "otp5": 1, "otp6": 9, "otp7": 5, "otp8": 1, "otp9": 1 },
+  "skill_dame2": { "otp0": "skill_dame2", "otp1": 20, "otp2": 1, "otp3": 20, "otp4": 3, "otp5": 1, "otp6": 9, "otp7": 7, "otp8": 1, "otp9": 1 },
+  "skill_dame3": { "otp0": "skill_dame3", "otp1": 30, "otp2": 1, "otp3": 30, "otp4": 3, "otp5": 1, "otp6": 9, "otp7": 9, "otp8": 1, "otp9": 1 },
+  "skill_dame4": { "otp0": "skill_dame4", "otp1": 40, "otp2": 1, "otp3": 50, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 12, "otp8": 1, "otp9": 1 },
+  "skill_dame5": { "otp0": "skill_dame5", "otp1": 50, "otp2": 1, "otp3": 80, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 15, "otp8": 1, "otp9": 1 },
+  "skill_dame6": { "otp0": "skill_dame6", "otp1": 60, "otp2": 1, "otp3": 100, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 16, "otp8": 1, "otp9": 1 },
+  "skill_dame7": { "otp0": "skill_dame7", "otp1": 70, "otp2": 1, "otp3": 150, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 17, "otp8": 1, "otp9": 1 },
+  "skill_dame8": { "otp0": "skill_dame8", "otp1": 80, "otp2": 1, "otp3": 180, "otp4": 1, "otp5": 1, "otp6": 9, "otp7": 18, "otp8": 1, "otp9": 1 },
+  "skill_dame9": { "otp0": "skill_dame9", "otp1": 90, "otp2": 1, "otp3": 210, "otp4": 1, "otp5": 1, "otp6": 9, "otp7": 19, "otp8": 1, "otp9": 1 },
+  "skill_dame10": { "otp0": "skill_dame10", "otp1": 100, "otp2": 1, "otp3": 310, "otp4": 1, "otp5": 1, "otp6": 9, "otp7": 20, "otp8": 1, "otp9": 1 },
+
+  "skill_def": { "otp0": "skill_def", "otp1": 50, "otp2": 2, "otp3": 100, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 8, "otp8": 1, "otp9": 1 },
+  "skill_def": { "otp0": "skill_def", "otp1": 50, "otp2": 2, "otp3": 100, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 8, "otp8": 1, "otp9": 1 },
+
+  "skill_crit": { "otp0": "skill_crit", "otp1": 3, "otp2": 3, "otp3": 100, "otp4": 4, "otp5": 1, "otp6": 9, "otp7": 8, "otp8": 1, "otp9": 1 },
+  "skill_crit1": { "otp0": "skill_crit1", "otp1": 5, "otp2": 3, "otp3": 200, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 5, "otp8": 1, "otp9": 1 },
+ 
+  "skill_critX": { "otp0": "skill_critX", "otp1": 1, "otp2": 4, "otp3": 100, "otp4": 5, "otp5": 1, "otp6": 9, "otp7": 10, "otp8": 1, "otp9": 1 },
+  "skill_critX1": { "otp0": "skill_critX1", "otp1": 2, "otp2": 4, "otp3": 100, "otp4": 5, "otp5": 1, "otp6": 5, "otp7": 10, "otp8": 1, "otp9": 1 },
+  
+  "skill_mana": { "otp0": "skill_mana", "otp1": 800, "otp2": 5, "otp3": 10, "otp4": 8000, "otp5": 1, "otp6": 9, "otp7": 10, "otp8": 1, "otp9": 1 },
+  
+  "skill_hp": { "otp0": "skill_hp", "otp1": 300, "otp2": 6, "otp3": 10, "otp4": 4000, "otp5": 1, "otp6": 9, "otp7": 5, "otp8": 1, "otp9": 1 },
+  
+  "skill_speed": { "otp0": "skill_speed", "otp1": -0.25, "otp2": 7, "otp3": 10, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 5, "otp8": 1, "otp9": 1 },
+  "skill_speed1": { "otp0": "skill_speed1", "otp1": -0.4, "otp2": 7, "otp3": 10, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 3, "otp8": 1, "otp9": 1 },
+  
+  "skill_defskill": { "otp0": "skill_defskill", "otp1": 50, "otp2": 8, "otp3": 20, "otp4": 5, "otp5": 1, "otp6": 9, "otp7": 5, "otp8": 1, "otp9": 1 },
+  
+  "skill_NeTranh": { "otp0": "skill_NeTranh", "otp1": 3, "otp2": 9, "otp3": 50, "otp4": 4, "otp5": 1, "otp6": 9, "otp7": 4, "otp8": 1, "otp9": 1 },
+  "skill_NeTranh1": { "otp0": "skill_NeTranh1", "otp1": 5, "otp2": 9, "otp3": 50, "otp4": 3, "otp5": 1, "otp6": 9, "otp7": 3, "otp8": 1, "otp9": 1 },
+  
+  "skill_HutMau": { "otp0": "skill_HutMau", "otp1": 3, "otp2": 10, "otp3": 50, "otp4": 3, "otp5": 1, "otp6": 9, "otp7": 3, "otp8": 1, "otp9": 1 },
+  "skill_HutMau1": { "otp0": "skill_HutMau1", "otp1": 5, "otp2": 10, "otp3": 50, "otp4": 3, "otp5": 1, "otp6": 9, "otp7": 5, "otp8": 1, "otp9": 1 },
+  
+  "skill_PhanDame": { "otp0": "skill_PhanDame", "otp1": 3, "otp2": 11, "otp3": 50, "otp4": 4, "otp5": 1, "otp6": 9, "otp7": 4, "otp8": 1, "otp9": 1 },
+  "skill_PhanDame1": { "otp0": "skill_PhanDame1", "otp1": 5, "otp2": 11, "otp3": 50, "otp4": 3, "otp5": 1, "otp6": 9, "otp7": 5, "otp8": 1, "otp9": 1 },
+
+  "skill_range": { "otp0": "skill_range", "otp1": 3, "otp2": 12, "otp3": 50, "otp4": 4, "otp5": 1, "otp6": 9, "otp7": 4, "otp8": 1, "otp9": 1 },
+  "skill_range1": { "otp0": "skill_range1", "otp1": 5, "otp2": 12, "otp3": 50, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 2, "otp8": 1, "otp9": 1 },
+
   
   
 };
