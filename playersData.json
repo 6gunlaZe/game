@@ -368,6 +368,12 @@
           "otp4": 0,
           "otp5": 0,
           "otp6": 0
+        },
+        {
+          "otp0": "gem_defskill_5",
+          "otp1": 1,
+          "otp6": 8,
+          "otp9": 1
         }
       ],
       "level": 10,
