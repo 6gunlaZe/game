@@ -2081,15 +2081,8 @@ const items = {
 
   
   "skill_dame1": { "otp0": "skill_dame1", "otp1": 10, "otp2": 1, "otp3": 10, "otp4": 3, "otp5": 1, "otp6": 9, "otp7": 5, "otp8": 1, "otp9": 1 },
-  "skill_dame2": { "otp0": "skill_dame2", "otp1": 20, "otp2": 1, "otp3": 20, "otp4": 3, "otp5": 1, "otp6": 9, "otp7": 7, "otp8": 1, "otp9": 1 },
-  "skill_dame3": { "otp0": "skill_dame3", "otp1": 30, "otp2": 1, "otp3": 30, "otp4": 3, "otp5": 1, "otp6": 9, "otp7": 9, "otp8": 1, "otp9": 1 },
-  "skill_dame4": { "otp0": "skill_dame4", "otp1": 40, "otp2": 1, "otp3": 50, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 12, "otp8": 1, "otp9": 1 },
-  "skill_dame5": { "otp0": "skill_dame5", "otp1": 50, "otp2": 1, "otp3": 80, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 15, "otp8": 1, "otp9": 1 },
-  "skill_dame6": { "otp0": "skill_dame6", "otp1": 60, "otp2": 1, "otp3": 100, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 16, "otp8": 1, "otp9": 1 },
-  "skill_dame7": { "otp0": "skill_dame7", "otp1": 70, "otp2": 1, "otp3": 150, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 17, "otp8": 1, "otp9": 1 },
-  "skill_dame8": { "otp0": "skill_dame8", "otp1": 80, "otp2": 1, "otp3": 180, "otp4": 1, "otp5": 1, "otp6": 9, "otp7": 18, "otp8": 1, "otp9": 1 },
-  "skill_dame9": { "otp0": "skill_dame9", "otp1": 90, "otp2": 1, "otp3": 210, "otp4": 1, "otp5": 1, "otp6": 9, "otp7": 19, "otp8": 1, "otp9": 1 },
-  "skill_dame10": { "otp0": "skill_dame10", "otp1": 100, "otp2": 1, "otp3": 310, "otp4": 1, "otp5": 1, "otp6": 9, "otp7": 20, "otp8": 1, "otp9": 1 },
+  "skill_dame5": { "otp0": "skill_dame5", "otp1": 50, "otp2": 1, "otp3": 80, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 2, "otp8": 1, "otp9": 1 },
+  "skill_dame10": { "otp0": "skill_dame10", "otp1": 100, "otp2": 1, "otp3": 310, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 3, "otp8": 1, "otp9": 1 },
 
   "skill_def": { "otp0": "skill_def", "otp1": 50, "otp2": 2, "otp3": 100, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 8, "otp8": 1, "otp9": 1 },
   "skill_def": { "otp0": "skill_def", "otp1": 50, "otp2": 2, "otp3": 100, "otp4": 2, "otp5": 1, "otp6": 9, "otp7": 8, "otp8": 1, "otp9": 1 },
@@ -2465,13 +2458,132 @@ const itemsrate = {
   "T15_legendarybow": {"otp0": "T15_legendarybow", "otp1": 0, "otp2": 0, "otp3": 0, "otp4": 0, "otp5": 110, "otp6": 0},
 
   
-  "gem_dame_18": { "otp0": "gem_dame_18", "otp5": 1, "otp6": 800 },
-  
-  
-  
-  
-  "skill_crit": { "otp0": "skill_crit", "otp1": 30, "otp2": 1, "otp3": 10, "otp4": 3, "otp5": 2, "otp6": 900 }
 
+  
+  
+"gem_dame_5": { "otp0": "gem_dame_5", "otp5": 0, "otp6": 900 },
+"gem_dame_7": { "otp0": "gem_dame_7", "otp5": 0, "otp6": 800 },
+"gem_dame_9": { "otp0": "gem_dame_9", "otp5": 0, "otp6": 700 },
+"gem_dame_12": { "otp0": "gem_dame_12", "otp5": 0, "otp6": 600 },
+"gem_dame_15": { "otp0": "gem_dame_15", "otp5": 0, "otp6": 500 },
+"gem_dame_18": { "otp0": "gem_dame_18", "otp5": 0, "otp6": 300 },
+"gem_dame_21": { "otp0": "gem_dame_21", "otp5": 5, "otp6": 250 },
+"gem_dame_25": { "otp0": "gem_dame_25", "otp5": 10, "otp6": 150 },
+"gem_dame_30": { "otp0": "gem_dame_30", "otp5": 15, "otp6": 150 },
+"gem_dame_35": { "otp0": "gem_dame_35", "otp5": 20, "otp6": 100 },
+"gem_dame_40": { "otp0": "gem_dame_40", "otp5": 25, "otp6": 100 },
+"gem_dame_45": { "otp0": "gem_dame_45", "otp5": 30, "otp6": 100 },
+"gem_dame_50": { "otp0": "gem_dame_50", "otp5": 35, "otp6": 100 },
+"gem_dame_55": { "otp0": "gem_dame_55", "otp5": 40, "otp6": 100 },
+"gem_dame_60": { "otp0": "gem_dame_60", "otp5": 45, "otp6": 80 },
+"gem_dame_65": { "otp0": "gem_dame_65", "otp5": 50, "otp6": 80 },
+"gem_dame_70": { "otp0": "gem_dame_70", "otp5": 55, "otp6": 80 },
+"gem_dame_80": { "otp0": "gem_dame_80", "otp5": 60, "otp6": 80 },
+"gem_dame_90": { "otp0": "gem_dame_90", "otp5": 65, "otp6": 80 },
+"gem_dame_100": { "otp0": "gem_dame_100", "otp5": 70, "otp6": 80 },
+
+"gem_def_5": { "otp0": "gem_def_5", "otp5": 0, "otp6": 900 },
+"gem_def_7": { "otp0": "gem_def_7", "otp5": 0, "otp6": 800 },
+"gem_def_9": { "otp0": "gem_def_9", "otp5": 0, "otp6": 700 },
+"gem_def_12": { "otp0": "gem_def_12", "otp5": 0, "otp6": 600 },
+"gem_def_15": { "otp0": "gem_def_15", "otp5": 0, "otp6": 500 },
+"gem_def_18": { "otp0": "gem_def_18", "otp5": 0, "otp6": 300 },
+"gem_def_21": { "otp0": "gem_def_21", "otp5": 5, "otp6": 250 },
+"gem_def_25": { "otp0": "gem_def_25", "otp5": 10, "otp6": 150 },
+"gem_def_30": { "otp0": "gem_def_30", "otp5": 15, "otp6": 150 },
+"gem_def_35": { "otp0": "gem_def_35", "otp5": 20, "otp6": 100 },
+"gem_def_40": { "otp0": "gem_def_40", "otp5": 25, "otp6": 100 },
+"gem_def_45": { "otp0": "gem_def_45", "otp5": 30, "otp6": 100 },
+"gem_def_50": { "otp0": "gem_def_50", "otp5": 35, "otp6": 100 },
+"gem_def_55": { "otp0": "gem_def_55", "otp5": 40, "otp6": 100 },
+"gem_def_60": { "otp0": "gem_def_60", "otp5": 45, "otp6": 80 },
+"gem_def_65": { "otp0": "gem_def_65", "otp5": 50, "otp6": 80 },
+"gem_def_70": { "otp0": "gem_def_70", "otp5": 55, "otp6": 80 },
+"gem_def_80": { "otp0": "gem_def_80", "otp5": 60, "otp6": 80 },
+"gem_def_90": { "otp0": "gem_def_90", "otp5": 65, "otp6": 80 },
+"gem_def_100": { "otp0": "gem_def_100", "otp5": 70, "otp6": 80 },
+
+"gem_defskill_5": { "otp0": "gem_defskill_5", "otp5": 0, "otp6": 900 },
+"gem_defskill_7": { "otp0": "gem_defskill_7", "otp5": 0, "otp6": 800 },
+"gem_defskill_9": { "otp0": "gem_defskill_9", "otp5": 0, "otp6": 700 },
+"gem_defskill_12": { "otp0": "gem_defskill_12", "otp5": 0, "otp6": 600 },
+"gem_defskill_15": { "otp0": "gem_defskill_15", "otp5": 0, "otp6": 500 },
+"gem_defskill_18": { "otp0": "gem_defskill_18", "otp5": 0, "otp6": 300 },
+"gem_defskill_21": { "otp0": "gem_defskill_21", "otp5": 5, "otp6": 250 },
+"gem_defskill_25": { "otp0": "gem_defskill_25", "otp5": 10, "otp6": 150 },
+"gem_defskill_30": { "otp0": "gem_defskill_30", "otp5": 15, "otp6": 150 },
+"gem_defskill_35": { "otp0": "gem_defskill_35", "otp5": 20, "otp6": 100 },
+"gem_defskill_40": { "otp0": "gem_defskill_40", "otp5": 25, "otp6": 100 },
+"gem_defskill_45": { "otp0": "gem_defskill_45", "otp5": 30, "otp6": 100 },
+"gem_defskill_50": { "otp0": "gem_defskill_50", "otp5": 35, "otp6": 100 },
+"gem_defskill_55": { "otp0": "gem_defskill_55", "otp5": 40, "otp6": 100 },
+"gem_defskill_60": { "otp0": "gem_defskill_60", "otp5": 45, "otp6": 80 },
+"gem_defskill_65": { "otp0": "gem_defskill_65", "otp5": 50, "otp6": 80 },
+"gem_defskill_70": { "otp0": "gem_defskill_70", "otp5": 55, "otp6": 80 },
+"gem_defskill_80": { "otp0": "gem_defskill_80", "otp5": 60, "otp6": 80 },
+"gem_defskill_90": { "otp0": "gem_defskill_90", "otp5": 65, "otp6": 80 },
+"gem_defskill_100": { "otp0": "gem_defskill_100", "otp5": 70, "otp6": 80 },
+
+"gem_hp_50": { "otp0": "gem_hp_50", "otp5": 0, "otp6": 900 },
+"gem_hp_70": { "otp0": "gem_hp_70", "otp5": 0, "otp6": 800 },
+"gem_hp_90": { "otp0": "gem_hp_90", "otp5": 0, "otp6": 700 },
+"gem_hp_120": { "otp0": "gem_hp_120", "otp5": 0, "otp6": 600 },
+"gem_hp_150": { "otp0": "gem_hp_150", "otp5": 0, "otp6": 500 },
+"gem_hp_180": { "otp0": "gem_hp_180", "otp5": 0, "otp6": 300 },
+"gem_hp_210": { "otp0": "gem_hp_210", "otp5": 5, "otp6": 250 },
+"gem_hp_250": { "otp0": "gem_hp_250", "otp5": 10, "otp6": 150 },
+"gem_hp_300": { "otp0": "gem_hp_300", "otp5": 15, "otp6": 150 },
+"gem_hp_350": { "otp0": "gem_hp_350", "otp5": 20, "otp6": 100 },
+"gem_hp_400": { "otp0": "gem_hp_400", "otp5": 25, "otp6": 100 },
+"gem_hp_450": { "otp0": "gem_hp_450", "otp5": 30, "otp6": 100 },
+"gem_hp_500": { "otp0": "gem_hp_500", "otp5": 35, "otp6": 100 },
+"gem_hp_550": { "otp0": "gem_hp_550", "otp5": 40, "otp6": 100 },
+"gem_hp_600": { "otp0": "gem_hp_600", "otp5": 45, "otp6": 80 },
+"gem_hp_650": { "otp0": "gem_hp_650", "otp5": 50, "otp6": 80 },
+"gem_hp_700": { "otp0": "gem_hp_700", "otp5": 55, "otp6": 80 },
+"gem_hp_800": { "otp0": "gem_hp_800", "otp5": 60, "otp6": 80 },
+"gem_hp_900": { "otp0": "gem_hp_900", "otp5": 65, "otp6": 80 },
+"gem_hp_1000": { "otp0": "gem_hp_1000", "otp5": 70, "otp6": 80 },
+
+
+  
+  
+"skill_dame1": { "otp0": "skill_dame1", "otp5": 0, "otp6": 300 },
+"skill_dame5": { "otp0": "skill_dame5", "otp5": 10, "otp6": 150 },
+"skill_dame10": { "otp0": "skill_dame10", "otp5": 30, "otp6": 50 },
+
+"skill_def": { "otp0": "skill_def", "otp5": 5, "otp6": 200 },
+  
+"skill_crit": { "otp0": "skill_crit", "otp5": 0, "otp6": 200 },
+"skill_crit1": { "otp0": "skill_crit1", "otp5": 20, "otp6": 50 },
+
+"skill_critX": { "otp0": "skill_critX", "otp5": 20, "otp6": 100 }, 
+"skill_critX1": { "otp0": "skill_critX1", "otp5": 40, "otp6": 40 },
+
+"skill_mana": { "otp0": "skill_mana", "otp5": 10, "otp6": 200 },
+
+"skill_hp": { "otp0": "skill_hp", "otp5": 20, "otp6": 90 },
+
+"skill_speed": { "otp0": "skill_speed", "otp5": 10, "otp6": 50 },
+"skill_speed1": { "otp0": "skill_speed1", "otp5": 20, "otp6": 30 },
+
+"skill_defskill": { "otp0": "skill_defskill", "otp5": 0, "otp6": 300 },
+
+"skill_NeTranh": { "otp0": "skill_NeTranh", "otp5": 10, "otp6": 100 },
+"skill_NeTranh1": { "otp0": "skill_NeTranh1", "otp5": 30, "otp6": 70 },
+
+"skill_HutMau": { "otp0": "skill_HutMau", "otp5": 10, "otp6": 100 },
+"skill_HutMau1": { "otp0": "skill_HutMau1", "otp5": 30, "otp6": 50 },
+
+"skill_PhanDame": { "otp0": "skill_PhanDame", "otp5": 10, "otp6": 100 },
+"skill_PhanDame1": { "otp0": "skill_PhanDame1", "otp5": 30, "otp6": 50 },
+
+"skill_range": { "otp0": "skill_range", "otp5": 10, "otp6": 100 },
+"skill_range1": { "otp0": "skill_range1", "otp5": 30, "otp6": 50 }
+ 
+  
+  
+  
   
   
 };
@@ -4363,29 +4475,29 @@ function calculatePlayerLevel(player) {
 // Các chỉ số tăng cho từng loại vũ khí (char)
 const charStats = {
   1: {
-    hp_max: 5000,   // Đao (Axe) tăng health_max
-    mana: 100,        // Đao (Axe) tăng mana
-    "def-dame": 10,   // Đao (Axe) tăng def-dame
+    hp_max: 8000,   // Đao (Axe) tăng health_max  1
+    PhanDame: 15,        // Đao (Axe) tăng mana
+    "def-dame": 500,   // Đao (Axe) tăng def-dame
   },
   2: {
-    hp_max: 30,   // Kiếm (Sword) tăng health_max
-    mana: 50,         // Kiếm (Sword) tăng mana
-    "crit-%": 50,      // Kiếm (Sword) tăng crit-%
+    "crit-x": 2,   // Kiếm (Sword) tăng health_max  2
+    NeTranh: 20,         // Kiếm (Sword) tăng mana
+    "attach-speed": -1.5,      // Kiếm (Sword) tăng crit-%
   },
   3: {
-    hp_max: 40,   // Gậy (Staff) tăng health_max
-    mana: 5000,   // Gậy (Staff) tăng def-dame
+    "crit-x": 3,   // Gậy (Staff) tăng health_max   1
+    mana: 8000,   // Gậy (Staff) tăng def-dame
     "crit-%": 10,     // Gậy (Staff) tăng crit-%
   },
   4: {
-    hp_max: 20,   // Cung (Bow) tăng health_max
-    mana: 150,        // Cung (Bow) tăng mana
-    "attach-speed": -0.8, // Cung (Bow) tăng attach-speed
+    mana: 2000,   // Cung (Bow) tăng health_max  3
+    "attach-range": 15,        // Cung (Bow) tăng mana
+    "attach-speed": -2.2, // Cung (Bow) tăng attach-speed
   },
   5: {
-    hp_max: 25,   // Thương (Spear) tăng health_max
-    "def-skill": 1000,  // Thương (Spear) tăng def-skill
-    "crit-x": 1,      // Thương (Spear) tăng crit-x
+    HutMau: 15,   // Thương (Spear) tăng health_max   4
+    "def-skill": 500,  // Thương (Spear) tăng def-skill
+    "crit-%": 15,      // Thương (Spear) tăng crit-x
   },
   6: {
     // Loại vũ khí không xác định không tăng thuộc tính nào
@@ -4428,7 +4540,7 @@ function checkcharUP(player) {
 
     // Cập nhật các thuộc tính của người chơi
     for (let stat in statIncrease) {
-      player[stat] += statIncrease[stat];  // Tăng các thuộc tính theo chỉ số tăng
+      player[stat] +=  Noitaitang(statIncrease[stat],player)  ;  // Tăng các thuộc tính theo chỉ số tăng
     }
     console.log(`${player.name} có vũ khí: ${weaponName}, Loại: ${player.char}, Các thuộc tính mới:`, player);
   } else {
@@ -4545,11 +4657,15 @@ function getWeaponName(char) {
 
 
 
+// Hàm tính giá trị dựa trên cấp độ và giá trị cơ bản
+function Noitaitang(a,player) {
+  
+  // Giá trị cơ bản (a) và hệ số c
+const c = 5;    // Hệ số c, có thể điều chỉnh
+const level = player.level
 
-
-
-
-
+    return a * (level / (level + c));
+}
 
 
 
