@@ -682,20 +682,20 @@ function sendPlayerStatsToTelegram(chatId) {
   const playerStats = `
 🧑‍💻 **Thông tin nhân vật**:
 - 🆔 **ID**: ${player.id}
-- ⚔️ **Dame**:  ${player.dame} + ${weaponDame}
+- ⚔️ **Dame**:  ${player.dame.toFixed(1)} + ${weaponDame}
 - 🌟 **exp**: ${player.exp}
 - 🏆 **Level**: ${player.level}
-- ❤️ **HP**: ${player.hp_max} + ${weaponhp}
-- 🔋 **Mana**: ${player.mana}
-- 🛡️ : ${player['def-dame']} + ${weapondef} (Giảm sát thương nhận vào)
-- 🎽 : ${player['def-skill']} + ${weapondef1} (Giảm hiệu quả kỹ năng đối phương)
-- 🍃 : ${player['NeTranh']} (Tỉ lệ né tránh)
-- ⚡ : ${player['crit-%']} (Tỷ lệ chí mạng)
-- 💣 : ${player['crit-x']} (Lượng sát thương chí mạng)
-- ⏱️ : ${player['attach-speed']} (Tốc độ tấn công)
-- 🌍 : ${player['attach-range']} (Phạm vi tấn công)
-- 🩸 : ${player['HutMau']} (Tỷ lệ hút máu)
-- 💥 : ${player['PhanDame']} (Phản sát thương)
+- ❤️ **HP**: ${player.hp_max.toFixed(0)} + ${weaponhp}
+- 🔋 **Mana**: ${player.mana.toFixed(0)}
+- 🛡️ : ${player['def-dame'].toFixed(1)} + ${weapondef} (Giảm sát thương nhận vào)
+- 🎽 : ${player['def-skill'].toFixed(1)} + ${weapondef1} (Giảm hiệu quả kỹ năng đối phương)
+- 🍃 : ${player['NeTranh'].toFixed(1)} (Tỉ lệ né tránh)
+- ⚡ : ${player['crit-%'].toFixed(1)} (Tỷ lệ chí mạng)
+- 💣 : ${player['crit-x'].toFixed(1)} (Lượng sát thương chí mạng)
+- ⏱️ : ${player['attach-speed'].toFixed(2)} (Tốc độ tấn công)
+- 🌍 : ${player['attach-range'].toFixed(1)} (Phạm vi tấn công)
+- 🩸 : ${player['HutMau'].toFixed(1)} (Tỷ lệ hút máu)
+- 💥 : ${player['PhanDame'].toFixed(1)} (Phản sát thương)
 **Trang bị**:
 - 👕: ${player['trang-bi'].ao.otp0} (${player['trang-bi'].ao.otp1}-${player['trang-bi'].ao.otp2}-${player['trang-bi'].ao.otp3}-${player['trang-bi'].ao.otp4}) ✨${player['trang-bi'].ao.otp5}
 - 🛡️: ${player['trang-bi'].giap.otp0} (${player['trang-bi'].giap.otp1}-${player['trang-bi'].giap.otp2}-${player['trang-bi'].giap.otp3}-${player['trang-bi'].giap.otp4}) ✨${player['trang-bi'].giap.otp5}
@@ -2714,9 +2714,7 @@ async function initGame() {
     // Khởi tạo báo cáo sát thương
     calculateMonstersKilledByChatId(6708647498);
 
-    checkcharDownandUp(player1)
-    checkcharDownandUp(player2)
-    checkcharDownandUp(player3)
+
     calculatePlayerLevel(player1)
     calculatePlayerLevel(player2)
     calculatePlayerLevel(player3)
@@ -2730,6 +2728,11 @@ async function initGame() {
     
     updateAllPlayersStats(players)
     updatePlayersHpToMax();
+    
+    checkcharDownandUp(player1)
+    checkcharDownandUp(player2)
+    checkcharDownandUp(player3)
+    
     startBossFight(boss,players[0]);
     startBossFight(boss,players[1]);
     startBossFight(boss,players[2]);
@@ -3544,7 +3547,7 @@ function startCalculatingMonsters(chatId, monsterName) {
 
   const averageDamage = totalDamageDealt / totalAttacks;
 
-  sendMessage(chatId, `Sát thương trung bình thực tế: ${averageDamage.toFixed(2)} / Tổng số tấn công: ${totalAttacks}, HP quái: ${monster.hp}, Số lượng quái vật giết trong 5 phút: ${monstersKilled}`);
+  sendMessage(chatId, `Sát thương trung bình thực tế: ${averageDamage.toFixed(2)} / Tổng số tấn công: ${totalAttacks.toFixed(2)}, HP quái: ${monster.hp}, Số lượng quái vật giết trong 5 phút: ${monstersKilled}`);
 
   
   player.gold = Number(player.gold); // Đảm bảo player.gold là kiểu số
@@ -4480,12 +4483,12 @@ const charStats = {
     "def-dame": 500,   // Đao (Axe) tăng def-dame
   },
   2: {
-    "crit-x": 2,   // Kiếm (Sword) tăng health_max  2
+    "crit-x": 1,   // Kiếm (Sword) tăng health_max  2
     NeTranh: 20,         // Kiếm (Sword) tăng mana
     "attach-speed": -1.5,      // Kiếm (Sword) tăng crit-%
   },
   3: {
-    "crit-x": 3,   // Gậy (Staff) tăng health_max   1
+    "crit-x": 2,   // Gậy (Staff) tăng health_max   1
     mana: 8000,   // Gậy (Staff) tăng def-dame
     "crit-%": 10,     // Gậy (Staff) tăng crit-%
   },
@@ -4528,28 +4531,6 @@ function getWeaponType(weaponName, player) {
 
 
 
-// Hàm tính toán và cập nhật thuộc tính của người chơi
-function checkcharUP(player) {
-  const weaponName = player["trang-bi"]["vu-khi"].otp0;  // Lấy tên vũ khí từ "vu-khi"
-  if (weaponStats[weaponName]) {
-    // Nếu vũ khí tồn tại trong weaponStats, cập nhật loại vũ khí cho player
-    getWeaponType(weaponName, player);
-
-    // Lấy các chỉ số tăng theo char
-    const statIncrease = charStats[player.char];
-
-    // Cập nhật các thuộc tính của người chơi
-    for (let stat in statIncrease) {
-      player[stat] +=  Noitaitang(statIncrease[stat],player)  ;  // Tăng các thuộc tính theo chỉ số tăng
-    }
-    console.log(`${player.name} có vũ khí: ${weaponName}, Loại: ${player.char}, Các thuộc tính mới:`, player);
-  } else {
-    // Nếu vũ khí không tồn tại trong weaponStats, thông báo không xác định
-    console.log(`${player.name} có vũ khí "${weaponName}" không xác định.`);
-  }
-}
-
-
 
 
 
@@ -4569,25 +4550,63 @@ function checkcharDownandUp(player) {
     // Lấy các chỉ số giảm theo char cũ
     const previousStatDecrease = charStats[previousChar];
 
+
+
     // Trừ các thuộc tính của người chơi (lúc trước)
     for (let stat in previousStatDecrease) {
-      player[stat] -= previousStatDecrease[stat];  // Giảm các thuộc tính theo chỉ số giảm
+        const giamAmount =  Noitaitang(previousStatDecrease[stat], player);
+      
+      player[stat] -= giamAmount // Giảm các thuộc tính theo chỉ số giảm
     }
 
     // Lấy các chỉ số tăng theo char mới
     const statIncrease = charStats[player.char];
 
+    // Lưu lại các thay đổi được thực hiện
+    const changes = [];
+    // Lưu lại các giá trị ban đầu của player
+    const initialPlayerStats = { ...player };
     // Cập nhật các thuộc tính của người chơi với chỉ số mới
     for (let stat in statIncrease) {
-      player[stat] += statIncrease[stat];  // Tăng các thuộc tính theo chỉ số tăng
+      const increaseAmount = Noitaitang(statIncrease[stat], player);  // Mức độ tăng
+      player[stat] +=  increaseAmount  // Tăng các thuộc tính theo chỉ số tăng
+
+      // Lưu thông tin về sự thay đổi
+      if (increaseAmount !== 0) {
+        changes.push({
+          stat: stat,
+          oldValue: initialPlayerStats[stat],  // Giá trị cũ
+          newValue: player[stat],              // Giá trị mới
+          change: increaseAmount               // Mức độ thay đổi
+        });
+      }
+    }
+let changeSummary = '';
+
+    // In ra các thay đổi
+    if (changes.length > 0) {
+        changeSummary += `${player.name} thay đổi vũ khí: ${weaponName}, Loại: ${player.char}, Các thuộc tính thay đổi:\n`;
+
+      console.log(`${player.name} thay đổi vũ khí: ${weaponName}, Loại: ${player.char}, Các thuộc tính thay đổi:`);
+      changes.forEach(change => {
+            changeSummary += `Thuộc tính ${change.stat}: Cũ = ${change.oldValue}, Mới = ${change.newValue}, Thay đổi = ${change.change}\n`;
+
+        console.log(`Thuộc tính ${change.stat}: Cũ = ${change.oldValue}, Mới = ${change.newValue}, Thay đổi = ${change.change}`);
+      });
+      
+       sendMessage(player.id_bot, changeSummary) 
+
+      
+    } else {
+      console.log(`${player.name} không có sự thay đổi đáng kể nào về các thuộc tính.`);
     }
 
-    console.log(`${player.name} thay đổi vũ khí: ${weaponName}, Loại: ${player.char}, Các thuộc tính mới:`, player);
   } else {
     // Nếu vũ khí không tồn tại trong weaponStats, thông báo không xác định
     console.log(`${player.name} có vũ khí "${weaponName}" không xác định.`);
   }
 }
+
 
 
 
@@ -4628,6 +4647,20 @@ function generateWeaponTypeInfo() {
     if (statIncrease["crit-x"]) {
       message += `\n  - Tăng Crit-X: ${statIncrease["crit-x"]}`;
     }
+        if (statIncrease["attach-range"]) {
+      message += `\n  - Tăng attach-range: ${statIncrease["attach-range"]}`;
+    }  
+    if (statIncrease.NeTranh) {
+      message += `\n  - Tăng NeTranh: ${statIncrease.NeTranh}`;
+    }    
+    if (statIncrease.HutMau) {
+      message += `\n  - Tăng HutMau: ${statIncrease.HutMau}`;
+    }    
+    if (statIncrease.PhanDame) {
+      message += `\n  - Tăng PhanDame : ${statIncrease.PhanDame}`;
+    }    
+    
+    
   }
 
   return message;
@@ -4659,13 +4692,36 @@ function getWeaponName(char) {
 
 // Hàm tính giá trị dựa trên cấp độ và giá trị cơ bản
 function Noitaitang(a,player) {
-  
+  let numberr = 0
   // Giá trị cơ bản (a) và hệ số c
 const c = 5;    // Hệ số c, có thể điều chỉnh
 const level = player.level
-
-    return a * (level / (level + c));
+numberr = a * (level / (level + c));
+    return Math.round(numberr * 10) / 10;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
