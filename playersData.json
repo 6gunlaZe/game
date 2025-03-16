@@ -83,7 +83,17 @@
       "rate": 0,
       "boss": 0,
       "framlv": 1,
-      "inventory": [],
+      "inventory": [
+        {
+          "otp0": "T1_sword",
+          "otp1": 0,
+          "otp2": 0,
+          "otp3": 0,
+          "otp4": 0,
+          "otp5": 0,
+          "otp6": 0
+        }
+      ],
       "level": 1,
       "health_max": 500,
       "health": 500,
