@@ -8,7 +8,8 @@ const fs = require('fs');  // Đảm bảo bạn yêu cầu thư viện fs
 const fetch = require('node-fetch');  // Đối với Node.js
 
 
-const playerId = 12345;
+const playerId = 123456;
+
 
 
 ////////////////////////
@@ -245,6 +246,10 @@ function getPlayerStat(playerId) {
     .catch(error => reject('Lỗi khi lấy thông số người chơi: ' + error));
   });
 }
+
+
+
+
 
 
 
@@ -684,6 +689,7 @@ function sendPlayerStatsToTelegram(chatId) {
 - 🆔 **ID**: ${player.id}
 - ⚔️ **Dame**:  ${player.dame.toFixed(1)} + ${weaponDame}
 - 🌟 **exp**: ${player.exp}
+- 🌟 **gold**: ${player.gold}
 - 🏆 **Level**: ${player.level}
 - ❤️ **HP**: ${player.hp_max.toFixed(0)} + ${weaponhp}
 - 🔋 **Mana**: ${player.mana.toFixed(0)}
@@ -2302,7 +2308,7 @@ function checkdropitem(lvboss, itemsrate, tangrate) {
     }
 
     // Bước 2: Kiểm tra điều kiện với random và otp6
-    let randomValue = Math.floor(Math.random() * 10000) + 1 - tangrate;  // Random từ 1 đến 100
+    let randomValue = Math.floor(Math.random() * 5000) + 1 - tangrate;  // Random từ 1 đến 100
     console.log('Random Value:', randomValue);
 
     // Lọc lại những item có otp6 lớn hơn randomValue
@@ -2713,6 +2719,7 @@ async function initGame() {
     players = [player1, player2, player3];  // Lưu mảng người chơi
     // Khởi tạo báo cáo sát thương
     calculateMonstersKilledByChatId(6708647498);
+    calculateMonstersKilledByChatId(7500720315);
 
 
     calculatePlayerLevel(player1)
@@ -2830,7 +2837,7 @@ function sendFourButtons(chatId) {
 // Mảng chứa thông tin người dùng (userId và tên)
 const userNames = {
   6708647498: 'Tien',
-  987654321: 'Hai',
+  7500720315: 'Hai',
   111222333: 'Hoang',
   444555666: 'Duc'
   // Bạn có thể thêm nhiều người dùng và ID tương ứng ở đây
@@ -2988,6 +2995,7 @@ else if (data.startsWith('epngoc_')) {
   // Trả về toàn bộ tên item (ví dụ: 'T1_spear')
   processPlayerAndUpdate(chatId, data1) 
 }
+  
   
   
   
@@ -3453,7 +3461,7 @@ function calculateMonstersKilledByChatId(chatId, monsterName) {
   activeLoops[chatId].isRunning = true;
 
   // Bắt đầu vòng lặp sau 30 giây (currentTime + 300000)
-  let nextTime = currentTime + 300000;
+  let nextTime = currentTime + 5000000;
 
   // Kiểm tra các mốc thời gian của các người chơi khác để đảm bảo cách nhau ít nhất 1 giây
   for (const id in activeLoops) {
@@ -3492,6 +3500,7 @@ function calculateMonstersKilledByChatId(chatId, monsterName) {
 
   }, nextTime - currentTime); // Thực hiện vòng lặp sau khoảng thời gian từ currentTime đến nextTime
 }
+
 
 
 
@@ -3892,10 +3901,13 @@ function enhanceItem(playerId, itemId) {
   const itemGem = player.inventory.find(i => i.otp0 === "gem");
     if (!item) {
         console.log(`Không tìm thấy item ${itemId} trong inventory.`);
+       sendMessage(playerId, `Không tìm thấy item OP trong inventory.`);
         return;
     }
       if (!itemGem) {
         console.log(`Không tìm thấy item ${itemGem} trong inventory.`);
+               sendMessage(playerId, `Không tìm thấy item Gem trong inventory.`);
+
         return;
     }
     //number = (3 * Math.pow(3, item.otp5))*number;
@@ -3947,6 +3959,7 @@ function enhanceItem(playerId, itemId) {
             console.error("Lỗi khi cập nhật:", err);
         });
 }
+
 
 
 
@@ -4209,6 +4222,7 @@ function summonBoss(players, level) {
         // Gửi thông báo về boss mới
         let textMessage = `Có boss mới cấp ${level}\n  ${boss.name}, Cấp: ${boss.lv}, HP: ${boss.hp}, Damage: ${boss.damage}, Defense: ${boss.defense} \n https://same-mangrove-seed.glitch.me/`;
         sendMessage(6708647498, textMessage);
+        sendMessage(7500720315, textMessage);
             //thêm các sendMessage khi có người chơi khác
 
       
@@ -4232,13 +4246,13 @@ function summonBoss(players, level) {
         console.log(`Boss hiện tại chưa chết: ${boss.name}, Cấp: ${boss.lv}, HP: ${boss.hp}, Damage: ${boss.damage}, Defense: ${boss.defense}`);
       sendMessage(6708647498, `Boss hiện tại chưa chết: ${boss.name}, Cấp: ${boss.lv}, HP: ${boss.hp}, Damage: ${boss.damage}, Defense: ${boss.defense}`);
       //thêm các sendMessage khi có người chơi khác
-      
+            sendMessage(7500720315, `Boss hiện tại chưa chết: ${boss.name}, Cấp: ${boss.lv}, HP: ${boss.hp}, Damage: ${boss.damage}, Defense: ${boss.defense}`);
+
       
       
     }
 }
  
-
 
 
 
@@ -4747,9 +4761,9 @@ numberr = a * (level / (level + c));
 
 
 
-
-
-
 // Gọi hàm sendMainMenu khi người dùng đăng nhập
 sendMainMenu(6708647498);  
 Menutrangbi(6708647498)
+
+sendMainMenu(7500720315);  
+Menutrangbi(7500720315)
